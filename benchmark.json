@@ -1,0 +1,74 @@
+{
+  "defaults": {
+    "profile": "boogie",
+    "absoluteTolerance": 2,
+    "relativeTolerancePercent": 2
+  },
+  "tracks": [
+    {
+      "file": "01 - Boppin' with the Blues.flac",
+      "expectedBpm": 172.46
+    },
+    {
+      "file": "09-Jump, Jive And Wail.mp3",
+      "expectedBpm": 208.79
+    },
+    {
+      "file": "10-Fat Like That.mp3",
+      "expectedBpm": 177.67
+    },
+    {
+      "file": "Boogie Shoes.mp3",
+      "expectedBpm": 172.59
+    },
+    {
+      "file": "Boppin' The Boogie.mp3",
+      "expectedBpm": 196.18
+    },
+    {
+      "file": "Cherry Poppin' Daddies - Bigger Life [Audio].mp3",
+      "expectedBpm": 76.58,
+      "notes": "Triplet-feel / 3:2 regression case"
+    },
+    {
+      "file": "Leave Married Women Alone.mp3",
+      "expectedBpm": 201.24,
+      "notes": "Fast-song half-tempo regression case"
+    },
+    {
+      "file": "Maddest Kind Of Love.mp3",
+      "expectedBpm": 112.41,
+      "notes": "Must not be incorrectly doubled"
+    },
+    {
+      "file": "NEW C'mon Everybody - Eddie Cochran {Stereo}.mp3",
+      "expectedBpm": 175.62
+    },
+    {
+      "file": "Powder Blues - Thirsty Ears.mp3",
+      "expectedBpm": 161.4
+    },
+    {
+      "file": "Rock, Rock, Rock.mp3",
+      "expectedBpm": 215.41
+    },
+    {
+      "file": "Rock-A-Beatin' Boogie [Bill Haley].mp3",
+      "expectedBpm": 182.1
+    },
+    {
+      "file": "Seven up!.mp3",
+      "expectedBpm": 229.14,
+      "notes": "Fast competition-song regression: must prefer double-time without using a simple BPM cutoff"
+    },
+    {
+      "file": "Walkin' Away Blues - the Speakeasies' Swing Band!.mp3",
+      "expectedBpm": 111.95
+    },
+    {
+      "file": "Who's That Creepin' (Album Version).mp3",
+      "expectedBpm": 104.57,
+      "notes": "Slow-song regression: must stay near 104.57 BPM and must not be incorrectly doubled by the boogie profile"
+    }
+  ]
+}

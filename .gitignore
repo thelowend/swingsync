@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+
+# SwingSync runtime/cache
+.swingsync-cache.json
+.bpm-cache.json
+.cache/
+*.cache
+
+# Generated reports / local analysis output
+reports/
+*.report.csv
+*.report.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test / coverage output
+coverage/
+.nyc_output/
+
+# Build / packaged application output
+dist/
+build/
+out/
+release/
+*.asar
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Environment / local configuration
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Node / package manager caches
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Misc generated archives
+*.zip
