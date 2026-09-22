@@ -32,6 +32,7 @@ const {
 const {
   OUTPUT_MODES,
   validateOutputMode,
+  planBpmOutput,
 } = require("../app/apply-bpm-output.cjs");
 
 const {
@@ -306,16 +307,241 @@ class BpmApplication
         continue;
       }
 
-      items.push(
-        createReviewItem(
+      items.push({
+        ...createReviewItem(
           result
-        )
-      );
+        ),
+        trackId:
+          track.id,
+        filename:
+          track.filename,
+        relativePath:
+          track.relativePath,
+        review:
+          cloneSerializable(
+            result.review ??
+            null
+          ),
+      });
     }
 
     return cloneSerializable(
       items
     );
+  }
+
+  getApplyPlan() {
+    this.assertLibraryOpen();
+
+    const items = [];
+
+    for (
+      const track of
+      this.state.tracks
+    ) {
+      if (
+        track.status !==
+          TRACK_STATUS.ANALYZED ||
+        track.output.applied
+      ) {
+        continue;
+      }
+
+      const result =
+        this.trackResults.get(
+          track.id
+        );
+
+      if (!result) {
+        continue;
+      }
+
+      const selectedBpm =
+        this.resolveSelectedBpm(
+          result
+        );
+
+      if (
+        !Number.isFinite(
+          selectedBpm
+        )
+      ) {
+        continue;
+      }
+
+      const plan =
+        planBpmOutput({
+          file:
+            result.file,
+          bpm:
+            selectedBpm,
+          outputMode:
+            this.state.library
+              .outputMode,
+          existingMetadata:
+            result.metadata,
+        });
+
+      const normalizedTarget =
+        Math.round(
+          selectedBpm
+        );
+
+      const metadataStatus =
+        !plan.metadataRequested
+          ? "not-requested"
+          : !plan.metadataSupport
+              ?.supported
+          ? "unsupported"
+          : Number.isFinite(
+              plan.existingMetadataBpm
+            ) &&
+            Math.round(
+              plan.existingMetadataBpm
+            ) ===
+              normalizedTarget
+          ? "already-matches"
+          : "will-write";
+
+      const filenameStatus =
+        !plan.filenameRequested
+          ? "not-requested"
+          : path.resolve(
+              plan.proposedPath
+            ) ===
+              path.resolve(
+                result.file
+              )
+          ? "already-matches"
+          : "will-rename";
+
+      const unsupported =
+        metadataStatus ===
+          "unsupported";
+
+      const willChange =
+        !unsupported &&
+        (
+          metadataStatus ===
+            "will-write" ||
+          filenameStatus ===
+            "will-rename"
+        );
+
+      const status =
+        unsupported
+          ? "unsupported"
+          : willChange
+          ? "will-change"
+          : "unchanged";
+
+      const approvalSource =
+        Number.isFinite(
+          result.review
+            ?.selectedBpm
+        )
+          ? "human"
+          : "automatic";
+
+      items.push({
+        trackId:
+          track.id,
+        file:
+          result.file,
+        filename:
+          track.filename,
+        relativePath:
+          track.relativePath,
+
+        selectedBpm,
+        normalizedTargetBpm:
+          normalizedTarget,
+        approvalSource,
+        reviewAction:
+          result.review
+            ?.action ??
+          null,
+
+        existingMetadataBpm:
+          plan.existingMetadataBpm,
+
+        outputMode:
+          plan.outputMode,
+
+        metadataRequested:
+          plan.metadataRequested,
+        metadataSupported:
+          plan.metadataSupport
+            ?.supported ??
+          null,
+        metadataSupportReason:
+          plan.metadataSupport
+            ?.reason ??
+          null,
+        metadataStatus,
+
+        filenameRequested:
+          plan.filenameRequested,
+        proposedPath:
+          plan.proposedPath,
+        filenameStatus,
+
+        status,
+      });
+    }
+
+    const summary = {
+      total:
+        items.length,
+      willChange:
+        items.filter(
+          (item) =>
+            item.status ===
+            "will-change"
+        ).length,
+      unchanged:
+        items.filter(
+          (item) =>
+            item.status ===
+            "unchanged"
+        ).length,
+      unsupported:
+        items.filter(
+          (item) =>
+            item.status ===
+            "unsupported"
+        ).length,
+      humanApproved:
+        items.filter(
+          (item) =>
+            item.approvalSource ===
+            "human"
+        ).length,
+      automaticApproved:
+        items.filter(
+          (item) =>
+            item.approvalSource ===
+            "automatic"
+        ).length,
+      alreadyApplied:
+        this.state.summary
+          .outputApplied,
+      unresolvedReview:
+        this.state.summary
+          .reviewRemaining ??
+        0,
+      skippedReview:
+        this.state.summary
+          .reviewSkipped,
+    };
+
+    return cloneSerializable({
+      outputMode:
+        this.state.library
+          .outputMode,
+      items,
+      summary,
+    });
   }
 
   getCapabilities() {
@@ -1001,12 +1227,44 @@ class BpmApplication
             this.cache,
         });
 
+    const writtenMetadataBpm =
+      outputResult
+        .metadataResult &&
+      (
+        outputResult
+          .metadataResult
+          .written ||
+        outputResult
+          .metadataResult
+          .unchanged
+      ) &&
+      Number.isFinite(
+        outputResult
+          .metadataResult
+          .bpm
+      )
+        ? outputResult
+            .metadataResult
+            .bpm
+        : result
+            .existingMetadataBpm;
+
     const updatedResult = {
       ...result,
       outputResult,
       file:
         outputResult.finalPath ??
         result.file,
+      existingMetadataBpm:
+        writtenMetadataBpm,
+      metadata:
+        result.metadata
+          ? {
+              ...result.metadata,
+              bpm:
+                writtenMetadataBpm,
+            }
+          : result.metadata,
     };
 
     this.trackResults.set(
@@ -1074,7 +1332,8 @@ class BpmApplication
           (track) => {
             if (
               track.status !==
-              TRACK_STATUS.ANALYZED
+                TRACK_STATUS.ANALYZED ||
+              track.output.applied
             ) {
               return false;
             }

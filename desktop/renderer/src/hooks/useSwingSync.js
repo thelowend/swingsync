@@ -29,6 +29,7 @@ const EMPTY_STATE = {
     analyzed: 0,
     errors: 0,
     needsReview: 0,
+    reviewRemaining: 0,
     reviewed: 0,
     reviewSkipped: 0,
     readyToApply: 0,
@@ -240,6 +241,62 @@ export function useSwingSync() {
           () =>
             window.swingSync.getTrackDetails(
               trackId
+            )
+        );
+      },
+
+      getReviewQueue() {
+        return run(
+          () =>
+            window.swingSync.getReviewQueue()
+        );
+      },
+
+      submitReview(decision) {
+        return run(
+          () =>
+            window.swingSync.submitReview(
+              decision
+            )
+        );
+      },
+
+      clearReview(trackId) {
+        return run(
+          () =>
+            window.swingSync.clearReview(
+              trackId
+            )
+        );
+      },
+
+      getApplyPlan() {
+        return run(
+          () =>
+            window.swingSync.getApplyPlan()
+        );
+      },
+
+      applyTrack(
+        trackId,
+        options = {}
+      ) {
+        return run(
+          () =>
+            window.swingSync.applyTrack(
+              trackId,
+              options
+            )
+        );
+      },
+
+      applyAllApproved(
+        options = {}
+      ) {
+        return run(
+          () =>
+            window.swingSync.applyAllApproved(
+              options
             )
         );
       },

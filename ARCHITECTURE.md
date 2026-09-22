@@ -141,3 +141,32 @@ Existing application/domain/infrastructure layers
 The renderer is sandboxed and has no Node integration. Folder selection is owned by Electron main through the native `dialog` API. Long-running library analysis remains in the main process for this milestone and reports progress through the existing application events.
 
 The desktop preload exposes review/apply operations now, even though v13's visible UI focuses on the Library screen, so future Review and Apply screens do not need a new privilege boundary.
+
+
+## v14 write boundary
+
+The desktop workflow intentionally separates human judgment from mutation:
+
+```text
+ReviewView
+  │ submitReview()
+  │ no file changes
+  ▼
+BpmApplication review state
+  │
+  │ getApplyPlan()
+  ▼
+ApplyView
+  │ final confirmation
+  │
+  ▼
+applyAllApproved({ applyChanges: true })
+  │
+  ▼
+applyBpmOutput()
+```
+
+`getApplyPlan()` is pure with respect to files and output state. This gives
+the UI a reliable preflight view before the user commits changes.
+
+Already-applied tracks are excluded from subsequent plans and batch applies.

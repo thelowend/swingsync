@@ -76,6 +76,7 @@ function createInitialState({
       analyzed: 0,
       errors: 0,
       needsReview: 0,
+      reviewRemaining: 0,
       reviewed: 0,
       reviewSkipped: 0,
       readyToApply: 0,
@@ -328,6 +329,7 @@ function calculateSummary(
     analyzed: 0,
     errors: 0,
     needsReview: 0,
+    reviewRemaining: 0,
     reviewed: 0,
     reviewSkipped: 0,
     readyToApply: 0,
@@ -363,6 +365,12 @@ function calculateSummary(
       track.review.required
     ) {
       summary.needsReview++;
+
+      if (
+        !track.review.decision
+      ) {
+        summary.reviewRemaining++;
+      }
     }
 
     if (

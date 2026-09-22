@@ -14,6 +14,12 @@ import LibraryTable from
 import TrackInspector from
   "./components/TrackInspector.jsx";
 
+import ReviewView from
+  "./components/ReviewView.jsx";
+
+import ApplyView from
+  "./components/ApplyView.jsx";
+
 function FolderIcon() {
   return (
     <svg
@@ -77,6 +83,9 @@ export default function App() {
     actions,
   } = useSwingSync();
 
+  const [view, setView] =
+    useState("library");
+
   const [profile, setProfile] =
     useState("boogie");
 
@@ -89,14 +98,20 @@ export default function App() {
   const [filter, setFilter] =
     useState("all");
 
-  const [selectedTrackId, setSelectedTrackId] =
-    useState(null);
+  const [
+    selectedTrackId,
+    setSelectedTrackId,
+  ] = useState(null);
 
-  const [trackDetails, setTrackDetails] =
-    useState(null);
+  const [
+    trackDetails,
+    setTrackDetails,
+  ] = useState(null);
 
-  const [detailsLoading, setDetailsLoading] =
-    useState(false);
+  const [
+    detailsLoading,
+    setDetailsLoading,
+  ] = useState(false);
 
   const [busyAction, setBusyAction] =
     useState(null);
@@ -155,6 +170,12 @@ export default function App() {
     state.progress?.phase ===
       "analysis";
 
+  const isApplying =
+    state.status ===
+      "applying" ||
+    state.progress?.phase ===
+      "output";
+
   const progressPercent =
     formatProgress(
       state.progress
@@ -191,8 +212,16 @@ export default function App() {
             return (
               track.status ===
                 "analyzed" &&
+              (
+                !track.review
+                  ?.required ||
+                Number.isFinite(
+                  track.review
+                    ?.selectedBpm
+                )
+              ) &&
               !track.review
-                ?.required
+                ?.skipped
             );
           }
 
@@ -241,6 +270,9 @@ export default function App() {
   }
 
   async function openLibrary() {
+    setView("library");
+    setSelectedTrackId(null);
+
     await runBusy(
       "open",
       () =>
@@ -322,6 +354,18 @@ export default function App() {
     }
   }
 
+  function goToReview() {
+    setSelectedTrackId(null);
+    setTrackDetails(null);
+    setView("review");
+  }
+
+  function goToApply() {
+    setSelectedTrackId(null);
+    setTrackDetails(null);
+    setView("apply");
+  }
+
   if (loading) {
     return (
       <main className="loading-screen">
@@ -355,6 +399,79 @@ export default function App() {
           </div>
         </div>
 
+        <nav
+          className="app-navigation"
+          aria-label="Workflow"
+        >
+          <button
+            type="button"
+            className={
+              view === "library"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setView("library")
+            }
+          >
+            Library
+          </button>
+
+          <button
+            type="button"
+            className={
+              view === "review"
+                ? "active"
+                : ""
+            }
+            disabled={
+              state.summary.needsReview ===
+              0
+            }
+            onClick={goToReview}
+          >
+            Review
+            {state.summary.reviewRemaining >
+              0 && (
+              <span>
+                {
+                  state.summary
+                    .reviewRemaining
+                }
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            className={
+              view === "apply"
+                ? "active"
+                : ""
+            }
+            disabled={
+              state.summary.readyToApply ===
+                0 &&
+              state.summary.outputApplied ===
+                0
+            }
+            onClick={goToApply}
+          >
+            Apply
+            {state.summary.readyToApply >
+              0 && (
+              <span>
+                {
+                  state.summary
+                    .readyToApply -
+                  state.summary
+                    .outputApplied
+                }
+              </span>
+            )}
+          </button>
+        </nav>
+
         <div className="topbar-controls">
           <label className="compact-field">
             <span>Profile</span>
@@ -367,6 +484,7 @@ export default function App() {
               }
               disabled={
                 isAnalyzing ||
+                isApplying ||
                 busyAction ===
                   "profile"
               }
@@ -394,7 +512,10 @@ export default function App() {
                   event.target.value
                 )
               }
-              disabled={isAnalyzing}
+              disabled={
+                isAnalyzing ||
+                isApplying
+              }
             >
               {(capabilities?.outputModes ?? []).map(
                 (mode) => (
@@ -431,258 +552,377 @@ export default function App() {
         </div>
       )}
 
-      <section className="workspace">
-        <div className="library-heading">
-          <div>
-            <span className="eyebrow">
-              Music library
-            </span>
-            <h1>
-              Find the right pulse.
-            </h1>
-            <p>
-              Scan your collection, compare acoustic and musical tempo interpretations, and prepare BPM metadata for review.
-            </p>
+      {view === "review" ? (
+        <ReviewView
+          state={state}
+          actions={actions}
+          onBack={() =>
+            setView("library")
+          }
+          onContinue={goToApply}
+        />
+      ) : view === "apply" ? (
+        <ApplyView
+          state={state}
+          actions={actions}
+          onBack={() =>
+            state.summary.needsReview >
+            0
+              ? goToReview()
+              : setView("library")
+          }
+          onDone={() =>
+            setView("library")
+          }
+        />
+      ) : (
+        <section className="workspace">
+          <div className="library-heading">
+            <div>
+              <span className="eyebrow">
+                Music library
+              </span>
+              <h1>
+                Find the right pulse.
+              </h1>
+              <p>
+                Analyze your collection, review ambiguous musical interpretations, then explicitly commit approved BPM metadata.
+              </p>
+            </div>
+
+            <div className="primary-actions">
+              <button
+                type="button"
+                className="button secondary-button"
+                onClick={
+                  chooseFolders
+                }
+                disabled={
+                  isAnalyzing ||
+                  isApplying ||
+                  busyAction !== null
+                }
+              >
+                <FolderIcon />
+                Choose folders
+              </button>
+
+              <button
+                type="button"
+                className="button secondary-button"
+                onClick={
+                  openLibrary
+                }
+                disabled={
+                  selectedFolders.length ===
+                    0 ||
+                  isAnalyzing ||
+                  isApplying ||
+                  busyAction !== null
+                }
+              >
+                Open library
+              </button>
+
+              <button
+                type="button"
+                className="button primary-button"
+                onClick={
+                  analyzeAll
+                }
+                disabled={
+                  !isLibraryOpen ||
+                  state.tracks.length ===
+                    0 ||
+                  isAnalyzing ||
+                  isApplying ||
+                  busyAction !== null
+                }
+              >
+                <AnalyzeIcon />
+                {isAnalyzing
+                  ? "Analyzing…"
+                  : "Analyze library"}
+              </button>
+            </div>
           </div>
 
-          <div className="primary-actions">
-            <button
-              type="button"
-              className="button secondary-button"
-              onClick={chooseFolders}
-              disabled={
-                isAnalyzing ||
-                busyAction !== null
-              }
-            >
+          <div className="folder-strip">
+            <div className="folder-strip-label">
               <FolderIcon />
-              Choose folders
-            </button>
-
-            <button
-              type="button"
-              className="button secondary-button"
-              onClick={openLibrary}
-              disabled={
-                selectedFolders.length ===
-                  0 ||
-                isAnalyzing ||
-                busyAction !== null
-              }
-            >
-              Open library
-            </button>
-
-            <button
-              type="button"
-              className="button primary-button"
-              onClick={analyzeAll}
-              disabled={
-                !isLibraryOpen ||
-                state.tracks.length ===
-                  0 ||
-                isAnalyzing ||
-                busyAction !== null
-              }
-            >
-              <AnalyzeIcon />
-              {isAnalyzing
-                ? "Analyzing…"
-                : "Analyze library"}
-            </button>
-          </div>
-        </div>
-
-        <div className="folder-strip">
-          <div className="folder-strip-label">
-            <FolderIcon />
-            <span>
-              {isLibraryOpen
-                ? "Open roots"
-                : openFolders.length > 0
-                ? "New selection"
-                : "Selected roots"}
-            </span>
-          </div>
-
-          <div className="folder-chips">
-            {(selectedFolders.length > 0
-              ? selectedFolders
-              : [
-                  "No folders selected",
-                ]
-            ).map(
-              (folder) => (
-                <span
-                  className="folder-chip"
-                  key={folder}
-                  title={folder}
-                >
-                  {folder}
-                </span>
-              )
-            )}
-          </div>
-        </div>
-
-        {isAnalyzing && (
-          <div className="progress-panel">
-            <div className="progress-copy">
-              <strong>
-                Analyzing library
-              </strong>
               <span>
-                {state.progress.completed +
-                  state.progress.failed}
-                {" / "}
-                {state.progress.total}
-                {state.progress.currentFile
-                  ? ` · ${state.progress.currentFile.split(/[\\/]/).pop()}`
-                  : ""}
+                {isLibraryOpen
+                  ? "Open roots"
+                  : openFolders.length >
+                    0
+                  ? "New selection"
+                  : "Selected roots"}
               </span>
             </div>
-            <div
-              className="progress-track"
-              role="progressbar"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-valuenow={
-                progressPercent
-              }
-            >
-              <div
-                className="progress-value"
-                style={{
-                  width:
-                    `${progressPercent}%`,
-                }}
-              />
-            </div>
-          </div>
-        )}
 
-        <div className="summary-grid">
-          <article className="summary-card">
-            <span>Tracks</span>
-            <strong>
-              {state.summary.total}
-            </strong>
-            <small>
-              Across {state.library?.folders?.length ?? 0} root{(state.library?.folders?.length ?? 0) === 1 ? "" : "s"}
-            </small>
-          </article>
-
-          <article className="summary-card review-card">
-            <span>Needs review</span>
-            <strong>
-              {state.summary.needsReview}
-            </strong>
-            <small>
-              Ambiguous or profile-adjusted
-            </small>
-          </article>
-
-          <article className="summary-card">
-            <span>Ready</span>
-            <strong>
-              {state.summary.readyToApply}
-            </strong>
-            <small>
-              Trusted or human-approved
-            </small>
-          </article>
-
-          <article className="summary-card">
-            <span>Cache</span>
-            <strong>
-              {state.cache?.hits ?? 0}
-            </strong>
-            <small>
-              Hits this session
-            </small>
-          </article>
-        </div>
-
-        <section className="library-panel">
-          <div className="library-toolbar">
-            <div className="segmented-control">
-              {[
-                ["all", "All", state.summary.total],
-                ["review", "Review", state.summary.needsReview],
-                ["ready", "Ready", state.summary.readyToApply],
-                ["errors", "Errors", state.summary.errors],
-              ].map(
-                ([
-                  value,
-                  label,
-                  count,
-                ]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={
-                      filter === value
-                        ? "active"
-                        : ""
-                    }
-                    onClick={() =>
-                      setFilter(value)
-                    }
+            <div className="folder-chips">
+              {(selectedFolders.length >
+              0
+                ? selectedFolders
+                : [
+                    "No folders selected",
+                  ]
+              ).map(
+                (folder) => (
+                  <span
+                    className="folder-chip"
+                    key={folder}
+                    title={folder}
                   >
-                    {label}
-                    <span>{count}</span>
-                  </button>
+                    {folder}
+                  </span>
                 )
               )}
             </div>
-
-            <label className="search-field">
-              <span className="sr-only">
-                Search tracks
-              </span>
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-                <path
-                  d="m16 16 4 4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <input
-                value={query}
-                onChange={(event) =>
-                  setQuery(
-                    event.target.value
-                  )
-                }
-                placeholder="Search tracks"
-              />
-            </label>
           </div>
 
-          <LibraryTable
-            tracks={filteredTracks}
-            selectedTrackId={
-              selectedTrackId
-            }
-            onSelectTrack={
-              selectTrack
-            }
-          />
+          {isAnalyzing && (
+            <div className="progress-panel">
+              <div className="progress-copy">
+                <strong>
+                  Analyzing library
+                </strong>
+                <span>
+                  {state.progress.completed +
+                    state.progress.failed}
+                  {" / "}
+                  {state.progress.total}
+                  {state.progress.currentFile
+                    ? ` · ${state.progress.currentFile
+                        .split(
+                          /[\\/]/
+                        )
+                        .pop()}`
+                    : ""}
+                </span>
+              </div>
+              <div
+                className="progress-track"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow={
+                  progressPercent
+                }
+              >
+                <div
+                  className="progress-value"
+                  style={{
+                    width:
+                      `${progressPercent}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="summary-grid">
+            <article className="summary-card">
+              <span>
+                Tracks
+              </span>
+              <strong>
+                {state.summary.total}
+              </strong>
+              <small>
+                Across {state.library?.folders?.length ?? 0} root{(state.library?.folders?.length ?? 0) === 1 ? "" : "s"}
+              </small>
+            </article>
+
+            <article className="summary-card review-card">
+              <span>
+                Review remaining
+              </span>
+              <strong>
+                {state.summary.reviewRemaining ??
+                  state.summary.needsReview}
+              </strong>
+              <small>
+                {state.summary.reviewed} approved · {state.summary.reviewSkipped} skipped
+              </small>
+            </article>
+
+            <article className="summary-card">
+              <span>
+                Ready to apply
+              </span>
+              <strong>
+                {Math.max(
+                  0,
+                  state.summary.readyToApply -
+                    state.summary.outputApplied
+                )}
+              </strong>
+              <small>
+                Trusted or human-approved
+              </small>
+            </article>
+
+            <article className="summary-card">
+              <span>
+                Applied
+              </span>
+              <strong>
+                {state.summary.outputApplied}
+              </strong>
+              <small>
+                File changes committed
+              </small>
+            </article>
+          </div>
+
+          {(state.summary.needsReview >
+            0 ||
+            state.summary.readyToApply >
+              0) && (
+            <div className="workflow-cta">
+              <div>
+                <strong>
+                  Analysis complete?
+                </strong>
+                <span>
+                  Review uncertain tracks, then inspect the exact write plan before committing anything.
+                </span>
+              </div>
+              <div>
+                {state.summary.needsReview >
+                  0 && (
+                  <button
+                    type="button"
+                    className="button secondary-button"
+                    onClick={
+                      goToReview
+                    }
+                  >
+                    Review {
+                      state.summary.reviewRemaining ??
+                      state.summary.needsReview
+                    } remaining
+                  </button>
+                )}
+                {state.summary.readyToApply >
+                  0 && (
+                  <button
+                    type="button"
+                    className="button primary-button"
+                    onClick={
+                      goToApply
+                    }
+                  >
+                    Review apply plan
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          <section className="library-panel">
+            <div className="library-toolbar">
+              <div className="segmented-control">
+                {[
+                  [
+                    "all",
+                    "All",
+                    state.summary.total,
+                  ],
+                  [
+                    "review",
+                    "Review",
+                    state.summary.needsReview,
+                  ],
+                  [
+                    "ready",
+                    "Ready",
+                    state.summary.readyToApply,
+                  ],
+                  [
+                    "errors",
+                    "Errors",
+                    state.summary.errors,
+                  ],
+                ].map(
+                  ([
+                    value,
+                    label,
+                    count,
+                  ]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={
+                        filter ===
+                        value
+                          ? "active"
+                          : ""
+                      }
+                      onClick={() =>
+                        setFilter(
+                          value
+                        )
+                      }
+                    >
+                      {label}
+                      <span>
+                        {count}
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+
+              <label className="search-field">
+                <span className="sr-only">
+                  Search tracks
+                </span>
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  />
+                  <path
+                    d="m16 16 4 4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <input
+                  value={query}
+                  onChange={(event) =>
+                    setQuery(
+                      event.target.value
+                    )
+                  }
+                  placeholder="Search tracks"
+                />
+              </label>
+            </div>
+
+            <LibraryTable
+              tracks={filteredTracks}
+              selectedTrackId={
+                selectedTrackId
+              }
+              onSelectTrack={
+                selectTrack
+              }
+            />
+          </section>
         </section>
-      </section>
+      )}
 
       <footer className="statusbar">
         <div>
@@ -693,22 +933,24 @@ export default function App() {
                 : ""
             }`}
           />
-          Engine {actionError ? "needs attention" : "ready"}
+          Engine {actionError ? "needs attention" : isApplying ? "writing changes" : isAnalyzing ? "analyzing" : "ready"}
         </div>
         <div>
-          SwingSync v0.13
+          SwingSync v0.14
         </div>
       </footer>
 
-      <TrackInspector
-        track={selectedTrack}
-        details={trackDetails}
-        loading={detailsLoading}
-        onClose={() => {
-          setSelectedTrackId(null);
-          setTrackDetails(null);
-        }}
-      />
+      {view === "library" && (
+        <TrackInspector
+          track={selectedTrack}
+          details={trackDetails}
+          loading={detailsLoading}
+          onClose={() => {
+            setSelectedTrackId(null);
+            setTrackDetails(null);
+          }}
+        />
+      )}
     </main>
   );
 }

@@ -1,102 +1,137 @@
-# SwingSync v13 — Electron desktop client
+# SwingSync v14 — Review, Approve & Apply
 
-SwingSync now has its first real desktop client.
+SwingSync is a desktop and CLI application for swing/boogie-aware tempo
+analysis and BPM synchronization.
 
-The existing BPM engine, cache, review domain, metadata output, multi-folder configuration, benchmark tooling, and CLI remain intact. v13 adds an **Electron main process + secure preload bridge + React/Vite renderer** on top of the `BpmApplication` API.
+v14 completes the first full desktop workflow:
 
-## Install
+```text
+Analyze → Human Review → Apply Plan → Confirm & Write
+```
+
+## Run the desktop app
 
 ```powershell
 npm install
-```
-
-## Run the desktop app during development
-
-```powershell
 npm run desktop:dev
 ```
 
-This launches the Vite renderer and then opens SwingSync in Electron.
-
-## Run a production-like desktop build locally
+For a production renderer build followed by Electron:
 
 ```powershell
 npm run desktop:run
 ```
 
-That command builds the renderer into `desktop/dist/` and launches the built UI.
+## The important safety rule
 
-## CLI is still available
+Analyzing and reviewing never modify your music files.
 
-From the repository:
+A review choice such as:
 
-```powershell
-npm run cli -- --profile boogie
+```text
+Approve suggested: 226.9 BPM
 ```
 
-Or, after `npm link`:
+records the human decision in application state only.
+
+Files are modified only after opening **Apply**, inspecting the plan, pressing
+**Apply changes**, and then pressing:
+
+```text
+Confirm & write
+```
+
+## Review screen
+
+Tracks whose interpretation is uncertain appear in the Review queue.
+
+You can choose:
+
+- detected BPM
+- SwingSync suggested BPM
+- custom BPM
+- skip
+
+You can also clear and revise a prior decision.
+
+## Apply screen
+
+Before writing, SwingSync shows every approved pending track with:
+
+- existing BPM tag
+- selected BPM
+- human/automatic approval source
+- metadata write status
+- filename plan where applicable
+- unsupported outputs
+
+The apply-plan API is read-only:
+
+```js
+app.getApplyPlan()
+```
+
+## Output modes
+
+The desktop retains the three existing modes:
+
+```text
+metadata
+filename
+both
+```
+
+Metadata remains the default.
+
+## npm install-script approval
+
+`ffmpeg-static` is now pinned to:
+
+```text
+5.3.0
+```
+
+and the project commits:
+
+```json
+"allowScripts": {
+  "ffmpeg-static@5.3.0": true
+}
+```
+
+so a clean `npm install` should no longer require manually approving the
+package's install script each time.
+
+## CLI
+
+The CLI is unchanged:
 
 ```powershell
 swingsync --profile boogie
+swingsync --profile boogie --review --apply
 ```
 
-## Desktop architecture
+Default/multiple music folders continue to come from `.env` when no positional
+folders are supplied.
+
+## Architecture
 
 ```text
-React renderer
-      ↓
-window.swingSync
-      ↓
-contextBridge preload
-      ↓
+React
+  │
+  │ narrow preload API
+  ▼
 Electron IPC
-      ↓
+  │
+  ▼
 BpmApplication
-      ↓
-analysis / review / cache / metadata / filesystem
+  ├── getReviewQueue()
+  ├── submitReview()
+  ├── getApplyPlan()
+  └── applyAllApproved()
+       │
+       ▼
+ metadata writer / filename adapter
 ```
 
-The renderer runs with `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true`. It receives a deliberately small API rather than raw Node or Electron access.
-
-## v13 Library screen
-
-The first visual milestone is deliberately centered on the real library workflow:
-
-- choose one or multiple music folders through the native picker
-- start from `SWINGSYNC_MUSIC_FOLDERS` defaults loaded from `.env`
-- open and scan the library
-- run the existing analysis engine
-- watch live progress
-- switch Generic / Swing / Boogie profiles
-- choose Metadata / Filename / Both output modes
-- inspect existing BPM tags, detected BPM, suggested BPM, confidence and review state
-- search tracks
-- filter All / Review / Ready / Errors
-- open a detailed track inspector backed by `getTrackDetails()`
-
-The preload API already includes review and apply commands so the next desktop milestone can add the dedicated **Review Queue** and **Apply Summary** without changing the backend boundary again.
-
-See [DESKTOP.md](DESKTOP.md) for desktop-specific details, [CLIENT_API.md](CLIENT_API.md) for the application API, and [ARCHITECTURE.md](ARCHITECTURE.md) for the domain architecture.
-
-## Default music folders
-
-`.env` remains supported:
-
-```env
-SWINGSYNC_MUSIC_FOLDERS=D:\Music\Swing;D:\Music\Boogie;E:\Dance Music
-```
-
-If configured, these appear as the initial folder selection in the desktop client. You can replace them with the native **Choose folders** action.
-
-## Output
-
-Metadata remains the default output target:
-
-```text
-MP3      ID3v2 TBPM
-FLAC     Vorbis Comment BPM
-OGG      Vorbis Comment BPM
-M4A/MP4  iTunes tmpo
-```
-
-The v13 Library screen does not yet expose the final Apply action; that is intentionally part of the next Review/Apply UI milestone. The underlying API is already wired through preload.
+See `DESKTOP.md`, `CLIENT_API.md`, and `ARCHITECTURE.md`.

@@ -103,7 +103,7 @@ export default function TrackInspector({
             Human review needed
           </span>
           <p>
-            SwingSync found a musically plausible alternate metrical level. The dedicated review workflow will use the same evidence shown here.
+            SwingSync found a musically plausible alternate metrical level. Open Review to approve the detected BPM, the suggested interpretation, a custom BPM, or skip this track.
           </p>
         </div>
       )}

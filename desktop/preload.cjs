@@ -69,6 +69,11 @@ const api = Object.freeze({
       outputMode
     ),
 
+  getApplyPlan: () =>
+    ipcRenderer.invoke(
+      "swingsync:get-apply-plan"
+    ),
+
   applyTrack: (
     trackId,
     options = {}

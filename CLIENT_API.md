@@ -464,3 +464,55 @@ as a compatibility alias to the first root.
 
 `app.getCapabilities().configuration.defaultMusicFolders` exposes the
 configured defaults to future visual clients.
+
+
+---
+
+## Apply planning
+
+v14 adds a read-only planning call:
+
+```js
+const plan =
+  app.getApplyPlan();
+```
+
+It returns only approved, not-yet-applied tracks.
+
+Each item includes:
+
+```text
+trackId
+filename
+selectedBpm
+normalizedTargetBpm
+approvalSource
+existingMetadataBpm
+metadataStatus
+filenameStatus
+status
+```
+
+Possible overall status values:
+
+```text
+will-change
+unchanged
+unsupported
+```
+
+Calling `getApplyPlan()` does not mutate files or application output state.
+
+`applyAllApproved()` now excludes tracks whose output has already been
+successfully applied.
+
+## Review summary
+
+Application summary now separates:
+
+```text
+needsReview      total tracks that require human review
+reviewRemaining  review-required tracks with no decision yet
+reviewed         human-approved review tracks
+reviewSkipped    deliberately skipped tracks
+```

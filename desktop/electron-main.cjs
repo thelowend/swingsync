@@ -221,6 +221,12 @@ function registerIpcHandlers() {
   );
 
   ipcMain.handle(
+    "swingsync:get-apply-plan",
+    async () =>
+      bpmApplication.getApplyPlan()
+  );
+
+  ipcMain.handle(
     "swingsync:apply-all-approved",
     async (_event, options) =>
       runExclusive(
