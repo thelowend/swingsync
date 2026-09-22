@@ -100,3 +100,25 @@ The ID is independent of the file path.
 
 This matters if `outputMode = filename` or `both`, because applying output can
 change the path while the UI row should remain the same entity.
+
+
+## Music-library configuration
+
+Library roots are application configuration rather than presentation state.
+
+```text
+.env
+  ↓
+src/config.cjs
+  ↓
+DEFAULT_MUSIC_FOLDERS
+  ↓
+CLI / BpmApplication.openLibrary()
+  ↓
+findAudioFilesInFolders()
+```
+
+The scanner deduplicates overlapping roots by absolute file path.
+
+Each track still records the root under which it was discovered so relative
+paths and reports remain meaningful.

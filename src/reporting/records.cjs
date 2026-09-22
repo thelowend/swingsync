@@ -26,8 +26,17 @@ function buildAnalysisReportRow({
   return {
     file:
       path.basename(file),
+    rootFolder:
+      folder
+        ? path.resolve(folder)
+        : null,
     relativePath:
-      path.relative(folder, file),
+      folder
+        ? path.relative(
+            folder,
+            file
+          )
+        : path.basename(file),
     fullPath:
       path.resolve(file),
 

@@ -421,3 +421,46 @@ DEFAULT_CACHE_FILENAME .swingsync-cache.json
 
 `BpmApplication` is intentionally retained as the internal application-service
 name.
+
+
+---
+
+## Default and multiple music folders
+
+SwingSync loads `SWINGSYNC_MUSIC_FOLDERS` from `.env` into:
+
+```js
+DEFAULT_MUSIC_FOLDERS
+```
+
+The recommended `.env` syntax is:
+
+```env
+SWINGSYNC_MUSIC_FOLDERS=D:\Music\Swing;D:\Music\Boogie
+```
+
+The client can explicitly open multiple roots:
+
+```js
+await app.openLibrary({
+  folders: [
+    "D:\\Music\\Swing",
+    "D:\\Music\\Boogie",
+  ],
+  profile: "boogie",
+});
+```
+
+or omit them to use `.env`:
+
+```js
+await app.openLibrary({
+  profile: "boogie",
+});
+```
+
+`state.library.folders` is the canonical list. `state.library.folder` remains
+as a compatibility alias to the first root.
+
+`app.getCapabilities().configuration.defaultMusicFolders` exposes the
+configured defaults to future visual clients.

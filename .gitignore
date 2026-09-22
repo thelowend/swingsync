@@ -1,6 +1,11 @@
 # Dependencies
 node_modules/
 
+# Environment / local machine configuration
+.env
+.env.*
+!.env.example
+
 # SwingSync runtime/cache
 .swingsync-cache.json
 .bpm-cache.json
@@ -41,11 +46,6 @@ temp/
 *.swo
 *~
 
-# Environment / local configuration
-.env
-.env.*
-!.env.example
-
 # OS files
 .DS_Store
 Thumbs.db
@@ -65,5 +65,5 @@ Desktop.ini
 .yarn/build-state.yml
 .yarn/install-state.gz
 
-# Misc generated archives
+# Locally generated archives
 *.zip

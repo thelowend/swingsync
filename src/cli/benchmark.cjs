@@ -515,8 +515,76 @@ function printBenchmarkSummary(results) {
   console.log();
 }
 
+async function resolveBenchmarkTrackPath(
+  folders,
+  trackFile
+) {
+  if (
+    path.isAbsolute(
+      trackFile
+    )
+  ) {
+    return path.resolve(
+      trackFile
+    );
+  }
+
+  const matches = [];
+
+  for (
+    const folder of folders
+  ) {
+    const candidate =
+      path.resolve(
+        folder,
+        trackFile
+      );
+
+    try {
+      const stats =
+        await fs.stat(
+          candidate
+        );
+
+      if (
+        stats.isFile()
+      ) {
+        matches.push(
+          candidate
+        );
+      }
+    } catch (error) {
+      if (
+        error.code !== "ENOENT"
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  if (
+    matches.length === 0
+  ) {
+    throw new Error(
+      `Could not find "${trackFile}" under any configured music folder`
+    );
+  }
+
+  if (
+    matches.length > 1
+  ) {
+    throw new Error(
+      `Benchmark file "${trackFile}" is ambiguous across multiple music folders: ${matches.join(
+        ", "
+      )}`
+    );
+  }
+
+  return matches[0];
+}
+
 async function runBenchmark(
-  folder,
+  folders,
   benchmarkPath,
   fallbackProfileName = DEFAULT_PROFILE,
   cache
@@ -527,8 +595,21 @@ async function runBenchmark(
   );
 
   console.log();
-  console.log(`Benchmark folder: ${folder}`);
-  console.log(`Benchmark file:   ${benchmarkPath}`);
+  console.log(
+    "Benchmark music folders:"
+  );
+
+  for (
+    const folder of folders
+  ) {
+    console.log(
+      `  - ${folder}`
+    );
+  }
+
+  console.log(
+    `Benchmark file:   ${benchmarkPath}`
+  );
   console.log(
     `Default profile:  ${config.defaults.profile}`
   );
@@ -544,20 +625,17 @@ async function runBenchmark(
     index < config.tracks.length;
     index++
   ) {
-    const track = config.tracks[index];
-    const filePath = path.resolve(
-      folder,
-      track.file
-    );
+    const track =
+      config.tracks[index];
 
     let result;
 
     try {
-      const stats = await fs.stat(filePath);
-
-      if (!stats.isFile()) {
-        throw new Error("path is not a file");
-      }
+      const filePath =
+        await resolveBenchmarkTrackPath(
+          folders,
+          track.file
+        );
 
       const analysisResult =
         await cache.getOrAnalyze(

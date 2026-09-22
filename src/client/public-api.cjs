@@ -27,6 +27,13 @@ const {
   DEFAULT_CACHE_FILENAME,
 } = require("../branding.cjs");
 
+const {
+  MUSIC_FOLDERS_ENV_VAR,
+  DEFAULT_MUSIC_FOLDERS,
+  parseMusicFolders,
+  resolveMusicFolders,
+} = require("../config.cjs");
+
 async function createBpmApplication(
   options = {}
 ) {
@@ -51,4 +58,9 @@ module.exports = {
   PACKAGE_NAME,
   CLI_COMMAND,
   DEFAULT_CACHE_FILENAME,
+
+  MUSIC_FOLDERS_ENV_VAR,
+  DEFAULT_MUSIC_FOLDERS,
+  parseMusicFolders,
+  resolveMusicFolders,
 };

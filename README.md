@@ -1,13 +1,9 @@
-# SwingSync v11.1 — client-facing application API
+# SwingSync v12 — default and multiple music folders
 
-**SwingSync** is now the product name for the application.
+SwingSync can now get its music library roots from `.env`, so you no longer
+need to type a folder on every run.
 
-The existing internal code vocabulary remains intentionally technical:
-`BpmApplication`, `analyzeTrack()`, tempo reconciliation, BPM metadata, and
-the other established module names are unchanged.
-
-The product name gives us room to grow beyond simply "detect BPM": the app is
-becoming a music-library tempo synchronization and review tool.
+It also supports **multiple library roots**.
 
 ## Install
 
@@ -15,180 +11,218 @@ becoming a music-library tempo synchronization and review tool.
 npm install
 ```
 
-If installed or linked as a CLI package:
+`dotenv` is now included as a dependency.
 
-```bash
-swingsync "D:\Music" --profile boogie
-```
+## Configure default music folders
 
-A source checkout can still be run exactly as before:
-
-```bash
-node index.cjs "D:\Music" --profile boogie
-```
-
-## Existing CLI workflows
-
-```bash
-swingsync "D:\Music" --profile boogie
-swingsync "D:\Music" --profile boogie --review --apply
-swingsync "D:\Music\TEST" --benchmark benchmark.json
-```
-
-Metadata remains the default output.
-
-## Client API
-
-```js
-const {
-  createBpmApplication,
-  PRODUCT_NAME,
-} = require("./src/client/public-api.cjs");
-
-console.log(PRODUCT_NAME);
-// SwingSync
-
-const app =
-  await createBpmApplication();
-
-await app.openLibrary({
-  folder: "D:\\Music",
-  profile: "boogie",
-  outputMode: "metadata",
-});
-
-await app.analyzeAll();
-
-console.log(
-  app.getState()
-);
-
-console.log(
-  app.getReviewQueue()
-);
-
-await app.close();
-```
-
-See:
-
-- `CLIENT_API.md`
-- `ARCHITECTURE.md`
-- `examples/client-api-example.cjs`
-
-## Product vs internal naming
-
-User-facing branding:
+Copy:
 
 ```text
-SwingSync
-swingsync              CLI/package command
-.swingsync-cache.json  default cache
+.env.example
 ```
 
-Internal code remains:
+to:
 
 ```text
-BpmApplication
-createBpmApplication()
-analyzeTrack()
-applyBpmOutput()
-tempo/*
-review/*
+.env
 ```
 
-That separation is intentional. Product naming can evolve without forcing a
-large domain/API rename.
+and edit:
 
-## Key application API
-
-```js
-await app.openLibrary(...)
-await app.analyzeAll()
-await app.analyzeOne(trackId)
-
-app.getState()
-app.getTracks()
-app.getTrackDetails(trackId)
-app.getReviewQueue()
-app.getCapabilities()
-
-app.setProfile("boogie")
-app.setOutputMode("metadata")
-
-app.submitReview({
-  trackId,
-  action: "use-suggested",
-})
-
-await app.applyTrack(trackId)
-await app.applyAllApproved()
-
-await app.close()
+```env
+SWINGSYNC_MUSIC_FOLDERS=D:\Music\Swing;D:\Music\Boogie;E:\Dance Music
 ```
 
-## Product capabilities
+Semicolons are used as the default separator because Windows drive paths
+already contain `:`.
 
-```js
-app.getCapabilities();
+Relative paths are also allowed and are resolved from the current working
+directory.
+
+A JSON array is supported too:
+
+```env
+SWINGSYNC_MUSIC_FOLDERS=["D:\\Music\\Swing","E:\\Dance Music"]
 ```
 
-now includes:
+`.env` is ignored by Git while `.env.example` is committed.
+
+## Run with configured defaults
+
+Once `.env` is configured:
+
+```bash
+swingsync --profile boogie
+```
+
+or from a source checkout:
+
+```bash
+node index.cjs --profile boogie
+```
+
+SwingSync loads every folder listed in `SWINGSYNC_MUSIC_FOLDERS`.
+
+## Override from the command line
+
+One folder:
+
+```bash
+swingsync "D:\Music\TEST" --profile boogie
+```
+
+Multiple folders:
+
+```bash
+swingsync \
+  "D:\Music\Swing" \
+  "D:\Music\Boogie" \
+  "E:\Rock and Roll" \
+  --profile boogie
+```
+
+When at least one positional folder is supplied, the command-line list
+**replaces** the `.env` defaults for that run.
+
+## Overlapping roots
+
+If configured folders overlap, for example:
+
+```text
+D:\Music
+D:\Music\Swing
+```
+
+the same physical file path is analyzed only once.
+
+The first configured root that discovers the file becomes its `rootFolder`
+for relative paths and reports.
+
+## Interactive review
+
+Using `.env` defaults:
+
+```bash
+swingsync --profile boogie --review
+```
+
+Apply reviewed BPM metadata:
+
+```bash
+swingsync --profile boogie --review --apply
+```
+
+## Benchmark
+
+Benchmark files are resolved across all configured roots:
+
+```bash
+swingsync --benchmark benchmark.json
+```
+
+If a relative benchmark filename exists in more than one configured root,
+SwingSync reports it as ambiguous rather than silently choosing one.
+
+Absolute file paths in `benchmark.json` continue to work.
+
+## Reports
+
+JSON analysis/review reports now contain:
 
 ```json
 {
-  "product": {
-    "name": "SwingSync",
-    "packageName": "swingsync",
-    "cliCommand": "swingsync"
+  "folder": "first root for backward compatibility",
+  "folders": [
+    "D:\\Music\\Swing",
+    "D:\\Music\\Boogie"
+  ]
+}
+```
+
+CSV rows include:
+
+```text
+rootFolder
+relativePath
+```
+
+so files remain attributable to the correct music root.
+
+## Client API
+
+The client API accepts either the old single-folder form:
+
+```js
+await app.openLibrary({
+  folder: "D:\\Music\\Swing",
+  profile: "boogie",
+});
+```
+
+or multiple folders:
+
+```js
+await app.openLibrary({
+  folders: [
+    "D:\\Music\\Swing",
+    "D:\\Music\\Boogie",
+  ],
+  profile: "boogie",
+});
+```
+
+If neither `folder` nor `folders` is supplied:
+
+```js
+await app.openLibrary({
+  profile: "boogie",
+});
+```
+
+the client API uses `DEFAULT_MUSIC_FOLDERS` loaded from `.env`.
+
+Application state now exposes:
+
+```json
+{
+  "library": {
+    "folders": [
+      "D:\\Music\\Swing",
+      "D:\\Music\\Boogie"
+    ],
+    "folder": "D:\\Music\\Swing",
+    "profile": "boogie",
+    "outputMode": "metadata"
   }
 }
 ```
 
-This lets a future visual client consume the brand without duplicating it.
+`library.folder` is retained as a backward-compatible alias for the first
+root.
 
-## Events
+## Configuration API
+
+The public API exports:
 
 ```js
-app.on("state", ...)
-app.on("progress", ...)
-app.on("track", ...)
-app.on("review", ...)
-app.on("output", ...)
-app.on("error", ...)
+const {
+  MUSIC_FOLDERS_ENV_VAR,
+  DEFAULT_MUSIC_FOLDERS,
+  parseMusicFolders,
+  resolveMusicFolders,
+} = require("./src/client/public-api.cjs");
 ```
 
-All event payloads remain plain serializable objects.
+The requested config variable is:
 
-## Cache rename and migration
+```js
+DEFAULT_MUSIC_FOLDERS
+```
 
-The new default cache is:
+and its initial value comes from:
 
 ```text
-.swingsync-cache.json
+SWINGSYNC_MUSIC_FOLDERS
 ```
 
-On first use, if SwingSync does not find that file but does find the previous:
-
-```text
-.bpm-cache.json
-```
-
-it copies the legacy cache to the new name automatically.
-
-The legacy file is left in place so an older project version can still use it.
-
-Custom cache paths supplied with `--cache-file` are unaffected.
-
-## Package entry point
-
-`package.json` uses:
-
-```text
-name: swingsync
-main: src/client/public-api.cjs
-bin:  swingsync -> index.cjs
-```
-
-The package remains `private: true`, so this naming change does not imply
-publishing it to npm.
+in `.env`.

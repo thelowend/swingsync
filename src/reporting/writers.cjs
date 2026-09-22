@@ -3,6 +3,7 @@ const path = require("node:path");
 
 const ANALYSIS_CSV_COLUMNS = [
   "file",
+  "rootFolder",
   "relativePath",
   "fullPath",
   "status",
@@ -195,7 +196,8 @@ async function writeJson(
 async function writeAnalysisReports({
   csvPath,
   jsonPath,
-  folder,
+  folder = null,
+  folders = null,
   profile,
   records,
   summary,
@@ -226,7 +228,15 @@ async function writeAnalysisReports({
             generatedAt:
               new Date().toISOString(),
             mode,
-            folder,
+            folder:
+              folder ??
+              folders?.[0] ??
+              null,
+            folders:
+              folders ??
+              (folder
+                ? [folder]
+                : []),
             profile,
             summary,
             cache,
@@ -242,7 +252,8 @@ async function writeAnalysisReports({
 async function writeBenchmarkReports({
   csvPath,
   jsonPath,
-  folder,
+  folder = null,
+  folders = null,
   benchmarkFile,
   records,
   summary,
@@ -272,7 +283,15 @@ async function writeBenchmarkReports({
             generatedAt:
               new Date().toISOString(),
             mode: "benchmark",
-            folder,
+            folder:
+              folder ??
+              folders?.[0] ??
+              null,
+            folders:
+              folders ??
+              (folder
+                ? [folder]
+                : []),
             benchmarkFile,
             summary,
             cache,

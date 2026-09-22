@@ -24,6 +24,12 @@ const {
 } = require("../tempo/profiles.cjs");
 
 const {
+  DEFAULT_MUSIC_FOLDERS,
+  MUSIC_FOLDERS_ENV_VAR,
+  resolveMusicFolders,
+} = require("../config.cjs");
+
+const {
   OUTPUT_MODES,
   validateOutputMode,
 } = require("../app/apply-bpm-output.cjs");
@@ -53,9 +59,9 @@ function createDefaultServices() {
   // Essentia/WASM. A visual shell can load the application module before a
   // library is opened.
   return {
-    findAudioFiles:
+    findAudioFilesInFolders:
       require("../files/scanner.cjs")
-        .findAudioFiles,
+        .findAudioFilesInFolders,
 
     analyzeTrack:
       require("../app/analyze-track.cjs")
@@ -97,11 +103,27 @@ async function requireDirectory(
   folder
 ) {
   const stats =
-    await fs.stat(folder);
+    await fs.stat(
+      folder
+    );
 
-  if (!stats.isDirectory()) {
+  if (
+    !stats.isDirectory()
+  ) {
     throw new Error(
       `"${folder}" is not a directory`
+    );
+  }
+}
+
+async function requireDirectories(
+  folders
+) {
+  for (
+    const folder of folders
+  ) {
+    await requireDirectory(
+      folder
     );
   }
 }
@@ -307,6 +329,15 @@ class BpmApplication
           CLI_COMMAND,
       },
 
+      configuration: {
+        musicFoldersEnvironmentVariable:
+          MUSIC_FOLDERS_ENV_VAR,
+        defaultMusicFolders:
+          [
+            ...DEFAULT_MUSIC_FOLDERS,
+          ],
+      },
+
       profiles:
         Object.values(
           TEMPO_PROFILES
@@ -343,21 +374,39 @@ class BpmApplication
   }
 
   async openLibrary({
-    folder,
+    folder = null,
+    folders = null,
     profile =
       DEFAULT_PROFILE,
     outputMode =
       OUTPUT_MODES.METADATA,
-  }) {
+  } = {}) {
     this.assertNotClosed();
 
-    const absoluteFolder =
-      path.resolve(
+    const requestedFolders =
+      folders ??
+      (
         folder
+          ? [folder]
+          : DEFAULT_MUSIC_FOLDERS
       );
 
-    await requireDirectory(
-      absoluteFolder
+    const absoluteFolders =
+      resolveMusicFolders(
+        requestedFolders
+      );
+
+    if (
+      absoluteFolders.length ===
+      0
+    ) {
+      throw new Error(
+        `No music folders were provided and ${MUSIC_FOLDERS_ENV_VAR} is empty`
+      );
+    }
+
+    await requireDirectories(
+      absoluteFolders
     );
 
     const resolvedProfile =
@@ -374,8 +423,12 @@ class BpmApplication
     );
 
     this.state.library = {
+      folders:
+        absoluteFolders,
+      // Compatibility for older clients expecting a single folder.
       folder:
-        absoluteFolder,
+        absoluteFolders[0] ??
+        null,
       profile:
         resolvedProfile.name,
       outputMode,
@@ -397,15 +450,18 @@ class BpmApplication
     this.emitProgress();
 
     try {
-      const files =
+      const entries =
         await this.services
-          .findAudioFiles(
-            absoluteFolder
+          .findAudioFilesInFolders(
+            absoluteFolders
           );
 
       this.state.tracks =
-        files.map(
-          (file) => {
+        entries.map(
+          ({
+            file,
+            rootFolder,
+          }) => {
             const id =
               this.allocateTrackId();
 
@@ -414,7 +470,7 @@ class BpmApplication
                 id,
                 file,
                 folder:
-                  absoluteFolder,
+                  rootFolder,
               });
 
             this.trackIdsByFile.set(
@@ -431,7 +487,7 @@ class BpmApplication
       this.state.progress = {
         phase: "idle",
         total:
-          files.length,
+          entries.length,
         completed: 0,
         failed: 0,
         currentTrackId: null,
@@ -446,6 +502,7 @@ class BpmApplication
       this.handleError(
         error
       );
+
       throw error;
     }
   }

@@ -1,5 +1,8 @@
-const fs = require("node:fs/promises");
-const path = require("node:path");
+const fs =
+  require("node:fs/promises");
+
+const path =
+  require("node:path");
 
 const {
   parseArguments,
@@ -31,6 +34,11 @@ const {
 } = require("./src/branding.cjs");
 
 const {
+  MUSIC_FOLDERS_ENV_VAR,
+  resolveMusicFolders,
+} = require("./src/config.cjs");
+
+const {
   buildBenchmarkReportRow,
 } = require("./src/reporting/records.cjs");
 
@@ -43,11 +51,27 @@ async function requireDirectory(
   folder
 ) {
   const stats =
-    await fs.stat(folder);
+    await fs.stat(
+      folder
+    );
 
-  if (!stats.isDirectory()) {
+  if (
+    !stats.isDirectory()
+  ) {
     throw new Error(
       `"${folder}" is not a directory.`
+    );
+  }
+}
+
+async function requireDirectories(
+  folders
+) {
+  for (
+    const folder of folders
+  ) {
+    await requireDirectory(
+      folder
     );
   }
 }
@@ -56,9 +80,13 @@ async function requireFile(
   filePath
 ) {
   const stats =
-    await fs.stat(filePath);
+    await fs.stat(
+      filePath
+    );
 
-  if (!stats.isFile()) {
+  if (
+    !stats.isFile()
+  ) {
     throw new Error(
       `"${filePath}" is not a file.`
     );
@@ -84,17 +112,23 @@ function benchmarkSummary(
   return {
     tracksConfigured:
       results.length,
+
     completed:
       completed.length,
+
     errors:
       results.length -
       completed.length,
+
     correct:
       correct.length,
+
     accuracyPercent:
       completed.length > 0
-        ? (correct.length /
-            completed.length) *
+        ? (
+            correct.length /
+            completed.length
+          ) *
           100
         : 0,
   };
@@ -106,18 +140,26 @@ function printCacheSummary(
   console.log(
     "=================================================="
   );
-  console.log("CACHE");
+
+  console.log(
+    "CACHE"
+  );
+
   console.log(
     "=================================================="
   );
 
-  if (!cacheStats.enabled) {
+  if (
+    !cacheStats.enabled
+  ) {
     console.log(
       "Cache:                    disabled"
     );
+
     console.log(
       `Computed/bypassed:         ${cacheStats.bypassed}`
     );
+
     console.log();
     return;
   }
@@ -125,18 +167,23 @@ function printCacheSummary(
   console.log(
     `Cache file:               ${cacheStats.filePath}`
   );
+
   console.log(
     `Cache hits:               ${cacheStats.hits}`
   );
+
   console.log(
     `Cache misses:             ${cacheStats.misses}`
   );
+
   console.log(
     `Stale entries:            ${cacheStats.stale}`
   );
+
   console.log(
     `Computed:                 ${cacheStats.computed}`
   );
+
   console.log(
     `Cache entries:            ${cacheStats.entries}`
   );
@@ -158,11 +205,13 @@ function printWrittenReports(
     "Reports:"
   );
 
-  for (const report of written) {
+  for (
+    const report of written
+  ) {
     console.log(
-      `  ${report.type.toUpperCase().padEnd(
-        5
-      )} ${report.path}`
+      `  ${report.type
+        .toUpperCase()
+        .padEnd(5)} ${report.path}`
     );
   }
 
@@ -181,37 +230,70 @@ async function main() {
     console.error(
       error.message
     );
+
     console.log();
     printUsage();
+
     process.exitCode = 1;
     return;
   }
 
-  if (cli.help) {
+  if (
+    cli.help
+  ) {
     printUsage();
     return;
   }
 
-  if (!cli.folder) {
+  const folders =
+    resolveMusicFolders(
+      cli.folders
+    );
+
+  if (
+    folders.length === 0
+  ) {
+    console.error(
+      `No music folders were supplied and ${MUSIC_FOLDERS_ENV_VAR} is empty.`
+    );
+
+    console.error(
+      "Add one or more folders to .env or pass them on the command line."
+    );
+
+    console.log();
     printUsage();
+
     process.exitCode = 1;
     return;
   }
-
-  const folder =
-    path.resolve(cli.folder);
 
   try {
-    await requireDirectory(
-      folder
+    await requireDirectories(
+      folders
     );
   } catch (error) {
     console.error(
-      `Could not open folder: ${error.message}`
+      `Could not open music folder: ${error.message}`
     );
+
     process.exitCode = 1;
     return;
   }
+
+  console.log(
+    `Music folders: ${cli.folderSource === "environment" ? ".env defaults" : "command line"}`
+  );
+
+  for (
+    const folder of folders
+  ) {
+    console.log(
+      `  - ${folder}`
+    );
+  }
+
+  console.log();
 
   const defaultCache =
     cli.cacheFile
@@ -232,13 +314,16 @@ async function main() {
       `${PRODUCT_NAME}: migrated legacy cache from ` +
         `${defaultCache.migratedFrom} to ${cachePath}`
     );
+
     console.log();
   }
 
   const cache =
     await AnalysisCache.open({
-      enabled: cli.useCache,
-      filePath: cachePath,
+      enabled:
+        cli.useCache,
+      filePath:
+        cachePath,
     });
 
   if (
@@ -247,6 +332,7 @@ async function main() {
     console.warn(
       `WARNING: ${cache.loadWarning}`
     );
+
     console.log();
   }
 
@@ -277,13 +363,14 @@ async function main() {
         console.error(
           `Could not open benchmark file: ${error.message}`
         );
+
         process.exitCode = 1;
         return;
       }
 
       const results =
         await runBenchmark(
-          folder,
+          folders,
           benchmarkPath,
           cli.profile.name,
           cache
@@ -307,17 +394,23 @@ async function main() {
           await writeBenchmarkReports({
             csvPath:
               cli.reportCsv,
+
             jsonPath:
               cli.reportJson,
-            folder,
+
+            folders,
+
             benchmarkFile:
               benchmarkPath,
+
             records:
               reportRecords,
+
             summary:
               benchmarkSummary(
                 results
               ),
+
             cache:
               cacheStats,
           });
@@ -326,6 +419,7 @@ async function main() {
       printCacheSummary(
         cacheStats
       );
+
       printWrittenReports(
         writtenReports
       );
@@ -336,12 +430,12 @@ async function main() {
     const result =
       cli.review
         ? await runReview({
-            folder,
+            folders,
             cli,
             cache,
           })
         : await runFolder(
-            folder,
+            folders,
             cli,
             cache
           );
@@ -359,17 +453,24 @@ async function main() {
         await writeAnalysisReports({
           csvPath:
             cli.reportCsv,
+
           jsonPath:
             cli.reportJson,
-          folder,
+
+          folders,
+
           profile:
             cli.profile.name,
+
           records:
             result.records,
+
           summary:
             result.summary,
+
           cache:
             cacheStats,
+
           mode:
             cli.review
               ? "review"
@@ -380,20 +481,22 @@ async function main() {
     printCacheSummary(
       cacheStats
     );
+
     printWrittenReports(
       writtenReports
     );
   } finally {
-    // If a run throws partway through, preserve any successfully computed
-    // cache entries before letting the error propagate.
     await cache.flush();
   }
 }
 
-main().catch((error) => {
-  console.error(
-    "Fatal error:",
-    error
-  );
-  process.exitCode = 1;
-});
+main().catch(
+  (error) => {
+    console.error(
+      "Fatal error:",
+      error
+    );
+
+    process.exitCode = 1;
+  }
+);

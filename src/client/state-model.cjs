@@ -52,6 +52,8 @@ function createInitialState({
       APPLICATION_STATUS.IDLE,
 
     library: {
+      folders: [],
+      // Backward-compatible alias for the first configured root.
       folder: null,
       profile: null,
       outputMode:

@@ -1,7 +1,8 @@
-const path = require("node:path");
+const path =
+  require("node:path");
 
 const {
-  findAudioFiles,
+  findAudioFilesInFolders,
 } = require("../files/scanner.cjs");
 
 const {
@@ -47,14 +48,14 @@ async function outputSelectedBpm({
 }
 
 async function runReview({
-  folder,
+  folders,
   cli,
   cache,
   reviewClient = null,
 }) {
-  const files =
-    await findAudioFiles(
-      folder
+  const entries =
+    await findAudioFilesInFolders(
+      folders
     );
 
   const client =
@@ -77,15 +78,27 @@ async function runReview({
   let profileAdjusted = 0;
 
   console.log();
+
   console.log(
-    `Interactive review: ${folder}`
+    "Interactive review folders:"
   );
+
+  for (
+    const folder of folders
+  ) {
+    console.log(
+      `  - ${folder}`
+    );
+  }
+
   console.log(
     `Profile: ${cli.profile.name}`
   );
+
   console.log(
     `Output: ${cli.outputMode}`
   );
+
   console.log(
     `Mode: ${
       cli.applyChanges
@@ -93,19 +106,23 @@ async function runReview({
         : "REVIEW PREVIEW"
     }`
   );
+
   console.log(
-    `Found ${files.length} audio file(s).`
+    `Found ${entries.length} audio file(s).`
   );
+
   console.log();
 
   try {
     for (
       let index = 0;
-      index < files.length;
+      index < entries.length;
       index++
     ) {
-      const file =
-        files[index];
+      const {
+        file,
+        rootFolder,
+      } = entries[index];
 
       let trackResult =
         null;
@@ -153,7 +170,7 @@ async function runReview({
           }
 
           console.log(
-            `[${index + 1}/${files.length}] AUTO ` +
+            `[${index + 1}/${entries.length}] AUTO ` +
               `${path.basename(
                 file
               )} → ` +
@@ -167,7 +184,8 @@ async function runReview({
 
           records.push(
             buildAnalysisReportRow({
-              folder,
+              folder:
+                rootFolder,
               file,
               analysisSource:
                 trackResult.analysisSource,
@@ -211,7 +229,8 @@ async function runReview({
 
           records.push(
             buildAnalysisReportRow({
-              folder,
+              folder:
+                rootFolder,
               file,
               analysisSource:
                 trackResult.analysisSource,
@@ -252,11 +271,13 @@ async function runReview({
               file
             )}.`
           );
+
           console.log();
 
           records.push(
             buildAnalysisReportRow({
-              folder,
+              folder:
+                rootFolder,
               file,
               analysisSource:
                 trackResult.analysisSource,
@@ -323,7 +344,8 @@ async function runReview({
 
         records.push(
           buildAnalysisReportRow({
-            folder,
+            folder:
+              rootFolder,
             file,
             analysisSource:
               trackResult.analysisSource,
@@ -352,11 +374,13 @@ async function runReview({
             file
           )}: ${error.message}`
         );
+
         console.log();
 
         records.push(
           buildErrorReportRow({
-            folder,
+            folder:
+              rootFolder,
             file,
             analysisSource:
               trackResult
@@ -375,8 +399,10 @@ async function runReview({
   }
 
   const summary = {
+    folders:
+      folders.length,
     filesFound:
-      files.length,
+      entries.length,
     analyzed,
     profileAdjusted,
     autoApproved,
@@ -398,36 +424,51 @@ async function runReview({
   console.log(
     "=================================================="
   );
+
   console.log(
     "REVIEW SUMMARY"
   );
+
   console.log(
     "=================================================="
   );
+
+  console.log(
+    `Folders:                  ${summary.folders}`
+  );
+
   console.log(
     `Files found:              ${summary.filesFound}`
   );
+
   console.log(
     `Analyzed:                 ${summary.analyzed}`
   );
+
   console.log(
     `Auto-approved:            ${summary.autoApproved}`
   );
+
   console.log(
     `Presented for review:     ${summary.reviewPresented}`
   );
+
   console.log(
     `Review approved:          ${summary.reviewApproved}`
   );
+
   console.log(
     `Review skipped:           ${summary.reviewSkipped}`
   );
+
   console.log(
     `Applied:                  ${summary.applied}`
   );
+
   console.log(
     `Errors:                   ${summary.errors}`
   );
+
   console.log(
     `Stopped early:            ${
       summary.stoppedEarly
@@ -435,6 +476,7 @@ async function runReview({
         : "NO"
     }`
   );
+
   console.log();
 
   return {

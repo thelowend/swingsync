@@ -13,16 +13,25 @@ const {
   DEFAULT_CACHE_FILENAME,
 } = require("../branding.cjs");
 
+const {
+  DEFAULT_MUSIC_FOLDERS,
+  MUSIC_FOLDERS_ENV_VAR,
+} = require("../config.cjs");
+
 function printUsage() {
   console.log(`
 ${PRODUCT_NAME}
 
 Usage:
 
-  ${CLI_COMMAND} <folder> [options]
+  ${CLI_COMMAND} [folder ...] [options]
 
   Development / local source checkout:
-  node index.cjs <folder> [options]
+  node index.cjs [folder ...] [options]
+
+If no folder is supplied, SwingSync uses the default folder list from:
+
+  ${MUSIC_FOLDERS_ENV_VAR}
 
 Options:
 
@@ -65,29 +74,34 @@ Options:
 
 Examples:
 
-  Preview metadata changes:
+  Use folders configured in .env:
 
-    node index.cjs "D:\\Music" --profile boogie
+    ${CLI_COMMAND} --profile boogie
 
-  Write BPM metadata for auto-approved tracks:
+  Analyze one explicit folder:
 
-    node index.cjs "D:\\Music" --profile boogie --apply
+    ${CLI_COMMAND} "D:\\Music\\Swing" --profile boogie
 
-  Interactive review, then write accepted BPM metadata:
+  Analyze multiple explicit folders:
 
-    node index.cjs "D:\\Music" --profile boogie --review --apply
+    ${CLI_COMMAND} "D:\\Music\\Swing" "D:\\Music\\Boogie" "E:\\Rock and Roll" --profile boogie
 
-  Write metadata and rename filenames:
+  Interactive review using configured defaults:
 
-    node index.cjs "D:\\Music" --profile boogie --review --apply --output both
+    ${CLI_COMMAND} --profile boogie --review --apply
 
-  Legacy filename behavior:
+  Benchmark against the configured roots:
 
-    node index.cjs "D:\\Music" --profile boogie --rename
+    ${CLI_COMMAND} --benchmark benchmark.json
 
-  Benchmark:
 
-    node index.cjs "D:\\Music\\TEST" --benchmark benchmark.json
+.env:
+
+  ${MUSIC_FOLDERS_ENV_VAR}=D:\\Music\\Swing;D:\\Music\\Boogie;E:\\Dance Music
+
+  A JSON array is also accepted:
+
+  ${MUSIC_FOLDERS_ENV_VAR}=["D:\\\\Music\\\\Swing","E:\\\\Dance Music"]
 
 
 Metadata output:
@@ -101,21 +115,11 @@ Metadata output:
 
   The media stream is copied by FFmpeg; it is not re-encoded.
 
-  WAV and raw AAC remain analysis-only for metadata output in this
-  version because there is no sufficiently interoperable BPM-writing
-  convention we want to adopt yet.
-
 
 Caching:
 
   Metadata changes do not force an unnecessary acoustic re-analysis.
   After a successful metadata write, the cache fingerprint is refreshed.
-
-
-Reporting:
-
-  CSV/JSON reports include existing BPM metadata, output mode,
-  metadata-write status, and any human review decision.
 `);
 }
 
@@ -125,11 +129,15 @@ function requireOptionValue(
   option
 ) {
   const value =
-    args[index + 1];
+    args[
+      index + 1
+    ];
 
   if (
     !value ||
-    value.startsWith("--")
+    value.startsWith(
+      "--"
+    )
   ) {
     throw new Error(
       `${option} requires a value`
@@ -139,8 +147,12 @@ function requireOptionValue(
   return value;
 }
 
-function parseArguments(args) {
-  let folder = null;
+function parseArguments(
+  args
+) {
+  const explicitFolders =
+    [];
+
   let profileName =
     DEFAULT_PROFILE;
 
@@ -202,8 +214,13 @@ function parseArguments(args) {
 
       outputMode =
         OUTPUT_MODES.METADATA;
-      outputExplicit = true;
-      applyChanges = true;
+
+      outputExplicit =
+        true;
+
+      applyChanges =
+        true;
+
       continue;
     }
 
@@ -222,8 +239,13 @@ function parseArguments(args) {
 
       outputMode =
         OUTPUT_MODES.FILENAME;
-      outputExplicit = true;
-      applyChanges = true;
+
+      outputExplicit =
+        true;
+
+      applyChanges =
+        true;
+
       continue;
     }
 
@@ -237,7 +259,9 @@ function parseArguments(args) {
           "--output"
         ).toLowerCase();
 
-      outputExplicit = true;
+      outputExplicit =
+        true;
+
       i++;
       continue;
     }
@@ -254,7 +278,9 @@ function parseArguments(args) {
           )
           .toLowerCase();
 
-      outputExplicit = true;
+      outputExplicit =
+        true;
+
       continue;
     }
 
@@ -295,6 +321,7 @@ function parseArguments(args) {
         argument.slice(
           "--benchmark=".length
         );
+
       continue;
     }
 
@@ -323,6 +350,7 @@ function parseArguments(args) {
             "--profile=".length
           )
           .toLowerCase();
+
       continue;
     }
 
@@ -350,6 +378,7 @@ function parseArguments(args) {
         argument.slice(
           "--cache-file=".length
         );
+
       continue;
     }
 
@@ -378,6 +407,7 @@ function parseArguments(args) {
         argument.slice(
           "--csv=".length
         );
+
       continue;
     }
 
@@ -390,6 +420,7 @@ function parseArguments(args) {
         argument.slice(
           "--report-csv=".length
         );
+
       continue;
     }
 
@@ -418,6 +449,7 @@ function parseArguments(args) {
         argument.slice(
           "--json=".length
         );
+
       continue;
     }
 
@@ -430,25 +462,23 @@ function parseArguments(args) {
         argument.slice(
           "--report-json=".length
         );
+
       continue;
     }
 
     if (
-      argument.startsWith("--")
+      argument.startsWith(
+        "--"
+      )
     ) {
       throw new Error(
         `Unknown option: ${argument}`
       );
     }
 
-    if (folder !== null) {
-      throw new Error(
-        `Unexpected extra argument: ${argument}`
-      );
-    }
-
-    folder =
-      argument;
+    explicitFolders.push(
+      argument
+    );
   }
 
   if (
@@ -495,12 +525,32 @@ function parseArguments(args) {
     );
   }
 
+  const folders =
+    explicitFolders.length > 0
+      ? explicitFolders
+      : [
+          ...DEFAULT_MUSIC_FOLDERS,
+        ];
+
   return {
-    folder,
+    folders,
+
+    // Backward-compatible convenience for older consumers.
+    folder:
+      folders[0] ??
+      null,
+
+    folderSource:
+      explicitFolders.length >
+      0
+        ? "cli"
+        : "environment",
+
     profile:
       TEMPO_PROFILES[
         profileName
       ],
+
     outputMode,
     applyChanges,
     benchmarkFile,
@@ -511,7 +561,6 @@ function parseArguments(args) {
     reportJson,
     help,
 
-    // Backward-compatible informational field for older consumers.
     shouldRename:
       applyChanges &&
       (

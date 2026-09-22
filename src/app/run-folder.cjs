@@ -1,7 +1,8 @@
-const path = require("node:path");
+const path =
+  require("node:path");
 
 const {
-  findAudioFiles,
+  findAudioFilesInFolders,
 } = require("../files/scanner.cjs");
 
 const {
@@ -22,14 +23,24 @@ const {
 } = require("../reporting/records.cjs");
 
 async function runFolder(
-  folder,
+  folders,
   cli,
   cache
 ) {
   console.log();
+
   console.log(
-    `Scanning: ${folder}`
+    "Scanning music folders:"
   );
+
+  for (
+    const folder of folders
+  ) {
+    console.log(
+      `  - ${folder}`
+    );
+  }
+
   console.log(
     `Mode: ${
       cli.applyChanges
@@ -37,25 +48,30 @@ async function runFolder(
         : "PREVIEW ONLY"
     }`
   );
+
   console.log(
     `Output: ${cli.outputMode}`
   );
+
   console.log(
     `Tempo profile: ${cli.profile.name}`
   );
+
   console.log(
     `Profile behavior: ${cli.profile.description}`
   );
+
   console.log();
 
-  const files =
-    await findAudioFiles(
-      folder
+  const entries =
+    await findAudioFilesInFolders(
+      folders
     );
 
   console.log(
-    `Found ${files.length} audio file(s).`
+    `Found ${entries.length} audio file(s) across ${folders.length} folder(s).`
   );
+
   console.log();
 
   const records = [];
@@ -68,21 +84,25 @@ async function runFolder(
 
   for (
     let index = 0;
-    index < files.length;
+    index < entries.length;
     index++
   ) {
-    const file =
-      files[index];
+    const {
+      file,
+      rootFolder,
+    } = entries[index];
 
     console.log(
       "--------------------------------------------------"
     );
+
     console.log(
-      `[${index + 1}/${files.length}] ` +
+      `[${index + 1}/${entries.length}] ` +
         `Analyzing: ${path.basename(
           file
         )}`
     );
+
     console.log();
 
     let trackResult = null;
@@ -105,6 +125,10 @@ async function runFolder(
       ) {
         adjustedCount++;
       }
+
+      console.log(
+        `  Library root:     ${rootFolder}`
+      );
 
       console.log(
         `  Analysis source:  ${
@@ -158,7 +182,8 @@ async function runFolder(
         )
       ) {
         reviewCount++;
-        status = "no-result";
+        status =
+          "no-result";
 
         console.log(
           "  REVIEW REQUIRED: no usable interpreted BPM was produced."
@@ -167,7 +192,8 @@ async function runFolder(
         trackResult.needsReview
       ) {
         reviewCount++;
-        status = "review";
+        status =
+          "review";
 
         console.log(
           `  REVIEW REQUIRED: ${trackResult.interpretation.reason}`
@@ -249,7 +275,8 @@ async function runFolder(
 
       records.push(
         buildAnalysisReportRow({
-          folder,
+          folder:
+            rootFolder,
           file,
           analysisSource:
             trackResult.analysisSource,
@@ -281,11 +308,13 @@ async function runFolder(
       console.error(
         `  ERROR: ${error.message}`
       );
+
       console.log();
 
       records.push(
         buildErrorReportRow({
-          folder,
+          folder:
+            rootFolder,
           file,
           analysisSource:
             trackResult
@@ -299,8 +328,10 @@ async function runFolder(
   }
 
   const summary = {
+    folders:
+      folders.length,
     filesFound:
-      files.length,
+      entries.length,
     analyzed:
       analyzedCount,
     profileAdjusted:
@@ -322,29 +353,43 @@ async function runFolder(
   console.log(
     "=================================================="
   );
-  console.log("SUMMARY");
+
+  console.log(
+    "SUMMARY"
+  );
+
   console.log(
     "=================================================="
   );
 
   console.log(
+    `Folders:                  ${summary.folders}`
+  );
+
+  console.log(
     `Files found:              ${summary.filesFound}`
   );
+
   console.log(
     `Analyzed:                 ${summary.analyzed}`
   );
+
   console.log(
     `Profile-adjusted:         ${summary.profileAdjusted}`
   );
+
   console.log(
     `Needs review:             ${summary.needsReview}`
   );
+
   console.log(
     `Applied:                  ${summary.applied}`
   );
+
   console.log(
     `Errors:                   ${summary.errors}`
   );
+
   console.log();
 
   return {

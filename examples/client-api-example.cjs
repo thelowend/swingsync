@@ -34,9 +34,14 @@ async function main() {
     }
   );
 
+  const explicitFolders =
+    process.argv.slice(2);
+
   await app.openLibrary({
-    folder:
-      process.argv[2],
+    folders:
+      explicitFolders.length > 0
+        ? explicitFolders
+        : undefined,
     profile:
       "boogie",
     outputMode:
