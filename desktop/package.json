@@ -1,0 +1,5 @@
+{
+  "name": "swingsync-desktop",
+  "private": true,
+  "main": "electron-main.cjs"
+}

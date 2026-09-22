@@ -67,3 +67,6 @@ Desktop.ini
 
 # Locally generated archives
 *.zip
+# Electron / Vite desktop output
+desktop/dist/
+.vite/
