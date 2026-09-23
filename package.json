@@ -1,6 +1,6 @@
 {
   "name": "swingsync",
-  "version": "0.15.7",
+  "version": "0.15.8",
   "private": true,
   "description": "SwingSync multilingual desktop and CLI app for swing/Boogie-Woogie-aware tempo analysis, review, and BPM metadata synchronization.",
   "main": "src/client/public-api.cjs",

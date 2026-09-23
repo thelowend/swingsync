@@ -162,3 +162,26 @@ Electron uses a square padded icon derived from the same artwork.
 
 The desktop UI now uses a cream / brown palette based on the SwingSync logo,
 with warm orange-brown accents and higher-contrast brown typography.
+
+
+## Theme preference
+
+v15.8 adds a two-state theme control beside the language toggle:
+
+```text
+Light / Dark
+```
+
+The preference is presentation-only and persisted in renderer local storage.
+
+The theme is applied using:
+
+```text
+html[data-theme="light"]
+html[data-theme="dark"]
+```
+
+so domain/API state remains unchanged.
+
+The contrast pass includes navigation, tables, statuses, modals, banners and
+the track inspector.

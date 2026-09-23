@@ -1,4 +1,4 @@
-# SwingSync v15.7 — Branded logo + warm theme
+# SwingSync v15.8 — Contrast + Light/Dark themes
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -380,3 +380,44 @@ The Spanish localization typo was corrected:
 ```text
 Tempo oble -> Tempo doble
 ```
+
+
+## v15.8 — Light / Dark themes
+
+The desktop now has a persistent Light/Dark theme toggle in the top bar.
+
+The selected theme is stored in:
+
+```text
+swingsync.theme
+```
+
+Light remains the first-run default to preserve the existing warm cream
+appearance.
+
+Both themes use the SwingSync logo palette:
+
+```text
+Light: cream / tan / dark brown / burnt orange
+Dark:  espresso / cocoa / cream / caramel orange
+```
+
+## Contrast pass
+
+v15.8 specifically improves visibility for:
+
+- Library / Review / Apply navigation
+- language/theme toggles
+- library and apply tables
+- selected/hover rows
+- status pills
+- confidence values
+- review list states
+- confirmation modal
+- track inspector drawer
+- warning/success/error banners
+
+## Logo
+
+The beveled top-left logo keeps its inset/shadow depth but no longer has a
+visible outline/border.

@@ -23,6 +23,9 @@ import ApplyView from
 import LanguageToggle from
   "./components/LanguageToggle.jsx";
 
+import ThemeToggle from
+  "./components/ThemeToggle.jsx";
+
 import {
   useLanguage,
 } from "./i18n/LanguageContext.jsx";
@@ -518,6 +521,7 @@ export default function App() {
         </nav>
 
         <div className="topbar-controls">
+          <ThemeToggle />
           <LanguageToggle />
 
           <label className="compact-field">
@@ -1090,7 +1094,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.7
+          SwingSync v0.15.8
         </div>
       </footer>
 

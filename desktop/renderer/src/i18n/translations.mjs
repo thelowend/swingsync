@@ -26,6 +26,10 @@ export const SPANISH_TRANSLATIONS =
     "Output": "Salida",
     "Dismiss": "Cerrar",
     "SwingSync desktop language": "Idioma de SwingSync",
+    "Theme": "Tema",
+    "Light": "Claro",
+    "Dark": "Oscuro",
+    "SwingSync desktop theme": "Tema visual de SwingSync",
 
     // Brand / loading
     "Starting the music library engine…":

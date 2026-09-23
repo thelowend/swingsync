@@ -9,6 +9,10 @@ import {
   LanguageProvider,
 } from "./i18n/LanguageContext.jsx";
 
+import {
+  ThemeProvider,
+} from "./theme/ThemeContext.jsx";
+
 import "./styles.css";
 
 createRoot(
@@ -17,8 +21,10 @@ createRoot(
   )
 ).render(
   <React.StrictMode>
-    <LanguageProvider>
-      <App />
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
