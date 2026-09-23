@@ -674,6 +674,12 @@ export default function App() {
                   busyAction !== null
                 }
               >
+                <span
+                  className="action-step-number"
+                  aria-hidden="true"
+                >
+                  1
+                </span>
                 <FolderIcon />
                 {t(
                   "Choose folders"
@@ -694,6 +700,12 @@ export default function App() {
                   busyAction !== null
                 }
               >
+                <span
+                  className="action-step-number"
+                  aria-hidden="true"
+                >
+                  2
+                </span>
                 {t(
                   "Open library"
                 )}
@@ -714,6 +726,12 @@ export default function App() {
                   busyAction !== null
                 }
               >
+                <span
+                  className="action-step-number"
+                  aria-hidden="true"
+                >
+                  3
+                </span>
                 <AnalyzeIcon />
                 {isAnalyzing
                   ? t(
@@ -1090,7 +1108,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.9
+          SwingSync v0.15.10
         </div>
       </footer>
 

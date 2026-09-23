@@ -1,4 +1,4 @@
-# SwingSync v15.9 — Rhythm and Blues + Apply-state fix
+# SwingSync v15.10 — Compact layout + guided Library flow
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -465,3 +465,37 @@ readyToApply - outputApplied
 ```
 
 so the badge cannot become negative after re-analysis or a profile switch.
+
+
+## v15.10 — Compact summary surfaces
+
+The shared `summary-card` component is now more compact on both Library and
+Apply:
+
+- reduced vertical padding
+- smaller minimum height
+- tighter value/label spacing
+- smaller inter-card gaps
+
+The Library folder strip is also shorter, with more compact chips and margins.
+
+## v15.10 — Library flow steps
+
+The three primary Library actions now include numbered step badges:
+
+```text
+1  Choose folders
+2  Open library
+3  Analyze library
+```
+
+The numbering is visual guidance only; existing behavior and enabled/disabled
+logic are unchanged.
+
+## Spanish copy
+
+The final confirmation action is now:
+
+```text
+Confirmar y escribir
+```

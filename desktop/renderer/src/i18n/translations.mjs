@@ -278,7 +278,7 @@ export const SPANISH_TRANSLATIONS =
       "Las decisiones de revisión por sí solas nunca escriben archivos. Esta confirmación es el punto en el que SwingSync las aplica.",
     "Cancel": "Cancelar",
     "Applying…": "Aplicando…",
-    "Confirm & write": "Confirmá y escribí",
+    "Confirm & write": "Confirmar y escribir",
 
     // Metadata support
     "WAV does not have a sufficiently interoperable BPM convention in this version":

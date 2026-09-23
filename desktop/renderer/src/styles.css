@@ -2799,3 +2799,128 @@ html[data-theme="dark"]
   border-top-color: var(--border-soft);
   background: var(--surface-inset);
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.10 Compact summary + guided Library flow                        */
+/* ------------------------------------------------------------------ */
+
+/* Summary cards are shared by Library and Apply. */
+.summary-grid {
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.apply-summary-grid {
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.summary-card {
+  min-height: 86px;
+  padding: 12px 14px;
+  border-radius: 9px;
+}
+
+.summary-card > span {
+  font-size: 10px;
+  line-height: 1.15;
+  letter-spacing: 0.065em;
+}
+
+.summary-card strong {
+  margin: 4px 0 2px;
+  font-size: 25px;
+  line-height: 0.98;
+}
+
+.summary-card small {
+  display: block;
+  line-height: 1.25;
+  font-size: 10px;
+}
+
+/* Folder roots remain easy to scan but occupy less vertical space. */
+.folder-strip {
+  margin-top: 22px;
+  gap: 11px;
+  padding: 9px 11px;
+  border-radius: 9px;
+}
+
+.folder-strip-label {
+  gap: 6px;
+  padding-top: 2px;
+  font-size: 11px;
+}
+
+.folder-chips {
+  gap: 5px;
+}
+
+.folder-chip {
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+/* The primary flow now reads 1 → 2 → 3 without adding instructional copy. */
+.primary-actions {
+  gap: 7px;
+}
+
+.primary-actions .button {
+  min-height: 39px;
+  padding-inline: 12px;
+}
+
+.action-step-number {
+  width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      currentColor 32%,
+      transparent
+    );
+  border-radius: 999px;
+  color: currentColor;
+  background:
+    color-mix(
+      in srgb,
+      currentColor 8%,
+      transparent
+    );
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.primary-button .action-step-number {
+  border-color:
+    color-mix(
+      in srgb,
+      currentColor 45%,
+      transparent
+    );
+  background:
+    color-mix(
+      in srgb,
+      currentColor 12%,
+      transparent
+    );
+}
+
+@media (max-width: 1120px) {
+  .summary-grid {
+    gap: 8px;
+  }
+
+  .folder-strip {
+    margin-top: 18px;
+  }
+}

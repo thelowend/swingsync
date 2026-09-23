@@ -185,3 +185,15 @@ so domain/API state remains unchanged.
 
 The contrast pass includes navigation, tables, statuses, modals, banners and
 the track inspector.
+
+
+## Compact Library/Apply surfaces
+
+v15.10 reduces the height and internal spacing of shared summary cards and the
+Library folder strip to keep more tracks visible without scrolling.
+
+The Library primary action row also presents an explicit three-step sequence:
+
+```text
+1 Choose folders → 2 Open library → 3 Analyze library
+```
