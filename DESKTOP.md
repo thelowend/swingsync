@@ -210,3 +210,29 @@ classification views.
 
 The workflow CTA is hidden once there is neither unresolved Review work nor
 pending Apply work.
+
+
+## v15.12 header typography
+
+The desktop header is more compact and main-view H1s are slightly smaller.
+
+The `SwingSync` header wordmark uses `Manbow Lines-Regular` through a local
+`@font-face` asset. Install your licensed copy from the original font ZIP before
+running/building the desktop renderer.
+
+
+## Install the Manbow Lines wordmark font
+
+From the project root:
+
+```powershell
+npm run desktop:font:install -- "C:\path\to\manbow.zip"
+```
+
+Then run normally:
+
+```powershell
+npm run desktop:dev
+```
+
+The installer is dependency-free and can read the original ZIP directly.

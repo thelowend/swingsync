@@ -2924,3 +2924,98 @@ html[data-theme="dark"]
     margin-top: 18px;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.12 Header + title typography polish                             */
+/* ------------------------------------------------------------------ */
+
+/* A slightly shorter top bar with less dead space below it. */
+.topbar {
+  min-height: 68px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+/* Reduce the gap immediately below the app header in all main views. */
+.workspace {
+  padding-top: 32px;
+}
+
+.workflow-view {
+  padding-top: 28px;
+}
+
+/* Smaller main-view titles while keeping the existing hierarchy. */
+.library-heading h1 {
+  font-size: clamp(28px, 2.55vw, 40px);
+  margin-top: 5px;
+  margin-bottom: 7px;
+}
+
+.workflow-header h1 {
+  font-size: clamp(28px, 2.55vw, 39px);
+  margin-top: 6px;
+  margin-bottom: 7px;
+}
+
+/* Brand wordmark typography.
+   Manbow Lines-Regular is referenced by name rather than bundled. */
+.brand-name {
+  font-family:
+    "Manbow Lines-Regular",
+    "Manbow Lines",
+    "Trebuchet MS",
+    ui-sans-serif,
+    sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Keep the header proportionate after reducing its vertical padding. */
+.brand-mark {
+  width: 72px;
+  height: 51px;
+}
+
+.brand-tagline {
+  margin-top: 2px;
+}
+
+/* Slightly reduce the visual separation at narrower layouts as well. */
+@media (max-width: 1160px) {
+  .topbar {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .workspace,
+  .workflow-view {
+    padding-top: 26px;
+  }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* v15.13 Locally bundled Manbow Lines-Regular                        */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Manbow Lines-Regular";
+  src:
+    url("./assets/fonts/Manbow-Lines.otf")
+    format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.brand-name {
+  font-family:
+    "Manbow Lines-Regular",
+    "Manbow Lines",
+    "Trebuchet MS",
+    ui-sans-serif,
+    sans-serif;
+  font-weight: 400;
+}

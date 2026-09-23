@@ -1,6 +1,6 @@
 {
   "name": "swingsync",
-  "version": "0.15.11",
+  "version": "0.15.13",
   "private": true,
   "description": "SwingSync multilingual desktop and CLI app for swing/Boogie-Woogie-aware tempo analysis, review, and BPM metadata synchronization.",
   "main": "src/client/public-api.cjs",
@@ -10,7 +10,10 @@
     "desktop:build": "vite build --config desktop/vite.config.mjs",
     "desktop:run": "npm run desktop:build && electron desktop",
     "cli": "node index.cjs",
-    "benchmark": "node index.cjs --benchmark benchmark.json"
+    "benchmark": "node index.cjs --benchmark benchmark.json",
+    "desktop:font:install": "node scripts/install-manbow-font.cjs",
+    "predesktop:dev": "node scripts/check-manbow-font.cjs",
+    "predesktop:build": "node scripts/check-manbow-font.cjs"
   },
   "dependencies": {
     "essentia.js": "*",

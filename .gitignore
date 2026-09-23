@@ -70,3 +70,6 @@ Desktop.ini
 # Electron / Vite desktop output
 desktop/dist/
 .vite/
+
+# Locally supplied licensed wordmark font
+desktop/renderer/src/assets/fonts/Manbow-Lines.otf

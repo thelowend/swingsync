@@ -1,4 +1,4 @@
-# SwingSync v15.11 — Library workflow cleanup
+# SwingSync v15.13 — Manbow Lines build integration
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -512,7 +512,7 @@ Tempo intelligence for a golden era of music
 Spanish:
 
 ```text
-Inteligencia de tempo para una era dorada de la música
+Inteligencia en tempo para una era musical dorada
 ```
 
 ## v15.11 — Library filters after Apply
@@ -549,3 +549,71 @@ The desktop footer now displays:
 ```text
 SwingSync v0.15.11 - By Diego Pablos
 ```
+
+
+## v15.12 — Header compacting
+
+The top app header now uses less vertical space:
+
+- reduced top/bottom padding
+- slightly reduced header height
+- less whitespace between the header and Library/Review/Apply content
+
+## v15.12 — Main heading scale
+
+The primary `h1` titles in Library, Review and Apply are slightly smaller while
+retaining the same visual hierarchy.
+
+## v15.12 — SwingSync wordmark font
+
+The header wordmark now requests:
+
+```css
+font-family: "Manbow Lines-Regular", "Manbow Lines", ...;
+```
+
+Manbow Lines-Regular is now integrated as a local Vite asset. Install your
+licensed copy once with:
+
+```powershell
+npm run desktop:font:install -- "C:\path\to\manbow.zip"
+```
+
+After installation, Vite bundles the font into the Electron renderer, so the
+built desktop application no longer depends on the font being installed on the
+end user's operating system.
+
+## Spanish tagline
+
+The Spanish tagline is now:
+
+```text
+Inteligencia en tempo para una era musical dorada
+```
+
+
+## v15.13 — Manbow Lines local bundling
+
+The project now has a cross-platform Node installer for the Manbow archive:
+
+```powershell
+npm run desktop:font:install -- "C:\path\to\manbow.zip"
+```
+
+It extracts only:
+
+```text
+Manbow Lines.otf
+```
+
+and writes it as:
+
+```text
+desktop/renderer/src/assets/fonts/Manbow-Lines.otf
+```
+
+The renderer declares the font through `@font-face`, so Vite fingerprints and
+bundles it into the built desktop renderer.
+
+`desktop:dev` and `desktop:build` now verify that the local font asset has been
+installed first and provide the command above when it is missing.

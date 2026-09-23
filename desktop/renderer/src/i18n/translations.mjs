@@ -35,7 +35,7 @@ export const SPANISH_TRANSLATIONS =
     "Starting the music library engine…":
       "Iniciando el motor de la biblioteca musical…",
     "Tempo intelligence for a golden era of music":
-      "Inteligencia de tempo para una era dorada de la música",
+      "Inteligencia en tempo para una era musical dorada",
 
     // Library heading/actions
     "Music library": "Biblioteca musical",
