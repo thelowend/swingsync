@@ -1,4 +1,4 @@
-# SwingSync v15.15 — Review Apply-count feedback
+# SwingSync v15.16 — Review guard + Rhythm and Blues default
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -667,3 +667,16 @@ This includes:
 
 Changing an already-approved decision without increasing the pending count does
 not trigger a new pulse.
+
+
+## v15.16 — Bulk approval count badge
+
+The Review bulk action now displays its unresolved count in a badge, e.g. `Approve suggestions [12]`.
+
+## v15.16 — Unresolved Review warning
+
+Clicking **Continue to Apply** while unresolved review decisions remain now opens a warning modal. Users can continue with approved tracks only or keep reviewing.
+
+## v15.16 — Default profile
+
+`rhythm-and-blues` is now the default. Profile order is **Rhythm and Blues → Swing → Generic**. CLI with no `--profile` uses Rhythm and Blues.

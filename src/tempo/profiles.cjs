@@ -1,10 +1,44 @@
 const TEMPO_PROFILES = {
-  generic: {
-    name: "generic",
+  "rhythm-and-blues": {
+    name: "rhythm-and-blues",
     description:
-      "No genre-specific metrical interpretation preference.",
-    doubleTime: { enabled: false },
-    threeTwo: { enabled: false },
+      "Prefer well-supported faster Rhythm and Blues interpretations using consensus, midpoint onsets, rhythm confidence, and histogram clarity.",
+
+    doubleTime: {
+      enabled: true,
+
+      minimumScore: 6.5,
+      preferredMinBpm: 120,
+      preferredMaxBpm: 240,
+
+      minimumEvidenceScore: 5,
+
+      minimumMidpointOnsetRatio: 0.50,
+
+      minimumContinuityMidpointRatio: 0.45,
+      minimumMidpointRunLength: 8,
+      minimumSustainedMidpointRatio: 0.20,
+      maximumMedianMidpointErrorRatio: 0.06,
+
+      minimumRhythmConfidence: 1.8,
+      minimumHistogramDominance: 0.65,
+
+      evidencePoints: {
+        candidateConsensus: 2,
+        midpointOnsets: 2,
+        sustainedMidpointPulse: 1,
+        rhythmConfidence: 1,
+        histogramDominance: 1,
+      },
+    },
+
+    threeTwo: {
+      enabled: true,
+      minimumScore: 6.5,
+      preferredMinBpm: 65,
+      preferredMaxBpm: 100,
+      requireDirectSupport: true,
+    },
   },
 
   swing: {
@@ -64,49 +98,17 @@ const TEMPO_PROFILES = {
     },
   },
 
-  "rhythm-and-blues": {
-    name: "rhythm-and-blues",
+  generic: {
+    name: "generic",
     description:
-      "Prefer well-supported faster Rhythm and Blues interpretations using consensus, midpoint onsets, rhythm confidence, and histogram clarity.",
-
-    doubleTime: {
-      enabled: true,
-
-      minimumScore: 6.5,
-      preferredMinBpm: 120,
-      preferredMaxBpm: 240,
-
-      minimumEvidenceScore: 5,
-
-      minimumMidpointOnsetRatio: 0.50,
-
-      minimumContinuityMidpointRatio: 0.45,
-      minimumMidpointRunLength: 8,
-      minimumSustainedMidpointRatio: 0.20,
-      maximumMedianMidpointErrorRatio: 0.06,
-
-      minimumRhythmConfidence: 1.8,
-      minimumHistogramDominance: 0.65,
-
-      evidencePoints: {
-        candidateConsensus: 2,
-        midpointOnsets: 2,
-        sustainedMidpointPulse: 1,
-        rhythmConfidence: 1,
-        histogramDominance: 1,
-      },
-    },
-
-    threeTwo: {
-      enabled: true,
-      minimumScore: 6.5,
-      preferredMinBpm: 65,
-      preferredMaxBpm: 100,
-      requireDirectSupport: true,
-    },
+      "No genre-specific metrical interpretation preference.",
+    doubleTime: { enabled: false },
+    threeTwo: { enabled: false },
   },
 };
-const DEFAULT_PROFILE = "generic";
+
+const DEFAULT_PROFILE =
+  "rhythm-and-blues";
 
 function normalizeProfileName(
   profileName

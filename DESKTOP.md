@@ -246,3 +246,8 @@ screen's **Continue to Apply** button.
 Whenever a Review action newly adds work to the Apply queue, the button replays
 the existing `apply-attention` cue. Bulk suggestion approval triggers a single
 pulse for the whole bulk operation.
+
+
+## v15.16 Review guard and default profile
+
+The bulk suggestion count is now shown in a badge. Continue to Apply warns when unresolved tracks remain. Profile order is `Rhythm and Blues → Swing → Generic`, with Rhythm and Blues as the default.

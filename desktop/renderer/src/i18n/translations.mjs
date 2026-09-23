@@ -171,10 +171,26 @@ export const SPANISH_TRANSLATIONS =
     "remaining": "pendientes",
     "approved": "aprobadas",
     "Continue to Apply": "Proceder a Aplicar",
+    "Review incomplete":
+      "Revisión incompleta",
+    "Some tracks still need a decision":
+      "Todavía hay pistas pendientes de decisión",
+    "{count} track still needs a decision before Apply.":
+      "Todavía queda {count} pista pendiente de decisión antes de Aplicar.",
+    "{count} tracks still need a decision before Apply.":
+      "Todavía quedan {count} pistas pendientes de decisión antes de Aplicar.",
+    "If you continue, unresolved tracks will be left out of this Apply pass. You can keep reviewing them now or continue with only the approved tracks.":
+      "Si continuás, las pistas sin resolver quedarán fuera de esta aplicación. Podés seguir revisándolas ahora o continuar solo con las pistas aprobadas.",
+    "Keep reviewing":
+      "Seguir revisando",
     "Approve {count} suggestion":
       "Aprobar {count} sugerencia",
     "Approve {count} suggestions":
       "Aprobar {count} sugerencias",
+    "Approve suggestion":
+      "Aprobar sugerencia",
+    "Approve suggestions":
+      "Aprobar sugerencias",
     "Approving suggestions…":
       "Aprobando sugerencias…",
     "Approve the suggested BPM for every unresolved review item. Existing manual decisions and skipped tracks are left unchanged.":

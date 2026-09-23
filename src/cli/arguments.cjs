@@ -38,8 +38,8 @@ If no folder is supplied, SwingSync uses the default folder list from:
 Options:
 
   --profile <name>       Tempo interpretation profile.
-                         Available: generic, swing, rhythm-and-blues
-                         Default: generic
+                         Available: rhythm-and-blues, swing, generic
+                         Default: rhythm-and-blues
 
   --output <mode>        Output target after BPM analysis/review.
                          metadata | filename | both

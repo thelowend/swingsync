@@ -203,6 +203,11 @@ export default function ReviewView({
     setContinueApplyPulse,
   ] = useState(0);
 
+  const [
+    continueWarningOpen,
+    setContinueWarningOpen,
+  ] = useState(false);
+
   async function refreshQueue(
     preferredTrackId = null
   ) {
@@ -289,6 +294,26 @@ export default function ReviewView({
       (current) =>
         current + 1
     );
+  }
+
+  function requestContinueToApply() {
+    if (
+      unresolved.length > 0
+    ) {
+      setContinueWarningOpen(
+        true
+      );
+      return;
+    }
+
+    onContinue();
+  }
+
+  function continueWithUnresolved() {
+    setContinueWarningOpen(
+      false
+    );
+    onContinue();
   }
 
   async function submit(
@@ -532,7 +557,7 @@ export default function ReviewView({
           </div>
           <button
             type="button"
-            className="button secondary-button"
+            className="button secondary-button bulk-approve-button"
             onClick={
               approveAllSuggestions
             }
@@ -549,11 +574,24 @@ export default function ReviewView({
               ? t(
                   "Approving suggestions…"
                 )
-              : plural(
-                  "Approve {count} suggestion",
-                  "Approve {count} suggestions",
-                  unresolved.length
+              : t(
+                  unresolved.length ===
+                    1
+                    ? "Approve suggestion"
+                    : "Approve suggestions"
                 )}
+            {!bulkApproving &&
+              unresolved.length >
+                0 && (
+                <span
+                  className="workflow-action-count bulk-review-count"
+                  aria-label={String(
+                    unresolved.length
+                  )}
+                >
+                  {unresolved.length}
+                </span>
+              )}
           </button>
 
           <button
@@ -564,7 +602,9 @@ export default function ReviewView({
                 ? "apply-attention"
                 : ""
             }`}
-            onClick={onContinue}
+            onClick={
+              requestContinueToApply
+            }
             disabled={
               pendingToApply === 0
             }
@@ -611,7 +651,9 @@ export default function ReviewView({
           <button
             type="button"
             className="button primary-button"
-            onClick={onContinue}
+            onClick={
+              requestContinueToApply
+            }
             disabled={
               pendingToApply === 0
             }
@@ -998,6 +1040,82 @@ export default function ReviewView({
               </div>
             </article>
           )}
+        </div>
+      )}
+
+      {continueWarningOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onMouseDown={() =>
+            setContinueWarningOpen(
+              false
+            )
+          }
+        >
+          <div
+            className="confirm-modal review-warning-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="review-continue-warning-title"
+            onMouseDown={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <span className="eyebrow">
+              {t(
+                "Review incomplete"
+              )}
+            </span>
+
+            <h2 id="review-continue-warning-title">
+              {t(
+                "Some tracks still need a decision"
+              )}
+            </h2>
+
+            <p>
+              {plural(
+                "{count} track still needs a decision before Apply.",
+                "{count} tracks still need a decision before Apply.",
+                unresolved.length
+              )}
+            </p>
+
+            <p className="muted">
+              {t(
+                "If you continue, unresolved tracks will be left out of this Apply pass. You can keep reviewing them now or continue with only the approved tracks."
+              )}
+            </p>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="button secondary-button"
+                onClick={
+                  continueWithUnresolved
+                }
+              >
+                {t(
+                  "Continue to Apply"
+                )}
+              </button>
+
+              <button
+                type="button"
+                className="button primary-button"
+                onClick={() =>
+                  setContinueWarningOpen(
+                    false
+                  )
+                }
+              >
+                {t(
+                  "Keep reviewing"
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

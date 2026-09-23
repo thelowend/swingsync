@@ -3059,3 +3059,4 @@ html[data-theme="dark"]
   color: #2b170c;
   background: rgba(255, 244, 227, 0.92);
 }
+\n\n/* ------------------------------------------------------------------ */\n/* v15.16 Review bulk-count badge + unresolved warning                 */\n/* ------------------------------------------------------------------ */\n\n.bulk-approve-button {\n  gap: 9px;\n}\n\n.bulk-approve-button\n.bulk-review-count {\n  color: var(--nav-active-text);\n  background: var(--nav-active-bg);\n}\n\nhtml[data-theme="dark"]\n.bulk-approve-button\n.bulk-review-count {\n  color: #2b170c;\n  background: #e18a4f;\n}\n\n.review-warning-modal {\n  border-color: var(--accent-border);\n}\n\n.review-warning-modal h2 {\n  max-width: 28rem;\n}\n
