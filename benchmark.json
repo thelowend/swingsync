@@ -69,6 +69,11 @@
       "file": "Who's That Creepin' (Album Version).mp3",
       "expectedBpm": 104.57,
       "notes": "Slow-song regression: must stay near 104.57 BPM and must not be incorrectly doubled by the boogie profile"
+    },
+    {
+      "file": "Benny Goodman and His Orchestra - Sing, Sing, Sing (Audio).mp3",
+      "expectedBpm": 224.7,
+      "notes": "Famous swing regression: whole-track acoustic tracking may lock near 112 BPM, but the sustained precise midpoint pulse should support the double-time interpretation near 225 BPM."
     }
   ]
 }

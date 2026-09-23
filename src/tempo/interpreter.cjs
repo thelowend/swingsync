@@ -147,6 +147,18 @@ function evaluateDoubleTimeEvidence(
   const midpointRatio =
     analysis.onsets?.midpointRatio;
 
+  const midpointLongestRun =
+    analysis.onsets
+      ?.midpointLongestRun;
+
+  const midpointSustainedRatio =
+    analysis.onsets
+      ?.midpointSustainedRatio;
+
+  const midpointMedianHitErrorRatio =
+    analysis.onsets
+      ?.midpointMedianHitErrorRatio;
+
   const rhythmConfidence =
     analysis.rhythm?.confidence;
 
@@ -162,10 +174,37 @@ function evaluateDoubleTimeEvidence(
           config.minimumScore
     );
 
-  const midpointOnsetsPassed =
-    Number.isFinite(midpointRatio) &&
+  const sustainedMidpointPulsePassed =
+    Number.isFinite(
+      midpointRatio
+    ) &&
     midpointRatio >=
-      config.minimumMidpointOnsetRatio;
+      config.minimumContinuityMidpointRatio &&
+    Number.isFinite(
+      midpointLongestRun
+    ) &&
+    midpointLongestRun >=
+      config.minimumMidpointRunLength &&
+    Number.isFinite(
+      midpointSustainedRatio
+    ) &&
+    midpointSustainedRatio >=
+      config.minimumSustainedMidpointRatio &&
+    Number.isFinite(
+      midpointMedianHitErrorRatio
+    ) &&
+    midpointMedianHitErrorRatio <=
+      config.maximumMedianMidpointErrorRatio;
+
+  const midpointOnsetsPassed =
+    (
+      Number.isFinite(
+        midpointRatio
+      ) &&
+      midpointRatio >=
+        config.minimumMidpointOnsetRatio
+    ) ||
+    sustainedMidpointPulsePassed;
 
   const rhythmConfidencePassed =
     Number.isFinite(rhythmConfidence) &&
@@ -206,6 +245,33 @@ function evaluateDoubleTimeEvidence(
         midpointRatio,
       threshold:
         config.minimumMidpointOnsetRatio,
+      passedViaContinuity:
+        sustainedMidpointPulsePassed,
+    },
+
+    sustainedMidpointPulse: {
+      passed:
+        sustainedMidpointPulsePassed,
+      points:
+        sustainedMidpointPulsePassed
+          ? points.sustainedMidpointPulse
+          : 0,
+      maximum:
+        points.sustainedMidpointPulse,
+      value:
+        midpointSustainedRatio,
+      threshold:
+        config.minimumSustainedMidpointRatio,
+
+      longestRun:
+        midpointLongestRun,
+      minimumRunLength:
+        config.minimumMidpointRunLength,
+
+      medianHitErrorRatio:
+        midpointMedianHitErrorRatio,
+      maximumMedianHitErrorRatio:
+        config.maximumMedianMidpointErrorRatio,
     },
 
     rhythmConfidence: {
@@ -267,6 +333,9 @@ function evaluateDoubleTimeEvidence(
       candidate?.score ?? null,
 
     midpointRatio,
+    midpointLongestRun,
+    midpointSustainedRatio,
+    midpointMedianHitErrorRatio,
     rhythmConfidence,
     histogramDominance,
 

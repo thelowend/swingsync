@@ -199,3 +199,29 @@ The selected desktop language is not sent to the BPM engine.
 
 Stable reason codes avoid coupling domain behavior to English prose while the
 legacy English `reason` remains available for CLI/report compatibility.
+
+
+## v15.6 sustained double-pulse evidence
+
+The double-time classifier now separates two concepts:
+
+```text
+midpoint occurrence
+  "Are there events between half-time beats?"
+
+sustained midpoint pulse
+  "Are those events precise and repeated enough to behave like a true pulse?"
+```
+
+A sustained pulse requires:
+
+```text
+midpoint ratio                 >= 0.45
+longest consecutive run       >= 8
+hits in runs of 4+ / intervals >= 0.20
+median normalized timing error <= 0.06
+```
+
+The thresholds are profile configuration, not hard-coded interpretation
+branches. This signal contributes one evidence point and cannot accept
+double-time without candidate consensus and midpoint support.

@@ -21,24 +21,35 @@ const TEMPO_PROFILES = {
 
       // Multi-signal double-time classifier.
       //
-      // Maximum evidence score = 6:
-      //   candidate consensus     2
-      //   midpoint-onset support  2
-      //   rhythm confidence       1
-      //   histogram dominance     1
+      // Maximum evidence score = 7:
+      //   candidate consensus        2
+      //   midpoint-onset support     2
+      //   sustained midpoint pulse   1
+      //   rhythm confidence          1
+      //   histogram dominance        1
       //
-      // Requiring 5/6 means candidate consensus + midpoint evidence
+      // Requiring 5/7 means candidate consensus + midpoint evidence
       // alone are not enough; at least one additional rhythmic signal
       // must also support the faster interpretation.
       minimumEvidenceScore: 5,
 
       minimumMidpointOnsetRatio: 0.55,
+
+      // Rescue a half-time lock only when midpoint activity is sustained
+      // and extremely precise. This is deliberately stricter than the
+      // ordinary midpoint-ratio signal.
+      minimumContinuityMidpointRatio: 0.45,
+      minimumMidpointRunLength: 8,
+      minimumSustainedMidpointRatio: 0.20,
+      maximumMedianMidpointErrorRatio: 0.06,
+
       minimumRhythmConfidence: 1.8,
       minimumHistogramDominance: 0.65,
 
       evidencePoints: {
         candidateConsensus: 2,
         midpointOnsets: 2,
+        sustainedMidpointPulse: 1,
         rhythmConfidence: 1,
         histogramDominance: 1,
       },
@@ -68,12 +79,19 @@ const TEMPO_PROFILES = {
       minimumEvidenceScore: 5,
 
       minimumMidpointOnsetRatio: 0.50,
+
+      minimumContinuityMidpointRatio: 0.45,
+      minimumMidpointRunLength: 8,
+      minimumSustainedMidpointRatio: 0.20,
+      maximumMedianMidpointErrorRatio: 0.06,
+
       minimumRhythmConfidence: 1.8,
       minimumHistogramDominance: 0.65,
 
       evidencePoints: {
         candidateConsensus: 2,
         midpointOnsets: 2,
+        sustainedMidpointPulse: 1,
         rhythmConfidence: 1,
         histogramDominance: 1,
       },

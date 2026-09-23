@@ -1,4 +1,4 @@
-# SwingSync v15.5 — Apply action visibility
+# SwingSync v15.6 — Sustained double-pulse evidence
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -312,3 +312,42 @@ a new full analysis creates a new revision and enables the cue again.
 
 The cue lasts approximately 1.8 seconds and respects the user's
 `prefers-reduced-motion` setting.
+
+
+## v15.6 — Sing, Sing, Sing regression
+
+This version adds a conservative double-time signal for recordings where the
+global tracker confidently locks to half-time.
+
+The motivating regression is:
+
+```text
+Benny Goodman and His Orchestra - Sing, Sing, Sing (Audio).mp3
+
+acoustic lock:       approximately 112 BPM
+musical preference:  approximately 225 BPM
+```
+
+The rule is deliberately not based on a BPM range.
+
+SwingSync now checks whether onsets appear:
+
+1. near the exact midpoint between consecutive half-time beats
+2. in long consecutive runs
+3. across a meaningful share of the analyzed intervals
+4. with very small normalized timing error
+
+This distinguishes a stable quarter-note pulse at double tempo from isolated
+fills, ordinary syncopation, or swung offbeats.
+
+The new evidence item is:
+
+```text
+sustainedMidpointPulse
+```
+
+It contributes only one point. Candidate consensus and midpoint evidence are
+still required, and the overall double-time threshold remains 5 points.
+
+The benchmark references the attached song by filename but the audio file is
+not included in the SwingSync archive.

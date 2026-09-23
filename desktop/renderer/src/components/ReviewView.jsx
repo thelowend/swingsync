@@ -107,6 +107,8 @@ function EvidenceGrid({
       "Candidate consensus",
     midpointOnsets:
       "Midpoint onsets",
+    sustainedMidpointPulse:
+      "Sustained midpoint pulse",
     rhythmConfidence:
       "Rhythm confidence",
     histogramDominance:

@@ -111,7 +111,7 @@ function resolveMusicFolders(
 // Increment ANALYZER_VERSION whenever detectBPM() changes in a way that
 // makes previously cached acoustic-analysis results unsafe to reuse.
 const ANALYZER_VERSION =
-  "2026-09-22-v1";
+  "2026-09-23-v2-sustained-midpoint";
 
 const CACHE_SCHEMA_VERSION =
   1;

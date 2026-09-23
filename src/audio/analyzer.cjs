@@ -71,6 +71,11 @@ function calculateMidpointOnsetEvidence(ticks, onsets) {
       hits: 0,
       testedIntervals: 0,
       onsetCount: Array.isArray(onsets) ? onsets.length : 0,
+
+      longestRun: 0,
+      sustainedHits: 0,
+      sustainedRatio: null,
+      medianHitErrorRatio: null,
     };
   }
 
@@ -79,6 +84,9 @@ function calculateMidpointOnsetEvidence(ticks, onsets) {
   let hits = 0;
   let testedIntervals = 0;
   let onsetIndex = 0;
+
+  const hitSequence = [];
+  const normalizedHitErrors = [];
 
   for (let i = 0; i < ticks.length - 1; i++) {
     const start = ticks[i];
@@ -113,18 +121,77 @@ function calculateMidpointOnsetEvidence(ticks, onsets) {
     const previous =
       onsetIndex > 0 ? sortedOnsets[onsetIndex - 1] : null;
 
-    const currentHit =
-      Number.isFinite(current) &&
-      Math.abs(current - midpoint) <= tolerance;
+    const currentError =
+      Number.isFinite(current)
+        ? Math.abs(current - midpoint)
+        : Infinity;
 
-    const previousHit =
-      Number.isFinite(previous) &&
-      Math.abs(previous - midpoint) <= tolerance;
+    const previousError =
+      Number.isFinite(previous)
+        ? Math.abs(previous - midpoint)
+        : Infinity;
 
-    if (currentHit || previousHit) {
+    const nearestError =
+      Math.min(
+        currentError,
+        previousError
+      );
+
+    const hit =
+      nearestError <= tolerance;
+
+    hitSequence.push(hit);
+
+    if (hit) {
       hits++;
+
+      normalizedHitErrors.push(
+        nearestError / interval
+      );
     }
   }
+
+  // A genuine double-tempo pulse tends to create exact midpoint onsets
+  // repeatedly for several consecutive half-time beats. Ordinary fills,
+  // syncopations and swung offbeats can create isolated midpoint hits,
+  // but are much less likely to form long, precise runs.
+  const sustainedRunMinimum = 4;
+
+  let currentRun = 0;
+  let longestRun = 0;
+  let sustainedHits = 0;
+
+  function completeRun() {
+    if (currentRun <= 0) {
+      return;
+    }
+
+    longestRun =
+      Math.max(
+        longestRun,
+        currentRun
+      );
+
+    if (
+      currentRun >=
+      sustainedRunMinimum
+    ) {
+      sustainedHits +=
+        currentRun;
+    }
+
+    currentRun = 0;
+  }
+
+  for (const hit of hitSequence) {
+    if (hit) {
+      currentRun++;
+    } else {
+      completeRun();
+    }
+  }
+
+  completeRun();
 
   return {
     ratio:
@@ -134,6 +201,22 @@ function calculateMidpointOnsetEvidence(ticks, onsets) {
     hits,
     testedIntervals,
     onsetCount: sortedOnsets.length,
+
+    longestRun,
+    sustainedHits,
+    sustainedRatio:
+      testedIntervals > 0
+        ? sustainedHits /
+          testedIntervals
+        : null,
+
+    // Express timing precision relative to the containing half-time beat.
+    // Exact quarter-note pulses are near 0; swung offbeats are normally
+    // much farther from the mathematical midpoint.
+    medianHitErrorRatio:
+      median(
+        normalizedHitErrors
+      ),
   };
 }
 
@@ -225,6 +308,15 @@ async function detectBPM(filePath) {
         midpointIntervals:
           midpointEvidence.testedIntervals,
         midpointRatio: midpointEvidence.ratio,
+
+        midpointLongestRun:
+          midpointEvidence.longestRun,
+        midpointSustainedHits:
+          midpointEvidence.sustainedHits,
+        midpointSustainedRatio:
+          midpointEvidence.sustainedRatio,
+        midpointMedianHitErrorRatio:
+          midpointEvidence.medianHitErrorRatio,
       },
 
       estimates: {
@@ -259,5 +351,6 @@ async function detectBPM(filePath) {
 }
 
 module.exports = {
+  calculateMidpointOnsetEvidence,
   detectBPM,
 };

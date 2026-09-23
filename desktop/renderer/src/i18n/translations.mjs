@@ -152,6 +152,8 @@ export const SPANISH_TRANSLATIONS =
     "tempo review": "revisión de BPM",
     "Candidate consensus": "Consenso del candidato",
     "Midpoint onsets": "Ataques en punto medio",
+    "Sustained midpoint pulse":
+      "Pulso sostenido en el punto medio",
     "Rhythm confidence": "Confianza rítmica",
     "Histogram dominance": "Predominio del histograma",
     "Pass": "Cumple",

@@ -582,3 +582,26 @@ It starts at `0` and increments after each completed `analyzeAll()` call.
 It is intended as a presentation-safe signal that a new full analysis batch
 has completed. It does not affect BPM analysis, review, output planning, cache
 keys, or metadata behavior.
+
+
+---
+
+## Sustained midpoint-pulse diagnostics
+
+v15.6 adds these acoustic fields under `analysis.onsets`:
+
+```text
+midpointLongestRun
+midpointSustainedHits
+midpointSustainedRatio
+midpointMedianHitErrorRatio
+```
+
+The double-time evidence breakdown may now include:
+
+```text
+sustainedMidpointPulse
+```
+
+The signal is intentionally conservative and is used only with an existing
+supported double-time candidate.

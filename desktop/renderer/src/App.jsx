@@ -1070,7 +1070,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.5
+          SwingSync v0.15.6
         </div>
       </footer>
 
