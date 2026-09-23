@@ -236,3 +236,13 @@ npm run desktop:dev
 ```
 
 The installer is dependency-free and can read the original ZIP directly.
+
+
+## Review pending-Apply feedback
+
+v15.15 displays `state.summary.pendingToApply` directly inside the Review
+screen's **Continue to Apply** button.
+
+Whenever a Review action newly adds work to the Apply queue, the button replays
+the existing `apply-attention` cue. Bulk suggestion approval triggers a single
+pulse for the whole bulk operation.

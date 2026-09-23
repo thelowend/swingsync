@@ -198,6 +198,11 @@ export default function ReviewView({
     setBulkApproving,
   ] = useState(false);
 
+  const [
+    continueApplyPulse,
+    setContinueApplyPulse,
+  ] = useState(0);
+
   async function refreshQueue(
     preferredTrackId = null
   ) {
@@ -275,6 +280,17 @@ export default function ReviewView({
       [queue]
     );
 
+  const pendingToApply =
+    state.summary.pendingToApply ??
+    0;
+
+  function pulseContinueToApply() {
+    setContinueApplyPulse(
+      (current) =>
+        current + 1
+    );
+  }
+
   async function submit(
     action,
     value = null
@@ -282,6 +298,21 @@ export default function ReviewView({
     if (!selected) {
       return;
     }
+
+    const wasReadyToApply =
+      Number.isFinite(
+        selected.review
+          ?.selectedBpm
+      ) &&
+      !selected.review
+        ?.skipped;
+
+    const becomesReadyToApply =
+      action !== "skip";
+
+    const increasesPendingApply =
+      becomesReadyToApply &&
+      !wasReadyToApply;
 
     setBusy(true);
 
@@ -298,6 +329,12 @@ export default function ReviewView({
         await actions.getReviewQueue();
 
       setQueue(updatedQueue);
+
+      if (
+        increasesPendingApply
+      ) {
+        pulseContinueToApply();
+      }
 
       const updatedIndex =
         updatedQueue.findIndex(
@@ -381,6 +418,12 @@ export default function ReviewView({
       setQueue(
         nextQueue
       );
+
+      if (
+        result?.approved > 0
+      ) {
+        pulseContinueToApply();
+      }
 
       const firstRemaining =
         nextQueue.find(
@@ -514,16 +557,31 @@ export default function ReviewView({
           </button>
 
           <button
+            key={`continue-apply-${continueApplyPulse}`}
             type="button"
-            className="button primary-button"
+            className={`button primary-button review-continue-button ${
+              continueApplyPulse > 0
+                ? "apply-attention"
+                : ""
+            }`}
             onClick={onContinue}
             disabled={
-              (state.summary.pendingToApply ??
-                0) === 0
+              pendingToApply === 0
             }
           >
             {t(
               "Continue to Apply"
+            )}
+            {pendingToApply >
+              0 && (
+              <span
+                className="workflow-action-count"
+                aria-label={String(
+                  pendingToApply
+                )}
+              >
+                {pendingToApply}
+              </span>
             )}
           </button>
         </div>
@@ -555,8 +613,7 @@ export default function ReviewView({
             className="button primary-button"
             onClick={onContinue}
             disabled={
-              (state.summary.pendingToApply ??
-                0) === 0
+              pendingToApply === 0
             }
           >
             {t(

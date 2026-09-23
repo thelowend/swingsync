@@ -1,4 +1,4 @@
-# SwingSync v15.14 — Larger wordmark
+# SwingSync v15.15 — Review Apply-count feedback
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -634,3 +634,36 @@ The final wordmark size is:
 
 The Manbow Lines-Regular integration and compact header dimensions are otherwise
 unchanged.
+
+
+## v15.15 — Continue to Apply count
+
+The Review header now shows the same pending-output count used by the top
+navigation Apply badge:
+
+```text
+Continue to Apply  [12]
+```
+
+The source of truth remains:
+
+```js
+state.summary.pendingToApply
+```
+
+so the Review button and the top Apply navigation cannot disagree about the
+number of files currently waiting for output.
+
+## Approval feedback
+
+When a Review decision creates newly pending Apply work, **Continue to Apply**
+briefly replays the same attention animation used by the Apply screen.
+
+This includes:
+
+- approving the suggested BPM for one track
+- bulk **Approve N suggestions**
+- approving detected/custom BPM when that decision newly makes the track ready
+
+Changing an already-approved decision without increasing the pending count does
+not trigger a new pulse.
