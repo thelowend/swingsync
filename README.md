@@ -1,4 +1,4 @@
-# SwingSync v15.13 — Manbow Lines build integration
+# SwingSync v15.14 — Larger wordmark
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -617,3 +617,20 @@ bundles it into the built desktop renderer.
 
 `desktop:dev` and `desktop:build` now verify that the local font asset has been
 installed first and provide the command above when it is missing.
+
+
+## v15.14 — Header wordmark
+
+The `SwingSync` text in the application header is now approximately 50% larger.
+
+The final wordmark size is:
+
+```css
+.brand-name {
+  font-size: 24px;
+  line-height: 1;
+}
+```
+
+The Manbow Lines-Regular integration and compact header dimensions are otherwise
+unchanged.
