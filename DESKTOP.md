@@ -137,3 +137,28 @@ highlights the Apply button.
 The renderer records the last highlighted `analysisBatchRevision` in
 `sessionStorage`, so revisiting Apply during the same batch does not repeat the
 cue.
+
+
+## Branded logo and icon
+
+v15.7 replaces the placeholder `SS` mark with the provided SwingSync artwork.
+
+Frontend asset:
+
+```text
+desktop/renderer/src/assets/swingsync-logo.png
+```
+
+Electron icon asset:
+
+```text
+desktop/assets/swingsync-icon.png
+```
+
+The app header renders the horizontal logo inside a beveled brand shell.
+Electron uses a square padded icon derived from the same artwork.
+
+## Warm theme
+
+The desktop UI now uses a cream / brown palette based on the SwingSync logo,
+with warm orange-brown accents and higher-contrast brown typography.

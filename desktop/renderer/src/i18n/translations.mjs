@@ -106,7 +106,7 @@ export const SPANISH_TRANSLATIONS =
     "Human": "Humana",
     "Automatic": "Automática",
     "Same metrical level": "Mismo nivel métrico",
-    "Double time": "Tempo oble",
+    "Double time": "Tempo doble",
     "3:2 triplet feel": "Sensación ternaria 3:2",
     "Raw estimate is half-time":
       "La estimación original está a medio tempo",

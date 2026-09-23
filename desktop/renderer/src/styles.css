@@ -1857,3 +1857,259 @@ svg {
     flex: 1 1 180px;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.7 Branding + warm cream / brown theme                           */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color: #2f2017;
+  background: #f4ecdf;
+
+  --bg: #f4ecdf;
+  --panel: #fbf6ee;
+  --panel-soft: #f3ebdf;
+  --panel-hover: #efe4d3;
+  --border: #cfb49a;
+  --border-soft: #dec9b2;
+
+  --text: #2f2017;
+  --muted: #7b5e4d;
+  --muted-strong: #5c4336;
+
+  --accent: #cb6f3a;
+  --accent-soft: rgba(203, 111, 58, 0.10);
+  --accent-border: rgba(125, 67, 37, 0.28);
+
+  --good: #5f8f67;
+  --good-soft: rgba(95, 143, 103, 0.12);
+
+  --danger: #b25b55;
+  --danger-soft: rgba(178, 91, 85, 0.12);
+
+  --info: #7b8ea9;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 12% -8%,
+      rgba(203, 111, 58, 0.12),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(94, 67, 54, 0.08),
+      transparent 24rem
+    ),
+    var(--bg);
+}
+
+.topbar {
+  border-bottom: 1px solid var(--border-soft);
+  background: rgba(250, 243, 232, 0.94);
+  box-shadow:
+    0 8px 22px rgba(73, 43, 28, 0.07);
+}
+
+.brand-block {
+  gap: 15px;
+}
+
+.brand-mark {
+  width: 78px;
+  height: 56px;
+  padding: 5px;
+  border: 1px solid rgba(93, 58, 38, 0.22);
+  border-radius: 16px;
+  color: var(--accent);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 243, 0.96),
+      rgba(236, 220, 199, 0.94)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(108, 73, 52, 0.08),
+    0 8px 18px rgba(93, 58, 38, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.brand-mark.large {
+  width: 110px;
+  height: 79px;
+  padding: 8px;
+  border-radius: 20px;
+}
+
+.logo-mark {
+  overflow: hidden;
+}
+
+.brand-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 12px;
+}
+
+.brand-mark.large .brand-logo-image {
+  border-radius: 14px;
+}
+
+.brand-name {
+  color: #3b261a;
+}
+
+.brand-tagline {
+  color: var(--muted);
+}
+
+.compact-field {
+  color: var(--muted-strong);
+}
+
+.compact-field select,
+.search-field,
+.segmented-control,
+.status-pill,
+.folder-chip {
+  border-color: var(--border);
+  background: #f8f1e5;
+}
+
+.compact-field select {
+  color: var(--text);
+}
+
+.error-banner {
+  color: #7b2825;
+  border-bottom: 1px solid rgba(178, 91, 85, 0.24);
+  background: rgba(178, 91, 85, 0.08);
+}
+
+.error-banner button {
+  color: #7b2825;
+}
+
+.secondary-button {
+  color: var(--text);
+  border-color: var(--border);
+  background: #f7efe3;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f1e4d4;
+}
+
+.primary-button {
+  color: #fff9f2;
+  border-color: #b96331;
+  background:
+    linear-gradient(
+      180deg,
+      #d47840,
+      #c56634
+    );
+}
+
+.folder-strip,
+.progress-panel,
+.summary-card,
+.library-panel,
+.review-layout,
+.review-summary-card,
+.review-track-list,
+.review-detail-card,
+.review-callout,
+.apply-layout,
+.apply-plan-card,
+.apply-summary-card,
+.workflow-panel,
+.workflow-step-card,
+.inspector-panel,
+.inspector-section {
+  box-shadow:
+    0 10px 28px rgba(73, 43, 28, 0.05);
+}
+
+.folder-strip {
+  background: rgba(251, 246, 238, 0.82);
+}
+
+.progress-track {
+  background: rgba(73, 43, 28, 0.10);
+}
+
+.library-toolbar,
+.library-table th,
+.track-inspector-header,
+.review-track-list-header,
+.review-card-grid,
+.apply-plan-header {
+  background: #f5ebde;
+}
+
+.library-table th {
+  color: #7a604b;
+}
+
+.library-table td {
+  color: var(--muted-strong);
+}
+
+.library-table tbody tr:hover {
+  background: rgba(203, 111, 58, 0.05);
+}
+
+.search-field input {
+  color: var(--text);
+}
+
+.search-field input::placeholder {
+  color: #90725d;
+}
+
+.folder-chip,
+.status-pill {
+  color: var(--muted-strong);
+}
+
+.segmented-control button.active {
+  color: var(--text);
+  background: #eadcca;
+}
+
+.segmented-control button span {
+  color: #866956;
+}
+
+.track-title {
+  color: var(--text);
+}
+
+.track-path {
+  color: #8f755f;
+}
+
+.primary-actions .button svg,
+.folder-strip-label svg,
+.search-field svg {
+  color: currentColor;
+}
+
+.loading-screen {
+  background: var(--bg);
+}
+
+.loading-screen h1 {
+  color: var(--text);
+}
+
+.loading-screen p {
+  color: var(--muted);
+}

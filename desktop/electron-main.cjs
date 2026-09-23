@@ -246,6 +246,12 @@ function registerIpcHandlers() {
 }
 
 async function createWindow() {
+  const windowIcon = path.join(
+    __dirname,
+    "assets",
+    "swingsync-icon.png"
+  );
+
   mainWindow =
     new BrowserWindow({
       width: 1440,
@@ -253,7 +259,8 @@ async function createWindow() {
       minWidth: 980,
       minHeight: 680,
       title: PRODUCT_NAME,
-      backgroundColor: "#101114",
+      backgroundColor: "#efe5d2",
+      icon: windowIcon,
       show: false,
       webPreferences: {
         preload:
@@ -335,6 +342,19 @@ app.whenReady().then(
     if (process.platform === "win32") {
       app.setAppUserModelId(
         "com.swingsync.desktop"
+      );
+    }
+
+    if (
+      process.platform === "darwin" &&
+      app.dock?.setIcon
+    ) {
+      app.dock.setIcon(
+        path.join(
+          __dirname,
+          "assets",
+          "swingsync-icon.png"
+        )
       );
     }
 

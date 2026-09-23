@@ -27,6 +27,9 @@ import {
   useLanguage,
 } from "./i18n/LanguageContext.jsx";
 
+import swingSyncLogo from
+  "./assets/swingsync-logo.png";
+
 function FolderIcon() {
   return (
     <svg
@@ -55,6 +58,27 @@ function AnalyzeIcon() {
         fill="currentColor"
       />
     </svg>
+  );
+}
+
+function BrandLogo({
+  large = false,
+}) {
+  return (
+    <div
+      className={`brand-mark logo-mark ${
+        large
+          ? "large"
+          : ""
+      }`}
+      aria-hidden="true"
+    >
+      <img
+        src={swingSyncLogo}
+        alt=""
+        className="brand-logo-image"
+      />
+    </div>
   );
 }
 
@@ -382,9 +406,7 @@ export default function App() {
   if (loading) {
     return (
       <main className="loading-screen">
-        <div className="brand-mark large">
-          SS
-        </div>
+        <BrandLogo large />
         <div>
           <h1>SwingSync</h1>
           <p>
@@ -401,9 +423,7 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand-block">
-          <div className="brand-mark">
-            SS
-          </div>
+          <BrandLogo />
           <div>
             <div className="brand-name">
               SwingSync
@@ -1070,7 +1090,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.6
+          SwingSync v0.15.7
         </div>
       </footer>
 

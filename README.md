@@ -1,4 +1,4 @@
-# SwingSync v15.6 — Sustained double-pulse evidence
+# SwingSync v15.7 — Branded logo + warm theme
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -351,3 +351,32 @@ still required, and the overall double-time threshold remains 5 points.
 
 The benchmark references the attached song by filename but the audio file is
 not included in the SwingSync archive.
+
+
+## v15.7 branding refresh
+
+This version incorporates the provided SwingSync logo artwork into the desktop UI.
+
+Changes:
+
+- the `SS` placeholder mark is replaced with the uploaded SwingSync logo
+- the logo now appears as a beveled mark in the top-left brand area
+- the loading screen uses the branded logo as well
+- Electron now uses a packaged square icon derived from the same artwork
+
+## v15.7 color theme
+
+The desktop theme now follows the logo palette more closely:
+
+- soft cream backgrounds
+- warm tan panels
+- darker brown text for contrast
+- orange-brown accent buttons and highlights
+
+## Translation fix
+
+The Spanish localization typo was corrected:
+
+```text
+Tempo oble -> Tempo doble
+```
