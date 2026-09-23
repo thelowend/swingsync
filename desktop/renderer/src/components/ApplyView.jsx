@@ -171,7 +171,7 @@ export default function ApplyView({
           </span>
           <h1>
             {t(
-              "Commit the approved BPMs."
+              "Commit the approved BPMs"
             )}
           </h1>
           <p>

@@ -1,4 +1,4 @@
-# SwingSync v15 — English + Spanish desktop UI
+# SwingSync v15.2 — User-refined Rioplatense copy
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -6,7 +6,7 @@ Supported desktop languages:
 
 ```text
 English
-Español
+Español (Argentina / Rioplatense)
 ```
 
 The BPM engine, cache, metadata writer, reports and CLI remain language-neutral
@@ -161,3 +161,37 @@ Raw third-party/FFmpeg diagnostics may remain in their original language so
 technical detail is not lost.
 
 The CLI remains English in v15.
+
+
+## Spanish style
+
+The Spanish desktop localization uses Argentine Rioplatense Spanish:
+
+- voseo (`elegí`, `analizá`, `revisá`, `podés`, `confirmá`)
+- natural Argentine UI phrasing
+- `BPM` is preferred over literal translations such as `pulsaciones`
+- English references to musical `beats` may be slightly adapted when `BPM`
+  communicates the actual UI concept more clearly
+
+This is presentation-only and does not change engine/domain values.
+
+
+## v15.2 copy refinement
+
+This version incorporates the user-edited desktop localization and view copy as
+the source of truth for:
+
+- `translations.mjs`
+- `App.jsx`
+- `ReviewView.jsx`
+- `ApplyView.jsx`
+
+The uploaded `App(1).jsx` is intentionally installed as `App.jsx`.
+Likewise the uploaded Review/Apply view files are installed under their normal
+component filenames.
+
+The `music-metadata` dependency remains:
+
+```json
+"music-metadata": "^11.16.0"
+```

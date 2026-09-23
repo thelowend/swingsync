@@ -384,7 +384,7 @@ export default function ReviewView({
           </span>
           <h1>
             {t(
-              "Confirm the musical pulse."
+              "Confirm the musical pulse"
             )}
           </h1>
           <p>

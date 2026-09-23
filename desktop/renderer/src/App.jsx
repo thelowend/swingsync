@@ -629,7 +629,7 @@ export default function App() {
               </span>
               <h1>
                 {t(
-                  "Find the right pulse."
+                  "Find the right pulse"
                 )}
               </h1>
               <p>
@@ -1070,7 +1070,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15
+          SwingSync v0.15.2
         </div>
       </footer>
 

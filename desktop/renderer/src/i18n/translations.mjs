@@ -17,7 +17,7 @@ export const SPANISH_TRANSLATIONS =
     // Global / navigation
     "Language": "Idioma",
     "English": "Inglés",
-    "Spanish": "Español",
+    "Spanish": "Español (Argentina)",
     "Workflow": "Flujo de trabajo",
     "Library": "Biblioteca",
     "Review": "Revisión",
@@ -31,13 +31,13 @@ export const SPANISH_TRANSLATIONS =
     "Starting the music library engine…":
       "Iniciando el motor de la biblioteca musical…",
     "Tempo intelligence for swing music":
-      "Inteligencia de tempo para música swing",
+      "Análisis inteligente de BPM para música swing",
 
     // Library heading/actions
     "Music library": "Biblioteca musical",
-    "Find the right pulse.": "Encuentra el pulso correcto.",
+    "Find the right pulse": "Encontrá el BPM correcto",
     "Analyze your collection, review ambiguous musical interpretations, then explicitly commit approved BPM metadata.":
-      "Analiza tu colección, revisa las interpretaciones musicales ambiguas y luego confirma explícitamente los metadatos BPM aprobados.",
+      "Analizá tu colección, revisá las interpretaciones musicales ambiguas y después confirmá explícitamente los metadatos BPM aprobados.",
     "Choose folders": "Elegir carpetas",
     "Open library": "Abrir biblioteca",
     "Analyze library": "Analizar biblioteca",
@@ -63,7 +63,7 @@ export const SPANISH_TRANSLATIONS =
       "Cambios en archivos confirmados",
     "Analysis complete?": "¿Análisis completo?",
     "Review uncertain tracks, then inspect the exact write plan before committing anything.":
-      "Revisa las pistas inciertas y luego inspecciona el plan exacto de escritura antes de confirmar cambios.",
+      "Revisá las pistas inciertas y después inspeccioná el plan exacto de escritura antes de confirmar cambios.",
     "Review {count} remaining":
       "Revisar {count} pendientes",
     "Review apply plan":
@@ -82,7 +82,7 @@ export const SPANISH_TRANSLATIONS =
     "Status": "Estado",
     "No tracks to show": "No hay pistas para mostrar",
     "Choose folders and open the library to scan for music.":
-      "Elige carpetas y abre la biblioteca para buscar música.",
+      "Elegí carpetas y abrí la biblioteca para buscar música.",
 
     // Status / domain labels
     "Pending": "Pendiente",
@@ -105,7 +105,7 @@ export const SPANISH_TRANSLATIONS =
     "Human": "Humana",
     "Automatic": "Automática",
     "Same metrical level": "Mismo nivel métrico",
-    "Double time": "Doble tempo",
+    "Double time": "Tempo oble",
     "3:2 triplet feel": "Sensación ternaria 3:2",
     "Raw estimate is half-time":
       "La estimación original está a medio tempo",
@@ -132,15 +132,15 @@ export const SPANISH_TRANSLATIONS =
     "Relationship": "Relación",
     "Interpretation": "Interpretación",
     "Analyze this track to see the interpretation rationale.":
-      "Analiza esta pista para ver la justificación de la interpretación.",
+      "Analizá esta pista para ver la justificación de la interpretación.",
     "Human review needed": "Se requiere revisión humana",
     "SwingSync found a musically plausible alternate metrical level. Open Review to approve the detected BPM, the suggested interpretation, a custom BPM, or skip this track.":
-      "SwingSync encontró un nivel métrico alternativo musicalmente plausible. Abre Revisión para aprobar el BPM detectado, la interpretación sugerida, un BPM personalizado u omitir esta pista.",
+      "SwingSync encontró un nivel métrico alternativo musicalmente plausible. Abrí Revisión para aprobar el BPM detectado, la interpretación sugerida, un BPM personalizado u omitir esta pista.",
     "Analysis details": "Detalles del análisis",
     "Loading diagnostics…": "Cargando diagnósticos…",
     "Rhythm": "Ritmo",
     "Percival": "Percival",
-    "Beat median": "Mediana de pulsos",
+    "Beat median": "BPM mediano",
     "Source": "Fuente",
     "No analysis details yet.":
       "Todavía no hay detalles del análisis.",
@@ -148,29 +148,29 @@ export const SPANISH_TRANSLATIONS =
     // Review
     "Unknown track": "Pista desconocida",
     "Needs decision": "Requiere decisión",
-    "tempo review": "revisión de tempo",
+    "tempo review": "revisión de BPM",
     "Candidate consensus": "Consenso del candidato",
     "Midpoint onsets": "Ataques en punto medio",
     "Rhythm confidence": "Confianza rítmica",
-    "Histogram dominance": "Dominancia del histograma",
+    "Histogram dominance": "Predominio del histograma",
     "Pass": "Cumple",
     "No": "No",
     "No signal": "Sin señal",
     "← Library": "← Biblioteca",
     "Human review": "Revisión humana",
-    "Confirm the musical pulse.":
-      "Confirma el pulso musical.",
+    "Confirm the musical pulse":
+      "Confirmá el BPM correcto",
     "These tracks need your judgment. Choosing a BPM only approves the decision—it does not modify the file yet.":
-      "Estas pistas necesitan tu criterio. Elegir un BPM solo aprueba la decisión; todavía no modifica el archivo.",
+      "Estas pistas necesitan tu criterio. Elegir un BPM solo registra tu aprobación; todavía no modifica el archivo.",
     "remaining": "pendientes",
     "approved": "aprobadas",
-    "Continue to Apply": "Continuar a Aplicar",
+    "Continue to Apply": "Proceder a Aplicar",
     "Loading review queue…":
       "Cargando cola de revisión…",
     "Nothing needs review.":
       "No hay nada que revisar.",
     "All analyzed tracks are either confidently interpreted or there is no reviewable result.":
-      "Todas las pistas analizadas tienen una interpretación confiable o no existe un resultado revisable.",
+      "Todas las pistas analizadas tienen una interpretación confiable o no existe un resultado para revisión.",
     "Review queue": "Cola de revisión",
     "{count} track": "{count} pista",
     "{count} tracks": "{count} pistas",
@@ -187,12 +187,12 @@ export const SPANISH_TRANSLATIONS =
     "Approve suggested": "Aprobar sugerido",
     "Custom BPM": "BPM personalizado",
     "Enter your own value if neither interpretation matches how you count the song.":
-      "Introduce tu propio valor si ninguna interpretación coincide con la forma en que cuentas la canción.",
-    "Approve custom": "Aprobar personalizado",
+      "Ingresá tu propio valor si ninguna interpretación coincide con la forma en que contás la canción.",
+    "Approve custom": "Aprobá personalizado",
     "Why SwingSync asked": "Por qué preguntó SwingSync",
     "The acoustic and musical interpretations did not produce a sufficiently confident automatic decision.":
-      "Las interpretaciones acústica y musical no produjeron una decisión automática con suficiente confianza.",
-    "Double-time evidence": "Evidencia de doble tempo",
+      "Las interpretaciones acústica y musical no produjeron suficiente confianza para una decisión automática.",
+    "Double-time evidence": "Evidencia de tempo doble",
     "Multi-signal score used by the genre profile.":
       "Puntuación de múltiples señales utilizada por el perfil de género.",
     "Acoustic candidates": "Candidatos acústicos",
@@ -202,10 +202,10 @@ export const SPANISH_TRANSLATIONS =
     // Apply
     "← Review": "← Revisión",
     "Apply summary": "Resumen de aplicación",
-    "Commit the approved BPMs.":
-      "Confirma los BPM aprobados.",
+    "Commit the approved BPMs":
+      "Confirmá los BPM aprobados",
     "This is the write boundary. Nothing on this screen changes your files until you explicitly confirm the final action.":
-      "Este es el límite de escritura. Nada en esta pantalla modifica tus archivos hasta que confirmes explícitamente la acción final.",
+      "Este es el punto de escritura. Nada en esta pantalla modifica tus archivos hasta que confirmes explícitamente la acción final.",
     "Output mode": "Modo de salida",
     "BPM tags only": "Solo etiquetas BPM",
     "Filename changes only":
@@ -215,11 +215,11 @@ export const SPANISH_TRANSLATIONS =
       "Aplicación completada.",
     "{applied} applied · {errors} errors":
       "{applied} aplicadas · {errors} errores",
-    "Back to Library": "Volver a Biblioteca",
+    "Back to Library": "Volvé a Biblioteca",
     "Approved pending": "Aprobadas pendientes",
     "{human} human · {automatic} automatic":
       "{human} humanas · {automatic} automáticas",
-    "Will change": "Se modificará",
+    "Will change": "Se va a modificar",
     "Files with a real output change":
       "Archivos con un cambio real de salida",
     "Already matches": "Ya coincide",
@@ -229,11 +229,11 @@ export const SPANISH_TRANSLATIONS =
     "Cannot use selected output mode":
       "No se puede usar el modo de salida seleccionado",
     "{count} review item still unresolved.":
-      "Queda {count} elemento de revisión sin resolver.",
+      "Queda {count} elemento para revisión sin resolver.",
     "{count} review items still unresolved.":
-      "Quedan {count} elementos de revisión sin resolver.",
+      "Quedan {count} elementos para revisión sin resolver.",
     "They will not be written. You can go back to Review or apply only the approved tracks now.":
-      "No se escribirán. Puedes volver a Revisión o aplicar ahora solo las pistas aprobadas.",
+      "No se van a escribir. Podés volver a Revisión o aplicar ahora solo las pistas aprobadas.",
     "Building apply plan…":
       "Preparando plan de aplicación…",
     "No pending approved changes.":
@@ -255,7 +255,7 @@ export const SPANISH_TRANSLATIONS =
     "Apply changes": "Aplicar cambios",
     "Final confirmation": "Confirmación final",
     "Write approved BPM changes?":
-      "¿Escribir los cambios de BPM aprobados?",
+      "¿Querés escribir los cambios de BPM aprobados?",
     "SwingSync will now modify {count} approved file using the {mode} output mode.":
       "SwingSync modificará ahora {count} archivo aprobado usando el modo de salida {mode}.",
     "SwingSync will now modify {count} approved files using the {mode} output mode.":
@@ -264,7 +264,7 @@ export const SPANISH_TRANSLATIONS =
       "Las decisiones de revisión por sí solas nunca escriben archivos. Esta confirmación es el punto en el que SwingSync las aplica.",
     "Cancel": "Cancelar",
     "Applying…": "Aplicando…",
-    "Confirm & write": "Confirmar y escribir",
+    "Confirm & write": "Confirmá y escribí",
 
     // Metadata support
     "WAV does not have a sufficiently interoperable BPM convention in this version":
@@ -282,7 +282,7 @@ export const SPANISH_TRANSLATIONS =
     "This track does not have an approved BPM to apply":
       "Esta pista no tiene un BPM aprobado para aplicar.",
     "Open a library first":
-      "Primero abre una biblioteca.",
+      "Primero abrí una biblioteca.",
     "Application session is closed":
       "La sesión de la aplicación está cerrada.",
     "A valid BPM is required":

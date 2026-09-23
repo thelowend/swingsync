@@ -83,3 +83,22 @@ add stable codes/parameters, not language-specific strings to the engine.
 
 If the translation dictionary does not contain a source message, SwingSync
 falls back to English.
+
+
+## Spanish dialect
+
+`es` currently represents Argentine Rioplatense Spanish.
+
+Examples:
+
+```text
+Choose folders       → Elegí carpetas
+Analyze library      → Analizá biblioteca
+Approve suggested    → Aprobá sugerido
+You can go back      → Podés volver
+Confirm & write      → Confirmá y escribí
+Beat median          → BPM mediano
+```
+
+The localization deliberately favors the term `BPM` instead of `pulsaciones`
+for tempo-related concepts.
