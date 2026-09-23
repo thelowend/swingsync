@@ -1,4 +1,4 @@
-# SwingSync v15.16 — Review guard + Rhythm and Blues default
+# SwingSync v15.16.1 — CSS parsing hotfix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -669,14 +669,16 @@ Changing an already-approved decision without increasing the pending count does
 not trigger a new pulse.
 
 
-## v15.16 — Bulk approval count badge
+## v15.16.1 — CSS parsing hotfix
 
-The Review bulk action now displays its unresolved count in a badge, e.g. `Approve suggestions [12]`.
+v15.16 accidentally wrote escaped newline sequences (`\n`) as literal text in
+the final Review UI CSS block.
 
-## v15.16 — Unresolved Review warning
+This caused Vite/PostCSS to fail with an error similar to:
 
-Clicking **Continue to Apply** while unresolved review decisions remain now opens a warning modal. Users can continue with approved tracks only or keep reviewing.
+```text
+Unknown word gap
+```
 
-## v15.16 — Default profile
-
-`rhythm-and-blues` is now the default. Profile order is **Rhythm and Blues → Swing → Generic**. CLI with no `--profile` uses Rhythm and Blues.
+The stylesheet now contains normal line breaks and the v15.16 Review styles are
+valid CSS again.
