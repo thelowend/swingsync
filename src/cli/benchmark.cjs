@@ -133,11 +133,13 @@ function normalizeBenchmarkConfig(
     throw new Error("Benchmark contains no tracks.");
   }
 
-  const defaultProfile = (
-    defaults.profile ?? fallbackProfileName
-  ).toLowerCase();
+  const defaultProfile =
+    normalizeProfileName(
+      defaults.profile ??
+      fallbackProfileName
+    );
 
-  if (!TEMPO_PROFILES[defaultProfile]) {
+  if (!getTempoProfile(defaultProfile)) {
     throw new Error(
       `Unknown benchmark default profile \"${defaultProfile}\".`
     );
@@ -180,11 +182,13 @@ function normalizeBenchmarkConfig(
       );
     }
 
-    const profileName = (
-      track.profile ?? defaultProfile
-    ).toLowerCase();
+    const profileName =
+      normalizeProfileName(
+        track.profile ??
+        defaultProfile
+      );
 
-    if (!TEMPO_PROFILES[profileName]) {
+    if (!getTempoProfile(profileName)) {
       throw new Error(
         `Unknown profile \"${profileName}\" for benchmark track \"${track.file}\".`
       );
@@ -648,7 +652,10 @@ async function runBenchmark(
 
       const detection =
         reconcileTempo(analysis);
-      const profile = TEMPO_PROFILES[track.profileName];
+      const profile =
+        getTempoProfile(
+          track.profileName
+        );
       const interpretation = interpretTempo(
         detection,
         analysis,

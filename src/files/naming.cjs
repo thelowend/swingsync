@@ -1,26 +1,54 @@
 const path = require("node:path");
 
-function buildNewFilename(filePath, bpm) {
-  const directory = path.dirname(filePath);
-  const extension = path.extname(filePath);
-  const originalName = path.basename(
-    filePath,
-    extension
-  );
+function cleanExistingBpmDecoration(
+  originalName
+) {
+  return originalName
+    // Current/canonical prefix: [215] Song
+    // Also accepts a possible legacy prefix: [215 BPM] Song
+    .replace(
+      /^\s*\[\d+(?:\.\d+)?(?:\s*BPM)?\]\s*/i,
+      ""
+    )
+    // Legacy SwingSync suffix: Song [215 BPM]
+    .replace(
+      /\s*\[\d+(?:\.\d+)?\s*BPM\]\s*$/i,
+      ""
+    )
+    .trim();
+}
 
-  const cleanName = originalName.replace(
-    /\s*\[\d+(?:\.\d+)?\s*BPM\]\s*$/i,
-    ""
-  );
+function buildNewFilename(
+  filePath,
+  bpm
+) {
+  const directory =
+    path.dirname(filePath);
 
-  const roundedBPM = Math.round(bpm);
+  const extension =
+    path.extname(filePath);
+
+  const originalName =
+    path.basename(
+      filePath,
+      extension
+    );
+
+  const cleanName =
+    cleanExistingBpmDecoration(
+      originalName
+    );
+
+  const roundedBpm =
+    Math.round(bpm);
 
   return path.join(
     directory,
-    `${cleanName} [${roundedBPM} BPM]${extension}`
+    `[${roundedBpm}] ${cleanName}${extension}`
   );
 }
 
 module.exports = {
+  cleanExistingBpmDecoration,
   buildNewFilename,
 };

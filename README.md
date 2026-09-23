@@ -1,4 +1,4 @@
-# SwingSync v15.2 — User-refined Rioplatense copy
+# SwingSync v15.3 — Boogie-Woogie profile & BPM filename prefix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -114,7 +114,7 @@ For example:
 {
   "reasonCode": "interpretation.double-time-preferred",
   "reasonParams": {
-    "profile": "boogie",
+    "profile": "boogie-woogie",
     "candidateBpm": 226.92,
     "detectedBpm": 113.46,
     "totalScore": 6,
@@ -194,4 +194,49 @@ The `music-metadata` dependency remains:
 
 ```json
 "music-metadata": "^11.16.0"
+```
+
+
+## v15.3 profile naming
+
+The canonical profile name is now:
+
+```text
+boogie-woogie
+```
+
+The UI displays **Boogie-Woogie**.
+
+For backward compatibility, the CLI/client still accepts the old profile name:
+
+```text
+boogie
+```
+
+and resolves it to `boogie-woogie`.
+
+## v15.3 filename format
+
+Filename output now prefixes the rounded BPM:
+
+```text
+Rock, rock, rock.mp3
+→
+[215] Rock, rock, rock.mp3
+```
+
+A later run replaces an existing SwingSync BPM prefix rather than stacking it:
+
+```text
+[215] Rock, rock, rock.mp3
+→
+[220] Rock, rock, rock.mp3
+```
+
+Legacy suffix filenames are migrated automatically:
+
+```text
+Rock, rock, rock [215 BPM].mp3
+→
+[220] Rock, rock, rock.mp3
 ```

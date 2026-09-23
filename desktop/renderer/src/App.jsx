@@ -100,7 +100,7 @@ export default function App() {
     useState("library");
 
   const [profile, setProfile] =
-    useState("boogie");
+    useState("boogie-woogie");
 
   const [outputMode, setOutputMode] =
     useState("metadata");
@@ -1070,7 +1070,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.2
+          SwingSync v0.15.3
         </div>
       </footer>
 

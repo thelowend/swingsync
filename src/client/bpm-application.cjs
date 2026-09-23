@@ -21,6 +21,8 @@ const {
 const {
   TEMPO_PROFILES,
   DEFAULT_PROFILE,
+  getTempoProfile,
+  normalizeProfileName,
 } = require("../tempo/profiles.cjs");
 
 const {
@@ -77,21 +79,26 @@ function createDefaultServices() {
 function resolveProfile(
   profile
 ) {
-  const name =
+  const requestedName =
     typeof profile ===
       "string"
       ? profile
       : profile?.name;
 
-  const resolved =
-    TEMPO_PROFILES[
-      name ??
+  const normalizedName =
+    normalizeProfileName(
+      requestedName ??
       DEFAULT_PROFILE
-    ];
+    );
+
+  const resolved =
+    getTempoProfile(
+      normalizedName
+    );
 
   if (!resolved) {
     throw new Error(
-      `Unknown profile "${name}". Available profiles: ${Object.keys(
+      `Unknown profile "${requestedName}". Available profiles: ${Object.keys(
         TEMPO_PROFILES
       ).join(", ")}`
     );

@@ -1,6 +1,8 @@
 const {
   TEMPO_PROFILES,
   DEFAULT_PROFILE,
+  getTempoProfile,
+  normalizeProfileName,
 } = require("../tempo/profiles.cjs");
 
 const {
@@ -36,7 +38,8 @@ If no folder is supplied, SwingSync uses the default folder list from:
 Options:
 
   --profile <name>       Tempo interpretation profile.
-                         Available: generic, swing, boogie
+                         Available: generic, swing, boogie-woogie
+                         Legacy alias: boogie
                          Default: generic
 
   --output <mode>        Output target after BPM analysis/review.
@@ -76,19 +79,19 @@ Examples:
 
   Use folders configured in .env:
 
-    ${CLI_COMMAND} --profile boogie
+    ${CLI_COMMAND} --profile boogie-woogie
 
   Analyze one explicit folder:
 
-    ${CLI_COMMAND} "D:\\Music\\Swing" --profile boogie
+    ${CLI_COMMAND} "D:\\Music\\Swing" --profile boogie-woogie
 
   Analyze multiple explicit folders:
 
-    ${CLI_COMMAND} "D:\\Music\\Swing" "D:\\Music\\Boogie" "E:\\Rock and Roll" --profile boogie
+    ${CLI_COMMAND} "D:\\Music\\Swing" "D:\\Music\\Boogie" "E:\\Rock and Roll" --profile boogie-woogie
 
   Interactive review using configured defaults:
 
-    ${CLI_COMMAND} --profile boogie --review --apply
+    ${CLI_COMMAND} --profile boogie-woogie --review --apply
 
   Benchmark against the configured roots:
 
@@ -481,10 +484,15 @@ function parseArguments(
     );
   }
 
-  if (
-    !TEMPO_PROFILES[
+  profileName =
+    normalizeProfileName(
       profileName
-    ]
+    );
+
+  if (
+    !getTempoProfile(
+      profileName
+    )
   ) {
     throw new Error(
       `Unknown profile "${profileName}". Available profiles: ${Object.keys(
@@ -547,9 +555,9 @@ function parseArguments(
         : "environment",
 
     profile:
-      TEMPO_PROFILES[
+      getTempoProfile(
         profileName
-      ],
+      ),
 
     outputMode,
     applyChanges,

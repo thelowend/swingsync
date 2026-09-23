@@ -1,6 +1,6 @@
 {
   "defaults": {
-    "profile": "boogie",
+    "profile": "boogie-woogie",
     "absoluteTolerance": 2,
     "relativeTolerancePercent": 2
   },

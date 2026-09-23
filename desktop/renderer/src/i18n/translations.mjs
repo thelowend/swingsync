@@ -96,7 +96,8 @@ export const SPANISH_TRANSLATIONS =
     "Low": "Baja",
     "Generic": "Genérico",
     "Swing": "Swing",
-    "Boogie": "Boogie",
+    "Boogie": "Boogie-Woogie",
+    "Boogie-Woogie": "Boogie-Woogie",
     "Metadata": "Metadatos",
     "Filename": "Nombre de archivo",
     "Both": "Ambos",
@@ -328,7 +329,8 @@ export const DOMAIN_SOURCES =
     profile: {
       generic: "Generic",
       swing: "Swing",
-      boogie: "Boogie",
+      boogie: "Boogie-Woogie",
+      "boogie-woogie": "Boogie-Woogie",
     },
 
     outputMode: {

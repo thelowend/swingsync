@@ -43,7 +43,7 @@ async function main() {
         ? explicitFolders
         : undefined,
     profile:
-      "boogie",
+      "boogie-woogie",
     outputMode:
       "metadata",
   });

@@ -52,7 +52,7 @@ Returns serializable data similar to:
   "profiles": [
     { "name": "generic", "description": "..." },
     { "name": "swing", "description": "..." },
-    { "name": "boogie", "description": "..." }
+    { "name": "boogie-woogie", "description": "..." }
   ],
   "outputModes": [
     "metadata",
@@ -85,7 +85,7 @@ A graphical client should use this instead of hard-coding profiles/actions.
 ```js
 await app.openLibrary({
   folder: "D:\\Music",
-  profile: "boogie",
+  profile: "boogie-woogie",
   outputMode: "metadata",
 });
 ```
@@ -132,7 +132,7 @@ High-level shape:
   "status": "ready",
   "library": {
     "folder": "D:\\Music",
-    "profile": "boogie",
+    "profile": "boogie-woogie",
     "outputMode": "metadata"
   },
   "progress": {
@@ -447,7 +447,7 @@ await app.openLibrary({
     "D:\\Music\\Swing",
     "D:\\Music\\Boogie",
   ],
-  profile: "boogie",
+  profile: "boogie-woogie",
 });
 ```
 
@@ -455,7 +455,7 @@ or omit them to use `.env`:
 
 ```js
 await app.openLibrary({
-  profile: "boogie",
+  profile: "boogie-woogie",
 });
 ```
 
