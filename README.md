@@ -1,4 +1,4 @@
-# SwingSync v15.10 — Compact layout + guided Library flow
+# SwingSync v15.11 — Library workflow cleanup
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -498,4 +498,54 @@ The final confirmation action is now:
 
 ```text
 Confirmar y escribir
+```
+
+
+## v15.11 — Brand tagline
+
+The desktop tagline is now:
+
+```text
+Tempo intelligence for a golden era of music
+```
+
+Spanish:
+
+```text
+Inteligencia de tempo para una era dorada de la música
+```
+
+## v15.11 — Library filters after Apply
+
+Library filters now represent current pending workflow state:
+
+```text
+Review = unresolved review decisions only
+Ready  = approved/automatic tracks not yet applied
+All    = every track, including Applied
+```
+
+Previously, Review and Ready were based partly on historical eligibility, so
+Applied tracks could still appear even when the tab count was zero.
+
+The Review segmented-control count now uses `reviewRemaining`.
+
+The "Analysis complete?" workflow prompt now appears only when there is actual
+pending work:
+
+```text
+reviewRemaining > 0
+or
+pendingToApply > 0
+```
+
+This prevents "Review 0 remaining" from appearing after a completed review/apply
+pass.
+
+## Author credit
+
+The desktop footer now displays:
+
+```text
+SwingSync v0.15.11 - By Diego Pablos
 ```

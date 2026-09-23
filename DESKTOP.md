@@ -197,3 +197,16 @@ The Library primary action row also presents an explicit three-step sequence:
 ```text
 1 Choose folders → 2 Open library → 3 Analyze library
 ```
+
+
+## Current-state Library filters
+
+v15.11 defines the Library tabs as current workflow views rather than historical
+classification views.
+
+- Review: `review.required && !review.decision && !output.applied`
+- Ready: current automatic/human-approved result and `!output.applied`
+- All: all library tracks, including completed Applied tracks
+
+The workflow CTA is hidden once there is neither unresolved Review work nor
+pending Apply work.

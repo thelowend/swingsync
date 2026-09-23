@@ -34,8 +34,8 @@ export const SPANISH_TRANSLATIONS =
     // Brand / loading
     "Starting the music library engine…":
       "Iniciando el motor de la biblioteca musical…",
-    "Tempo intelligence for swing music":
-      "Análisis inteligente de BPM para música swing",
+    "Tempo intelligence for a golden era of music":
+      "Inteligencia de tempo para una era dorada de la música",
 
     // Library heading/actions
     "Music library": "Biblioteca musical",

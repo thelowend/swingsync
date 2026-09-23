@@ -240,9 +240,17 @@ export default function App() {
           if (
             filter === "review"
           ) {
-            return Boolean(
-              track.review
-                ?.required
+            return (
+              track.status ===
+                "analyzed" &&
+              Boolean(
+                track.review
+                  ?.required
+              ) &&
+              !track.review
+                ?.decision &&
+              !track.output
+                ?.applied
             );
           }
 
@@ -253,15 +261,27 @@ export default function App() {
               track.status ===
                 "analyzed" &&
               (
-                !track.review
-                  ?.required ||
-                Number.isFinite(
-                  track.review
-                    ?.selectedBpm
+                (
+                  !track.review
+                    ?.required &&
+                  track.tempo
+                    ?.autoApply &&
+                  Number.isFinite(
+                    track.tempo
+                      ?.suggestedBpm
+                  )
+                ) ||
+                (
+                  Number.isFinite(
+                    track.review
+                      ?.selectedBpm
+                  ) &&
+                  !track.review
+                    ?.skipped
                 )
               ) &&
-              !track.review
-                ?.skipped
+              !track.output
+                ?.applied
             );
           }
 
@@ -433,7 +453,7 @@ export default function App() {
             </div>
             <div className="brand-tagline">
               {t(
-                "Tempo intelligence for swing music"
+                "Tempo intelligence for a golden era of music"
               )}
             </div>
           </div>
@@ -909,8 +929,8 @@ export default function App() {
             </article>
           </div>
 
-          {(state.summary.needsReview >
-            0 ||
+          {((state.summary.reviewRemaining ??
+            0) > 0 ||
             (state.summary.pendingToApply ??
               0) > 0) && (
             <div className="workflow-cta">
@@ -927,8 +947,8 @@ export default function App() {
                 </span>
               </div>
               <div>
-                {state.summary.needsReview >
-                  0 && (
+                {(state.summary.reviewRemaining ??
+                  0) > 0 && (
                   <button
                     type="button"
                     className="button secondary-button"
@@ -942,8 +962,7 @@ export default function App() {
                         count:
                           state.summary
                             .reviewRemaining ??
-                          state.summary
-                            .needsReview,
+                          0,
                       }
                     )}
                   </button>
@@ -982,7 +1001,8 @@ export default function App() {
                     t(
                       "Review"
                     ),
-                    state.summary.needsReview,
+                    state.summary.reviewRemaining ??
+                      0,
                   ],
                   [
                     "ready",
@@ -1108,7 +1128,8 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.10
+          SwingSync v0.15.11
+          {" - By Diego Pablos"}
         </div>
       </footer>
 
