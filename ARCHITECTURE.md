@@ -170,3 +170,32 @@ applyBpmOutput()
 the UI a reliable preflight view before the user commits changes.
 
 Already-applied tracks are excluded from subsequent plans and batch applies.
+
+
+## v15 localization boundary
+
+```text
+┌──────────────────────────────┐
+│ React presentation           │
+│ LanguageProvider             │
+│ EN / ES                      │
+└──────────────┬───────────────┘
+               │ localized labels
+               │
+┌──────────────▼───────────────┐
+│ Stable client/domain DTOs    │
+│ confidence: "medium"         │
+│ relationship: "double-time"  │
+│ reasonCode + reasonParams    │
+└──────────────┬───────────────┘
+               │
+┌──────────────▼───────────────┐
+│ BPM / metadata engine        │
+│ language-independent         │
+└──────────────────────────────┘
+```
+
+The selected desktop language is not sent to the BPM engine.
+
+Stable reason codes avoid coupling domain behavior to English prose while the
+legacy English `reason` remains available for CLI/report compatibility.

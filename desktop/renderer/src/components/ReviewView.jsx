@@ -4,15 +4,13 @@ import {
   useState,
 } from "react";
 
-function bpm(value) {
-  return Number.isFinite(value)
-    ? `${value.toFixed(1)} BPM`
-    : "—";
-}
+import {
+  useLanguage,
+} from "../i18n/LanguageContext.jsx";
 
 function basename(file) {
   if (!file) {
-    return "Unknown track";
+    return null;
   }
 
   return file.split(/[\\/]/).pop();
@@ -23,19 +21,28 @@ function ReviewQueueItem({
   selected,
   onSelect,
 }) {
+  const {
+    t,
+    domainLabel,
+    formatBpm,
+  } = useLanguage();
+
   const decision =
     item.review;
 
   const state =
     decision?.skipped
-      ? "Skipped"
+      ? t("Skipped")
       : Number.isFinite(
           decision?.selectedBpm
         )
-      ? `${decision.selectedBpm.toFixed(
+      ? formatBpm(
+          decision.selectedBpm,
           1
-        )} BPM`
-      : "Needs decision";
+        )
+      : t(
+          "Needs decision"
+        );
 
   return (
     <button
@@ -50,11 +57,20 @@ function ReviewQueueItem({
       <div className="review-list-main">
         <strong>
           {item.filename ??
-            basename(item.file)}
+            basename(item.file) ??
+            t(
+              "Unknown track"
+            )}
         </strong>
         <span>
-          {item.relationship ??
-            "tempo review"}
+          {item.relationship
+            ? domainLabel(
+                "relationship",
+                item.relationship
+              )
+            : t(
+                "tempo review"
+              )}
         </span>
       </div>
       <span
@@ -75,6 +91,11 @@ function ReviewQueueItem({
 function EvidenceGrid({
   evidence,
 }) {
+  const {
+    t,
+    formatNumber,
+  } = useLanguage();
+
   if (
     !evidence?.breakdown
   ) {
@@ -107,23 +128,30 @@ function EvidenceGrid({
             key={key}
           >
             <span>
-              {labels[key] ?? key}
+              {t(
+                labels[key] ??
+                  key
+              )}
             </span>
             <strong>
               {value.passed
-                ? "Pass"
-                : "No"}
+                ? t("Pass")
+                : t("No")}
             </strong>
             <small>
               {Number.isFinite(
                 value.value
               )
-                ? `${value.value.toFixed(
+                ? `${formatNumber(
+                    value.value,
                     2
-                  )} / ${value.threshold.toFixed(
+                  )} / ${formatNumber(
+                    value.threshold,
                     2
                   )}`
-                : "No signal"}
+                : t(
+                    "No signal"
+                  )}
             </small>
           </div>
         )
@@ -138,6 +166,14 @@ export default function ReviewView({
   onBack,
   onContinue,
 }) {
+  const {
+    t,
+    plural,
+    domainLabel,
+    formatBpm,
+    formatReason,
+  } = useLanguage();
+
   const [queue, setQueue] =
     useState([]);
 
@@ -201,8 +237,6 @@ export default function ReviewView({
     refreshQueue().catch(
       () => {}
     );
-    // Queue is refreshed after each mutation below. The summary values
-    // catch profile/library changes coming from outside this view.
   }, [
     state.summary.needsReview,
     state.library.profile,
@@ -339,16 +373,24 @@ export default function ReviewView({
             className="text-button"
             onClick={onBack}
           >
-            ← Library
+            {t(
+              "← Library"
+            )}
           </button>
           <span className="eyebrow">
-            Human review
+            {t(
+              "Human review"
+            )}
           </span>
           <h1>
-            Confirm the musical pulse.
+            {t(
+              "Confirm the musical pulse."
+            )}
           </h1>
           <p>
-            These tracks need your judgment. Choosing a BPM only approves the decision—it does not modify the file yet.
+            {t(
+              "These tracks need your judgment. Choosing a BPM only approves the decision—it does not modify the file yet."
+            )}
           </p>
         </div>
 
@@ -359,7 +401,9 @@ export default function ReviewView({
                 unresolved.length}
             </strong>
             <span>
-              remaining
+              {t(
+                "remaining"
+              )}
             </span>
           </div>
           <div className="workflow-stat">
@@ -367,7 +411,9 @@ export default function ReviewView({
               {state.summary.reviewed}
             </strong>
             <span>
-              approved
+              {t(
+                "approved"
+              )}
             </span>
           </div>
           <button
@@ -379,14 +425,18 @@ export default function ReviewView({
               0
             }
           >
-            Continue to Apply
+            {t(
+              "Continue to Apply"
+            )}
           </button>
         </div>
       </div>
 
       {loading ? (
         <div className="workflow-empty">
-          Loading review queue…
+          {t(
+            "Loading review queue…"
+          )}
         </div>
       ) : queue.length === 0 ? (
         <div className="workflow-empty">
@@ -394,10 +444,14 @@ export default function ReviewView({
             ✓
           </div>
           <h2>
-            Nothing needs review.
+            {t(
+              "Nothing needs review."
+            )}
           </h2>
           <p>
-            All analyzed tracks are either confidently interpreted or there is no reviewable result.
+            {t(
+              "All analyzed tracks are either confidently interpreted or there is no reviewable result."
+            )}
           </p>
           <button
             type="button"
@@ -408,7 +462,9 @@ export default function ReviewView({
               0
             }
           >
-            Review apply plan
+            {t(
+              "Review apply plan"
+            )}
           </button>
         </div>
       ) : (
@@ -416,10 +472,16 @@ export default function ReviewView({
           <aside className="review-list">
             <div className="review-list-header">
               <strong>
-                Review queue
+                {t(
+                  "Review queue"
+                )}
               </strong>
               <span>
-                {queue.length} track{queue.length === 1 ? "" : "s"}
+                {plural(
+                  "{count} track",
+                  "{count} tracks",
+                  queue.length
+                )}
               </span>
             </div>
 
@@ -452,12 +514,24 @@ export default function ReviewView({
               <div className="review-editor-heading">
                 <div>
                   <span className="eyebrow">
-                    Track {currentIndex + 1} of {queue.length}
+                    {t(
+                      "Track {current} of {total}",
+                      {
+                        current:
+                          currentIndex +
+                          1,
+                        total:
+                          queue.length,
+                      }
+                    )}
                   </span>
                   <h2>
                     {selected.filename ??
                       basename(
                         selected.file
+                      ) ??
+                      t(
+                        "Unknown track"
                       )}
                   </h2>
                   <span className="path-copy">
@@ -469,10 +543,20 @@ export default function ReviewView({
                 {selected.review && (
                   <div className="approved-badge">
                     {selected.review.skipped
-                      ? "Skipped"
-                      : `Approved ${selected.review.selectedBpm.toFixed(
-                          1
-                        )} BPM`}
+                      ? t(
+                          "Skipped"
+                        )
+                      : t(
+                          "Approved {bpm}",
+                          {
+                            bpm:
+                              formatBpm(
+                                selected.review
+                                  .selectedBpm,
+                                1
+                              ),
+                          }
+                        )}
                   </div>
                 )}
               </div>
@@ -500,18 +584,34 @@ export default function ReviewView({
                   }
                 >
                   <span>
-                    Acoustic detection
+                    {t(
+                      "Acoustic detection"
+                    )}
                   </span>
                   <strong>
-                    {bpm(
-                      selected.detectedBpm
+                    {formatBpm(
+                      selected.detectedBpm,
+                      1
                     )}
                   </strong>
                   <small>
-                    Confidence: {selected.detectedConfidence ?? "—"}
+                    {t(
+                      "Confidence: {confidence}",
+                      {
+                        confidence:
+                          selected.detectedConfidence
+                            ? domainLabel(
+                                "confidence",
+                                selected.detectedConfidence
+                              )
+                            : "—",
+                      }
+                    )}
                   </small>
                   <em>
-                    Approve detected
+                    {t(
+                      "Approve detected"
+                    )}
                   </em>
                 </button>
 
@@ -537,19 +637,43 @@ export default function ReviewView({
                   }
                 >
                   <span>
-                    SwingSync suggestion
+                    {t(
+                      "SwingSync suggestion"
+                    )}
                   </span>
                   <strong>
-                    {bpm(
-                      selected.suggestedBpm
+                    {formatBpm(
+                      selected.suggestedBpm,
+                      1
                     )}
                   </strong>
                   <small>
-                    {selected.relationship ??
-                      "interpreted tempo"} · {selected.interpretationConfidence ?? "—"}
+                    {t(
+                      "{relationship} · {confidence}",
+                      {
+                        relationship:
+                          selected.relationship
+                            ? domainLabel(
+                                "relationship",
+                                selected.relationship
+                              )
+                            : t(
+                                "Interpretation"
+                              ),
+                        confidence:
+                          selected.interpretationConfidence
+                            ? domainLabel(
+                                "confidence",
+                                selected.interpretationConfidence
+                              )
+                            : "—",
+                      }
+                    )}
                   </small>
                   <em>
-                    Approve suggested
+                    {t(
+                      "Approve suggested"
+                    )}
                   </em>
                 </button>
               </div>
@@ -557,10 +681,14 @@ export default function ReviewView({
               <div className="custom-review-row">
                 <div>
                   <span className="section-label">
-                    Custom BPM
+                    {t(
+                      "Custom BPM"
+                    )}
                   </span>
                   <p>
-                    Enter your own value if neither interpretation matches how you count the song.
+                    {t(
+                      "Enter your own value if neither interpretation matches how you count the song."
+                    )}
                   </p>
                 </div>
                 <div className="custom-bpm-control">
@@ -575,7 +703,7 @@ export default function ReviewView({
                         event.target.value
                       )
                     }
-                    placeholder="e.g. 178"
+                    placeholder="178"
                     disabled={busy}
                   />
                   <button
@@ -592,18 +720,29 @@ export default function ReviewView({
                       )
                     }
                   >
-                    Approve custom
+                    {t(
+                      "Approve custom"
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="review-explanation">
                 <span className="section-label">
-                  Why SwingSync asked
+                  {t(
+                    "Why SwingSync asked"
+                  )}
                 </span>
                 <p>
-                  {selected.reason ??
-                    "The acoustic and musical interpretations did not produce a sufficiently confident automatic decision."}
+                  {selected.reason
+                    ? formatReason(
+                        selected.reasonCode,
+                        selected.reasonParams,
+                        selected.reason
+                      )
+                    : t(
+                        "The acoustic and musical interpretations did not produce a sufficiently confident automatic decision."
+                      )}
                 </p>
               </div>
 
@@ -612,20 +751,22 @@ export default function ReviewView({
                   <div className="evidence-heading">
                     <div>
                       <span className="section-label">
-                        Double-time evidence
+                        {t(
+                          "Double-time evidence"
+                        )}
                       </span>
                       <p>
-                        Multi-signal score used by the genre profile.
+                        {t(
+                          "Multi-signal score used by the genre profile."
+                        )}
                       </p>
                     </div>
                     <strong>
-                      {selected.doubleTimeEvidence.totalScore.toFixed(
+                      {`${selected.doubleTimeEvidence.totalScore.toFixed(
                         1
-                      )}
-                      /
-                      {selected.doubleTimeEvidence.maximumScore.toFixed(
+                      )}/${selected.doubleTimeEvidence.maximumScore.toFixed(
                         1
-                      )}
+                      )}`}
                     </strong>
                   </div>
 
@@ -640,7 +781,9 @@ export default function ReviewView({
               {selected.candidates?.length > 0 && (
                 <div className="candidate-strip">
                   <span className="section-label">
-                    Acoustic candidates
+                    {t(
+                      "Acoustic candidates"
+                    )}
                   </span>
                   <div>
                     {selected.candidates.map(
@@ -652,9 +795,10 @@ export default function ReviewView({
                           className="candidate-chip"
                           key={`${candidate.kind}-${candidate.bpm}-${index}`}
                         >
-                          {candidate.bpm.toFixed(
+                          {formatBpm(
+                            candidate.bpm,
                             1
-                          )} BPM
+                          )}
                           {Number.isFinite(
                             candidate.score
                           )
@@ -678,7 +822,9 @@ export default function ReviewView({
                     submit("skip")
                   }
                 >
-                  Skip this track
+                  {t(
+                    "Skip this track"
+                  )}
                 </button>
 
                 {selected.review && (
@@ -690,7 +836,9 @@ export default function ReviewView({
                       clearDecision
                     }
                   >
-                    Clear decision
+                    {t(
+                      "Clear decision"
+                    )}
                   </button>
                 )}
               </div>

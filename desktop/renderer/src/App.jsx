@@ -20,6 +20,13 @@ import ReviewView from
 import ApplyView from
   "./components/ApplyView.jsx";
 
+import LanguageToggle from
+  "./components/LanguageToggle.jsx";
+
+import {
+  useLanguage,
+} from "./i18n/LanguageContext.jsx";
+
 function FolderIcon() {
   return (
     <svg
@@ -82,6 +89,12 @@ export default function App() {
     selectedFolders,
     actions,
   } = useSwingSync();
+
+  const {
+    t,
+    plural,
+    domainLabel,
+  } = useLanguage();
 
   const [view, setView] =
     useState("library");
@@ -375,7 +388,9 @@ export default function App() {
         <div>
           <h1>SwingSync</h1>
           <p>
-            Starting the music library engine…
+            {t(
+              "Starting the music library engine…"
+            )}
           </p>
         </div>
       </main>
@@ -394,14 +409,18 @@ export default function App() {
               SwingSync
             </div>
             <div className="brand-tagline">
-              Tempo intelligence for swing music
+              {t(
+                "Tempo intelligence for swing music"
+              )}
             </div>
           </div>
         </div>
 
         <nav
           className="app-navigation"
-          aria-label="Workflow"
+          aria-label={t(
+            "Workflow"
+          )}
         >
           <button
             type="button"
@@ -414,7 +433,9 @@ export default function App() {
               setView("library")
             }
           >
-            Library
+            {t(
+              "Library"
+            )}
           </button>
 
           <button
@@ -430,7 +451,9 @@ export default function App() {
             }
             onClick={goToReview}
           >
-            Review
+            {t(
+              "Review"
+            )}
             {state.summary.reviewRemaining >
               0 && (
               <span>
@@ -457,7 +480,9 @@ export default function App() {
             }
             onClick={goToApply}
           >
-            Apply
+            {t(
+              "Apply"
+            )}
             {state.summary.readyToApply >
               0 && (
               <span>
@@ -473,8 +498,14 @@ export default function App() {
         </nav>
 
         <div className="topbar-controls">
+          <LanguageToggle />
+
           <label className="compact-field">
-            <span>Profile</span>
+            <span>
+              {t(
+                "Profile"
+              )}
+            </span>
             <select
               value={profile}
               onChange={(event) =>
@@ -495,8 +526,10 @@ export default function App() {
                     key={item.name}
                     value={item.name}
                   >
-                    {item.name[0].toUpperCase() +
-                      item.name.slice(1)}
+                    {domainLabel(
+                      "profile",
+                      item.name
+                    )}
                   </option>
                 )
               )}
@@ -504,7 +537,11 @@ export default function App() {
           </label>
 
           <label className="compact-field">
-            <span>Output</span>
+            <span>
+              {t(
+                "Output"
+              )}
+            </span>
             <select
               value={outputMode}
               onChange={(event) =>
@@ -523,8 +560,10 @@ export default function App() {
                     key={mode}
                     value={mode}
                   >
-                    {mode[0].toUpperCase() +
-                      mode.slice(1)}
+                    {domainLabel(
+                      "outputMode",
+                      mode
+                    )}
                   </option>
                 )
               )}
@@ -539,7 +578,9 @@ export default function App() {
           role="alert"
         >
           <span>
-            {actionError}
+            {t(
+              actionError
+            )}
           </span>
           <button
             type="button"
@@ -547,7 +588,9 @@ export default function App() {
               actions.clearError
             }
           >
-            Dismiss
+            {t(
+              "Dismiss"
+            )}
           </button>
         </div>
       )}
@@ -580,13 +623,19 @@ export default function App() {
           <div className="library-heading">
             <div>
               <span className="eyebrow">
-                Music library
+                {t(
+                  "Music library"
+                )}
               </span>
               <h1>
-                Find the right pulse.
+                {t(
+                  "Find the right pulse."
+                )}
               </h1>
               <p>
-                Analyze your collection, review ambiguous musical interpretations, then explicitly commit approved BPM metadata.
+                {t(
+                  "Analyze your collection, review ambiguous musical interpretations, then explicitly commit approved BPM metadata."
+                )}
               </p>
             </div>
 
@@ -604,7 +653,9 @@ export default function App() {
                 }
               >
                 <FolderIcon />
-                Choose folders
+                {t(
+                  "Choose folders"
+                )}
               </button>
 
               <button
@@ -621,7 +672,9 @@ export default function App() {
                   busyAction !== null
                 }
               >
-                Open library
+                {t(
+                  "Open library"
+                )}
               </button>
 
               <button
@@ -641,8 +694,12 @@ export default function App() {
               >
                 <AnalyzeIcon />
                 {isAnalyzing
-                  ? "Analyzing…"
-                  : "Analyze library"}
+                  ? t(
+                      "Analyzing…"
+                    )
+                  : t(
+                      "Analyze library"
+                    )}
               </button>
             </div>
           </div>
@@ -652,11 +709,17 @@ export default function App() {
               <FolderIcon />
               <span>
                 {isLibraryOpen
-                  ? "Open roots"
+                  ? t(
+                      "Open roots"
+                    )
                   : openFolders.length >
                     0
-                  ? "New selection"
-                  : "Selected roots"}
+                  ? t(
+                      "New selection"
+                    )
+                  : t(
+                      "Selected roots"
+                    )}
               </span>
             </div>
 
@@ -665,7 +728,9 @@ export default function App() {
               0
                 ? selectedFolders
                 : [
-                    "No folders selected",
+                    t(
+                      "No folders selected"
+                    ),
                   ]
               ).map(
                 (folder) => (
@@ -685,7 +750,9 @@ export default function App() {
             <div className="progress-panel">
               <div className="progress-copy">
                 <strong>
-                  Analyzing library
+                  {t(
+                    "Analyzing library"
+                  )}
                 </strong>
                 <span>
                   {state.progress.completed +
@@ -724,32 +791,55 @@ export default function App() {
           <div className="summary-grid">
             <article className="summary-card">
               <span>
-                Tracks
+                {t(
+                  "Tracks"
+                )}
               </span>
               <strong>
                 {state.summary.total}
               </strong>
               <small>
-                Across {state.library?.folders?.length ?? 0} root{(state.library?.folders?.length ?? 0) === 1 ? "" : "s"}
+                {plural(
+                  "Across {count} root",
+                  "Across {count} roots",
+                  state.library
+                    ?.folders
+                    ?.length ??
+                    0
+                )}
               </small>
             </article>
 
             <article className="summary-card review-card">
               <span>
-                Review remaining
+                {t(
+                  "Review remaining"
+                )}
               </span>
               <strong>
                 {state.summary.reviewRemaining ??
                   state.summary.needsReview}
               </strong>
               <small>
-                {state.summary.reviewed} approved · {state.summary.reviewSkipped} skipped
+                {t(
+                  "{approved} approved · {skipped} skipped",
+                  {
+                    approved:
+                      state.summary
+                        .reviewed,
+                    skipped:
+                      state.summary
+                        .reviewSkipped,
+                  }
+                )}
               </small>
             </article>
 
             <article className="summary-card">
               <span>
-                Ready to apply
+                {t(
+                  "Ready to apply"
+                )}
               </span>
               <strong>
                 {Math.max(
@@ -759,19 +849,25 @@ export default function App() {
                 )}
               </strong>
               <small>
-                Trusted or human-approved
+                {t(
+                  "Trusted or human-approved"
+                )}
               </small>
             </article>
 
             <article className="summary-card">
               <span>
-                Applied
+                {t(
+                  "Applied"
+                )}
               </span>
               <strong>
                 {state.summary.outputApplied}
               </strong>
               <small>
-                File changes committed
+                {t(
+                  "File changes committed"
+                )}
               </small>
             </article>
           </div>
@@ -783,10 +879,14 @@ export default function App() {
             <div className="workflow-cta">
               <div>
                 <strong>
-                  Analysis complete?
+                  {t(
+                    "Analysis complete?"
+                  )}
                 </strong>
                 <span>
-                  Review uncertain tracks, then inspect the exact write plan before committing anything.
+                  {t(
+                    "Review uncertain tracks, then inspect the exact write plan before committing anything."
+                  )}
                 </span>
               </div>
               <div>
@@ -799,10 +899,16 @@ export default function App() {
                       goToReview
                     }
                   >
-                    Review {
-                      state.summary.reviewRemaining ??
-                      state.summary.needsReview
-                    } remaining
+                    {t(
+                      "Review {count} remaining",
+                      {
+                        count:
+                          state.summary
+                            .reviewRemaining ??
+                          state.summary
+                            .needsReview,
+                      }
+                    )}
                   </button>
                 )}
                 {state.summary.readyToApply >
@@ -814,7 +920,9 @@ export default function App() {
                       goToApply
                     }
                   >
-                    Review apply plan
+                    {t(
+                      "Review apply plan"
+                    )}
                   </button>
                 )}
               </div>
@@ -827,22 +935,30 @@ export default function App() {
                 {[
                   [
                     "all",
-                    "All",
+                    t(
+                      "All"
+                    ),
                     state.summary.total,
                   ],
                   [
                     "review",
-                    "Review",
+                    t(
+                      "Review"
+                    ),
                     state.summary.needsReview,
                   ],
                   [
                     "ready",
-                    "Ready",
+                    t(
+                      "Ready"
+                    ),
                     state.summary.readyToApply,
                   ],
                   [
                     "errors",
-                    "Errors",
+                    t(
+                      "Errors"
+                    ),
                     state.summary.errors,
                   ],
                 ].map(
@@ -877,7 +993,9 @@ export default function App() {
 
               <label className="search-field">
                 <span className="sr-only">
-                  Search tracks
+                  {t(
+                    "Search tracks"
+                  )}
                 </span>
                 <svg
                   viewBox="0 0 24 24"
@@ -906,7 +1024,9 @@ export default function App() {
                       event.target.value
                     )
                   }
-                  placeholder="Search tracks"
+                  placeholder={t(
+                    "Search tracks"
+                  )}
                 />
               </label>
             </div>
@@ -933,10 +1053,24 @@ export default function App() {
                 : ""
             }`}
           />
-          Engine {actionError ? "needs attention" : isApplying ? "writing changes" : isAnalyzing ? "analyzing" : "ready"}
+          {actionError
+            ? t(
+                "Engine needs attention"
+              )
+            : isApplying
+            ? t(
+                "Engine writing changes"
+              )
+            : isAnalyzing
+            ? t(
+                "Engine analyzing"
+              )
+            : t(
+                "Engine ready"
+              )}
         </div>
         <div>
-          SwingSync v0.14
+          SwingSync v0.15
         </div>
       </footer>
 

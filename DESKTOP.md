@@ -1,122 +1,85 @@
-# SwingSync Desktop — v14 Review & Apply workflow
+# SwingSync Desktop v15 — Localization
 
-SwingSync v14 completes the first end-to-end desktop workflow:
-
-```text
-Library
-  ↓
-Analyze
-  ↓
-Review uncertain tracks
-  ↓
-Approve BPM decisions
-  ↓
-Inspect apply plan
-  ↓
-Final confirmation
-  ↓
-Write metadata / rename
-```
-
-## Development
-
-```powershell
-npm install
-npm run desktop:dev
-```
-
-The npm install-script approval for the pinned `ffmpeg-static@5.3.0` dependency
-is now committed in `package.json`, so a fresh install should not require a
-separate:
-
-```powershell
-npm install-scripts approve ffmpeg-static
-```
-
-step.
-
-## Review
-
-After analysis, use the **Review** tab.
-
-For every review-required track you can:
-
-- approve the acoustic detected BPM
-- approve SwingSync's genre-aware suggested BPM
-- enter and approve a custom BPM
-- skip the track
-- clear/change a previous review decision
-
-Review decisions are application state only. They do **not** write the audio
-file.
-
-The app distinguishes:
+## Supported languages
 
 ```text
-Review     unresolved human decision
-Approved   human BPM decision recorded
-Skipped    deliberately excluded
-Ready      high-confidence automatic decision
-Applied    output has been committed
+en  English
+es  Español
 ```
 
-## Apply plan
+Use the `EN | ES` toggle in the application top bar.
 
-Use the **Apply** tab to inspect a pure read-only plan before anything is
-written.
-
-The plan shows:
-
-- existing BPM metadata
-- approved BPM
-- human vs automatic approval
-- whether metadata will be written
-- whether it already matches
-- unsupported metadata formats
-- filename changes when filename/both output is selected
-
-`BpmApplication.getApplyPlan()` builds this view without mutating files.
-
-## Final write boundary
-
-Pressing **Apply changes** opens a second confirmation modal.
-
-Only:
+The preference is stored under:
 
 ```text
-Confirm & write
+swingsync.language
 ```
 
-calls:
+in the renderer's local storage.
 
-```js
-app.applyAllApproved({
-  applyChanges: true,
-});
-```
+## First-run behavior
 
-This is the explicit file-mutation boundary in the desktop application.
+If there is no stored preference, SwingSync checks `navigator.language`.
 
-## Repeated apply protection
-
-Already-applied tracks are excluded from future batch apply plans and batch
-apply runs.
-
-After a successful metadata write, the in-memory metadata BPM is also updated
-so the application reflects the value that was written.
-
-## IPC
-
-v14 adds:
+Locales beginning with:
 
 ```text
-swingsync:get-apply-plan
+es
 ```
 
-and the preload API:
+start in Spanish. Otherwise SwingSync starts in English.
 
-```js
-window.swingSync.getApplyPlan()
+## Translation boundary
+
+Localization lives only in the renderer:
+
+```text
+React component
+  ↓
+useLanguage()
+  ↓
+English source string / domain code
+  ↓
+Spanish dictionary when language === es
 ```
 
-The renderer still never receives raw Node.js or Electron APIs.
+The Electron main process and `BpmApplication` do not need to know the
+selected language.
+
+## Domain-safe localization
+
+The application continues to pass stable values across IPC:
+
+```text
+confidence = medium
+relationship = double-time
+outputMode = metadata
+```
+
+The UI displays:
+
+```text
+English                     Spanish
+
+Medium                      Media
+Double time                 Doble tempo
+Metadata                    Metadatos
+```
+
+## Reason codes
+
+Tempo interpretation now returns `reasonCode` + `reasonParams` in addition to
+the existing canonical English `reason`.
+
+This is the pattern to use for future engine messages that need localization:
+add stable codes/parameters, not language-specific strings to the engine.
+
+## Adding another language
+
+1. Add the language to `SUPPORTED_LANGUAGES`.
+2. Add a translation dictionary alongside `SPANISH_TRANSLATIONS`.
+3. Extend `LanguageContext` to select that dictionary.
+4. No audio/tempo/application-domain changes should be necessary.
+
+If the translation dictionary does not contain a source message, SwingSync
+falls back to English.

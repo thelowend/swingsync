@@ -1,8 +1,6 @@
-function bpm(value) {
-  return Number.isFinite(value)
-    ? `${value.toFixed(2)} BPM`
-    : "Not available";
-}
+import {
+  useLanguage,
+} from "../i18n/LanguageContext.jsx";
 
 function Detail({
   label,
@@ -31,16 +29,36 @@ export default function TrackInspector({
   loading,
   onClose,
 }) {
+  const {
+    t,
+    domainLabel,
+    formatBpm,
+    formatReason,
+  } = useLanguage();
+
   if (!track) {
     return null;
   }
+
+  const bpm = (
+    value
+  ) =>
+    formatBpm(
+      value,
+      2,
+      t(
+        "Not available"
+      )
+    );
 
   return (
     <aside className="inspector">
       <div className="inspector-header">
         <div>
           <span className="eyebrow">
-            Track inspector
+            {t(
+              "Track inspector"
+            )}
           </span>
           <h2>{track.filename}</h2>
         </div>
@@ -48,7 +66,9 @@ export default function TrackInspector({
           className="icon-button"
           type="button"
           onClick={onClose}
-          aria-label="Close inspector"
+          aria-label={t(
+            "Close inspector"
+          )}
         >
           ×
         </button>
@@ -56,21 +76,27 @@ export default function TrackInspector({
 
       <div className="inspector-section">
         <Detail
-          label="Existing tag"
+          label={t(
+            "Existing tag"
+          )}
           value={bpm(
             track.metadata
               ?.existingBpm
           )}
         />
         <Detail
-          label="Detected"
+          label={t(
+            "Detected"
+          )}
           value={bpm(
             track.tempo
               ?.detectedBpm
           )}
         />
         <Detail
-          label="Suggested"
+          label={t(
+            "Suggested"
+          )}
           value={bpm(
             track.tempo
               ?.suggestedBpm
@@ -78,79 +104,120 @@ export default function TrackInspector({
           accent
         />
         <Detail
-          label="Relationship"
+          label={t(
+            "Relationship"
+          )}
           value={
             track.tempo
-              ?.relationship ??
-            "—"
+              ?.relationship
+              ? domainLabel(
+                  "relationship",
+                  track.tempo
+                    .relationship
+                )
+              : "—"
           }
         />
       </div>
 
       <div className="inspector-section">
         <span className="section-label">
-          Interpretation
+          {t(
+            "Interpretation"
+          )}
         </span>
         <p className="reason-text">
-          {track.tempo?.reason ??
-            "Analyze this track to see the interpretation rationale."}
+          {track.tempo?.reason
+            ? formatReason(
+                track.tempo
+                  ?.reasonCode,
+                track.tempo
+                  ?.reasonParams,
+                track.tempo
+                  ?.reason
+              )
+            : t(
+                "Analyze this track to see the interpretation rationale."
+              )}
         </p>
       </div>
 
       {track.review?.required && (
         <div className="review-callout">
           <span className="section-label">
-            Human review needed
+            {t(
+              "Human review needed"
+            )}
           </span>
           <p>
-            SwingSync found a musically plausible alternate metrical level. Open Review to approve the detected BPM, the suggested interpretation, a custom BPM, or skip this track.
+            {t(
+              "SwingSync found a musically plausible alternate metrical level. Open Review to approve the detected BPM, the suggested interpretation, a custom BPM, or skip this track."
+            )}
           </p>
         </div>
       )}
 
       <div className="inspector-section">
         <span className="section-label">
-          Analysis details
+          {t(
+            "Analysis details"
+          )}
         </span>
 
         {loading ? (
           <p className="muted">
-            Loading diagnostics…
+            {t(
+              "Loading diagnostics…"
+            )}
           </p>
         ) : details ? (
           <div className="diagnostics-grid">
             <Detail
-              label="Rhythm"
+              label={t(
+                "Rhythm"
+              )}
               value={bpm(
                 details.analysis
                   ?.rhythm?.bpm
               )}
             />
             <Detail
-              label="Percival"
+              label={t(
+                "Percival"
+              )}
               value={bpm(
                 details.analysis
                   ?.percival?.bpm
               )}
             />
             <Detail
-              label="Beat median"
+              label={t(
+                "Beat median"
+              )}
               value={bpm(
                 details.analysis
                   ?.beats?.medianBpm
               )}
             />
             <Detail
-              label="Source"
+              label={t(
+                "Source"
+              )}
               value={
-                track.analysisSource ??
-                "—"
+                track.analysisSource
+                  ? domainLabel(
+                      "analysisSource",
+                      track.analysisSource
+                    )
+                  : "—"
               }
             />
           </div>
         ) : (
           <p className="muted">
-            No analysis details yet.
+            {t(
+              "No analysis details yet."
+            )}
           </p>
         )}
       </div>

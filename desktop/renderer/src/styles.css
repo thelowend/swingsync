@@ -1754,3 +1754,46 @@ svg {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15 language toggle                                                 */
+/* ------------------------------------------------------------------ */
+
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  background: #121419;
+}
+
+.language-toggle button {
+  min-width: 34px;
+  height: 29px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 7px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.language-toggle button:hover {
+  color: var(--text);
+  background: var(--panel-hover);
+}
+
+.language-toggle button.active {
+  color: #1a1408;
+  background: var(--accent);
+}
+
+.language-toggle button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

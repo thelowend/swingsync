@@ -1,13 +1,17 @@
 import StatusPill from
   "./StatusPill.jsx";
 
-function bpm(value) {
-  return Number.isFinite(value)
-    ? value.toFixed(1)
-    : "—";
-}
+import {
+  useLanguage,
+} from "../i18n/LanguageContext.jsx";
 
-function Confidence({ value }) {
+function Confidence({
+  value,
+}) {
+  const {
+    domainLabel,
+  } = useLanguage();
+
   if (!value) {
     return (
       <span className="muted">
@@ -20,7 +24,10 @@ function Confidence({ value }) {
     <span
       className={`confidence confidence-${value}`}
     >
-      {value}
+      {domainLabel(
+        "confidence",
+        value
+      )}
     </span>
   );
 }
@@ -30,6 +37,20 @@ export default function LibraryTable({
   selectedTrackId,
   onSelectTrack,
 }) {
+  const {
+    t,
+    formatNumber,
+  } = useLanguage();
+
+  function bpm(value) {
+    return Number.isFinite(value)
+      ? formatNumber(
+          value,
+          1
+        )
+      : "—";
+  }
+
   if (tracks.length === 0) {
     return (
       <div className="empty-table">
@@ -37,10 +58,14 @@ export default function LibraryTable({
           ♪
         </div>
         <strong>
-          No tracks to show
+          {t(
+            "No tracks to show"
+          )}
         </strong>
         <span>
-          Choose folders and open the library to scan for music.
+          {t(
+            "Choose folders and open the library to scan for music."
+          )}
         </span>
       </div>
     );
@@ -51,12 +76,26 @@ export default function LibraryTable({
       <table className="library-table">
         <thead>
           <tr>
-            <th>Track</th>
-            <th>Tag</th>
-            <th>Detected</th>
-            <th>Suggested</th>
-            <th>Confidence</th>
-            <th>Status</th>
+            <th>
+              {t("Track")}
+            </th>
+            <th>
+              {t("Tag")}
+            </th>
+            <th>
+              {t("Detected")}
+            </th>
+            <th>
+              {t("Suggested")}
+            </th>
+            <th>
+              {t(
+                "Confidence"
+              )}
+            </th>
+            <th>
+              {t("Status")}
+            </th>
           </tr>
         </thead>
         <tbody>

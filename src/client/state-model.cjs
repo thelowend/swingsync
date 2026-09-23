@@ -136,6 +136,8 @@ function createTrackState({
       adjusted: false,
       relationship: null,
       reason: null,
+      reasonCode: null,
+      reasonParams: null,
       autoApply: false,
     },
 
@@ -240,6 +242,14 @@ function projectTrackResult({
         trackResult
           .interpretation
           ?.reason ?? null,
+      reasonCode:
+        trackResult
+          .interpretation
+          ?.reasonCode ?? null,
+      reasonParams:
+        trackResult
+          .interpretation
+          ?.reasonParams ?? null,
       autoApply:
         Boolean(
           trackResult

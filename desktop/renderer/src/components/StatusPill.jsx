@@ -1,18 +1,14 @@
-const LABELS = {
-  pending: "Pending",
-  analyzing: "Analyzing",
-  analyzed: "Analyzed",
-  error: "Error",
-  review: "Review",
-  approved: "Approved",
-  skipped: "Skipped",
-  ready: "Ready",
-  applied: "Applied",
-};
+import {
+  useLanguage,
+} from "../i18n/LanguageContext.jsx";
 
 export default function StatusPill({
   track,
 }) {
+  const {
+    domainLabel,
+  } = useLanguage();
+
   let kind = track.status;
 
   if (
@@ -50,7 +46,10 @@ export default function StatusPill({
         className="status-dot"
         aria-hidden="true"
       />
-      {LABELS[kind] ?? kind}
+      {domainLabel(
+        "status",
+        kind
+      )}
     </span>
   );
 }

@@ -516,3 +516,24 @@ reviewRemaining  review-required tracks with no decision yet
 reviewed         human-approved review tracks
 reviewSkipped    deliberately skipped tracks
 ```
+
+
+---
+
+## Localization-related interpretation fields
+
+v15 preserves the existing English `reason` and also exposes:
+
+```text
+interpretation.reasonCode
+interpretation.reasonParams
+```
+
+These are presentation-neutral localization hooks.
+
+The desktop uses them to render musical interpretation explanations in the
+selected language while keeping the API/CLI/report behavior backward
+compatible.
+
+Language selection itself is intentionally not part of `BpmApplication`;
+it is a presentation preference.

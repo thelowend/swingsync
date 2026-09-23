@@ -183,6 +183,16 @@ function createReviewItem(
         ?.reason ??
       null,
 
+    reasonCode:
+      trackResult.interpretation
+        ?.reasonCode ??
+      null,
+
+    reasonParams:
+      trackResult.interpretation
+        ?.reasonParams ??
+      null,
+
     doubleTimeEvidence:
       trackResult.interpretation
         ?.doubleTimeEvidence ??

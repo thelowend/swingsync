@@ -1,137 +1,163 @@
-# SwingSync v14 — Review, Approve & Apply
+# SwingSync v15 — English + Spanish desktop UI
 
-SwingSync is a desktop and CLI application for swing/boogie-aware tempo
-analysis and BPM synchronization.
+SwingSync v15 adds the first multilingual desktop experience.
 
-v14 completes the first full desktop workflow:
+Supported desktop languages:
 
 ```text
-Analyze → Human Review → Apply Plan → Confirm & Write
+English
+Español
 ```
 
-## Run the desktop app
+The BPM engine, cache, metadata writer, reports and CLI remain language-neutral
+or canonical-English internally. Localization is applied at the desktop
+presentation boundary.
+
+## Run
 
 ```powershell
 npm install
 npm run desktop:dev
 ```
 
-For a production renderer build followed by Electron:
+## Language toggle
 
-```powershell
-npm run desktop:run
-```
-
-## The important safety rule
-
-Analyzing and reviewing never modify your music files.
-
-A review choice such as:
+The top bar now contains:
 
 ```text
-Approve suggested: 226.9 BPM
+EN | ES
 ```
 
-records the human decision in application state only.
+Changing language updates the current screen immediately; analysis does not
+restart and no application state is lost.
 
-Files are modified only after opening **Apply**, inspecting the plan, pressing
-**Apply changes**, and then pressing:
+SwingSync remembers the selected desktop language in renderer local storage.
+
+On first launch:
+
+- an OS/browser locale beginning with `es` selects Spanish
+- all other locales default to English
+
+The selected language also updates the document `lang` attribute for
+accessibility.
+
+## Localization architecture
 
 ```text
-Confirm & write
+desktop/renderer/src/i18n/
+  translations.mjs
+  LanguageContext.jsx
 ```
 
-## Review screen
+English is the source/fallback language. Spanish translations are stored in a
+separate dictionary.
 
-Tracks whose interpretation is uncertain appear in the Review queue.
-
-You can choose:
-
-- detected BPM
-- SwingSync suggested BPM
-- custom BPM
-- skip
-
-You can also clear and revise a prior decision.
-
-## Apply screen
-
-Before writing, SwingSync shows every approved pending track with:
-
-- existing BPM tag
-- selected BPM
-- human/automatic approval source
-- metadata write status
-- filename plan where applicable
-- unsupported outputs
-
-The apply-plan API is read-only:
+Components use:
 
 ```js
-app.getApplyPlan()
+const {
+  t,
+  plural,
+  domainLabel,
+  formatBpm,
+  formatReason,
+} = useLanguage();
 ```
 
-## Output modes
+This keeps text out of business logic and makes additional languages a
+dictionary/presentation concern.
 
-The desktop retains the three existing modes:
+## Domain values remain stable
+
+Machine values are **not** translated:
 
 ```text
+high
+medium
+low
+
+double-time
+3:2-triplet-feel
+
 metadata
 filename
 both
+
+use-detected
+use-suggested
+...
 ```
 
-Metadata remains the default.
+The UI translates their labels only.
 
-## npm install-script approval
+That means language changes do not alter:
 
-`ffmpeg-static` is now pinned to:
+- caches
+- reports
+- review actions
+- persisted BPM decisions
+- IPC payload contracts
+- benchmark behavior
 
-```text
-5.3.0
+## Interpretation reasons
+
+v15 adds presentation-friendly fields to musical interpretations:
+
+```js
+reasonCode
+reasonParams
 ```
 
-and the project commits:
+For example:
 
 ```json
-"allowScripts": {
-  "ffmpeg-static@5.3.0": true
+{
+  "reasonCode": "interpretation.double-time-preferred",
+  "reasonParams": {
+    "profile": "boogie",
+    "candidateBpm": 226.92,
+    "detectedBpm": 113.46,
+    "totalScore": 6,
+    "maximumScore": 6,
+    "requiredScore": 5
+  }
 }
 ```
 
-so a clean `npm install` should no longer require manually approving the
-package's install script each time.
+The existing English `reason` string remains unchanged for compatibility with
+the CLI, reports and older consumers.
 
-## CLI
+This lets the desktop UI render the same explanation naturally in English or
+Spanish without attempting to parse English prose.
 
-The CLI is unchanged:
+## Numbers
 
-```powershell
-swingsync --profile boogie
-swingsync --profile boogie --review --apply
-```
-
-Default/multiple music folders continue to come from `.env` when no positional
-folders are supplied.
-
-## Architecture
+Desktop number formatting follows the selected language:
 
 ```text
-React
-  │
-  │ narrow preload API
-  ▼
-Electron IPC
-  │
-  ▼
-BpmApplication
-  ├── getReviewQueue()
-  ├── submitReview()
-  ├── getApplyPlan()
-  └── applyAllApproved()
-       │
-       ▼
- metadata writer / filename adapter
+English: 177.7 BPM
+Spanish: 177,7 BPM
 ```
 
-See `DESKTOP.md`, `CLIENT_API.md`, and `ARCHITECTURE.md`.
+The underlying numeric values are unchanged.
+
+## Scope
+
+v15 localizes the desktop application's primary user experience:
+
+- Library
+- filters / search
+- track table
+- track inspector
+- status/confidence labels
+- Review workflow
+- interpretation explanations
+- evidence labels
+- Apply plan
+- final write confirmation
+- common application errors
+
+Raw third-party/FFmpeg diagnostics may remain in their original language so
+technical detail is not lost.
+
+The CLI remains English in v15.

@@ -355,6 +355,9 @@ function interpretTempo(
       suggestedCandidateScore: null,
       directSupport: null,
       autoApply: false,
+      reasonCode:
+        "interpretation.no-bpm",
+      reasonParams: {},
       reason:
         "No musical interpretation is possible because no usable BPM was detected",
     };
@@ -367,7 +370,15 @@ function interpretTempo(
     return createUnadjustedInterpretation(
       detection,
       profile,
-      "Generic profile preserves the detector's preferred metrical level"
+      "Generic profile preserves the detector's preferred metrical level",
+      {
+        reasonCode:
+          "interpretation.generic-preserve",
+        reasonParams: {
+          profile:
+            profile.name,
+        },
+      }
     );
   }
 
@@ -399,6 +410,22 @@ function interpretTempo(
         threeTwoCandidate.score,
       directSupport,
       autoApply: false,
+      reasonCode:
+        directSupport
+          ? "interpretation.three-two-preferred-direct"
+          : "interpretation.three-two-preferred",
+      reasonParams: {
+        profile:
+          profile.name,
+        candidateBpm:
+          threeTwoCandidate.bpm,
+        detectedBpm:
+          detection.bpm,
+        candidateScore:
+          threeTwoCandidate.score,
+        maximumScore:
+          detection.maximumScore,
+      },
       reason:
         `The ${profile.name} profile prefers the supported 3:2 lower-tempo interpretation ` +
         `${threeTwoCandidate.bpm.toFixed(2)} BPM over the detector's ${detection.bpm.toFixed(2)} BPM result. ` +
@@ -459,6 +486,25 @@ function interpretTempo(
       doubleTimeEvidence:
         doubleDecision.evidence,
       autoApply: false,
+      reasonCode:
+        "interpretation.double-time-preferred",
+      reasonParams: {
+        profile:
+          profile.name,
+        candidateBpm:
+          doubleCandidate.bpm,
+        detectedBpm:
+          detection.bpm,
+        totalScore:
+          doubleDecision.evidence
+            .totalScore,
+        maximumScore:
+          doubleDecision.evidence
+            .maximumScore,
+        requiredScore:
+          doubleDecision.evidence
+            .requiredScore,
+      },
       reason:
         `The ${profile.name} profile prefers the double-time interpretation ` +
         `${doubleCandidate.bpm.toFixed(
@@ -501,6 +547,23 @@ function interpretTempo(
             .midpointRatio,
         doubleTimeEvidence:
           doubleDecision.evidence,
+        reasonCode:
+          "interpretation.double-time-rejected",
+        reasonParams: {
+          profile:
+            profile.name,
+          candidateBpm:
+            doubleDecision.candidate.bpm,
+          totalScore:
+            doubleDecision.evidence
+              .totalScore,
+          maximumScore:
+            doubleDecision.evidence
+              .maximumScore,
+          requiredScore:
+            doubleDecision.evidence
+              .requiredScore,
+        },
       }
     );
   }
@@ -508,7 +571,15 @@ function interpretTempo(
   return createUnadjustedInterpretation(
     detection,
     profile,
-    `The ${profile.name} profile found no sufficiently supported alternative metrical interpretation`
+    `The ${profile.name} profile found no sufficiently supported alternative metrical interpretation`,
+    {
+      reasonCode:
+        "interpretation.no-supported-alternative",
+      reasonParams: {
+        profile:
+          profile.name,
+      },
+    }
   );
 }
 

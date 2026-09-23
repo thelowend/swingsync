@@ -4,6 +4,11 @@ import {
 } from "react-dom/client";
 
 import App from "./App.jsx";
+
+import {
+  LanguageProvider,
+} from "./i18n/LanguageContext.jsx";
+
 import "./styles.css";
 
 createRoot(
@@ -12,6 +17,8 @@ createRoot(
   )
 ).render(
   <React.StrictMode>
-    <App />
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
   </React.StrictMode>
 );
