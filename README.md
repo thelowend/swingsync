@@ -1,4 +1,4 @@
-# SwingSync v15.16.1 — CSS parsing hotfix
+# SwingSync v15.16.2 — Electron Builder install-script approval
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -682,3 +682,28 @@ Unknown word gap
 
 The stylesheet now contains normal line breaks and the v15.16 Review styles are
 valid CSS again.
+
+
+## v15.16.2 — Electron Builder install-script approval
+
+SwingSync now pins:
+
+```json
+"electron-builder": "26.15.3"
+```
+
+and explicitly allows the reviewed install scripts required by the project:
+
+```json
+"allowScripts": {
+  "ffmpeg-static@5.3.0": true,
+  "electron-winstaller@5.4.0": true
+}
+```
+
+`electron-winstaller@5.4.0` is a transitive dependency of
+`electron-builder-squirrel-windows@26.15.3`.
+
+Keeping the approval version-pinned means npm will warn again if a future
+dependency update introduces a different install-script version, which is
+intentional.
