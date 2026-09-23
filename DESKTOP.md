@@ -102,3 +102,38 @@ Beat median          → BPM mediano
 
 The localization deliberately favors the term `BPM` instead of `pulsaciones`
 for tempo-related concepts.
+
+
+## Bulk suggestion approval
+
+The Review header has a secondary bulk button beside the Apply navigation
+button.
+
+Its label includes the current unresolved count:
+
+```text
+Approve 12 suggestions
+```
+
+The action selects the suggested BPM for unresolved review items only.
+Previously reviewed/customized/skipped tracks are preserved.
+
+This is intentionally not a file-write action.
+
+
+## Apply button placement
+
+v15.5 moves the final **Apply changes** action to the Apply header. It sits
+beside the output-mode summary so the main action is visible without scrolling.
+
+The final confirmation modal remains unchanged, so moving the button does not
+move or weaken the actual file-write boundary.
+
+## Per-analysis attention cue
+
+The first visit to Apply after a completed `analyzeAll()` batch briefly
+highlights the Apply button.
+
+The renderer records the last highlighted `analysisBatchRevision` in
+`sessionStorage`, so revisiting Apply during the same batch does not repeat the
+cue.

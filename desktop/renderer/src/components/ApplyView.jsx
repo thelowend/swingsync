@@ -64,6 +64,11 @@ export default function ApplyView({
   const [lastResults, setLastResults] =
     useState(null);
 
+  const [
+    highlightApply,
+    setHighlightApply,
+  ] = useState(false);
+
   async function refreshPlan() {
     setLoading(true);
 
@@ -120,6 +125,73 @@ export default function ApplyView({
       unresolvedReview: 0,
       skippedReview: 0,
     };
+
+  useEffect(() => {
+    const revision =
+      state.analysisBatchRevision ??
+      0;
+
+    if (
+      revision <= 0 ||
+      summary.total <= 0
+    ) {
+      return undefined;
+    }
+
+    const storageKey =
+      "swingsync.apply-highlighted-analysis-batch";
+
+    let lastHighlighted =
+      null;
+
+    try {
+      lastHighlighted =
+        window.sessionStorage.getItem(
+          storageKey
+        );
+    } catch {
+      // Highlighting is purely presentational.
+    }
+
+    if (
+      lastHighlighted ===
+      String(revision)
+    ) {
+      return undefined;
+    }
+
+    setHighlightApply(
+      true
+    );
+
+    try {
+      window.sessionStorage.setItem(
+        storageKey,
+        String(revision)
+      );
+    } catch {
+      // Still show the highlight even if session storage is unavailable.
+    }
+
+    const timer =
+      window.setTimeout(
+        () => {
+          setHighlightApply(
+            false
+          );
+        },
+        1800
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    state.analysisBatchRevision,
+    summary.total,
+  ]);
 
   const isApplying =
     applying ||
@@ -181,33 +253,55 @@ export default function ApplyView({
           </p>
         </div>
 
-        <div className="apply-mode-card">
-          <span>
+        <div className="workflow-header-actions apply-header-actions">
+          <div className="apply-mode-card">
+            <span>
+              {t(
+                "Output mode"
+              )}
+            </span>
+            <strong>
+              {domainLabel(
+                "outputMode",
+                state.library.outputMode
+              )}
+            </strong>
+            <small>
+              {state.library.outputMode ===
+              "metadata"
+                ? t(
+                    "BPM tags only"
+                  )
+                : state.library.outputMode ===
+                  "filename"
+                ? t(
+                    "Filename changes only"
+                  )
+                : t(
+                    "Metadata + filename"
+                  )}
+            </small>
+          </div>
+
+          <button
+            type="button"
+            className={`button primary-button apply-header-button ${
+              highlightApply
+                ? "apply-attention"
+                : ""
+            }`}
+            disabled={
+              isApplying ||
+              summary.total === 0
+            }
+            onClick={() =>
+              setConfirming(true)
+            }
+          >
             {t(
-              "Output mode"
+              "Apply changes"
             )}
-          </span>
-          <strong>
-            {domainLabel(
-              "outputMode",
-              state.library.outputMode
-            )}
-          </strong>
-          <small>
-            {state.library.outputMode ===
-            "metadata"
-              ? t(
-                  "BPM tags only"
-                )
-              : state.library.outputMode ===
-                "filename"
-              ? t(
-                  "Filename changes only"
-                )
-              : t(
-                  "Metadata + filename"
-                )}
-          </small>
+          </button>
         </div>
       </div>
 
@@ -507,22 +601,6 @@ export default function ApplyView({
                 )}
               </span>
             </div>
-
-            <button
-              type="button"
-              className="button primary-button"
-              disabled={
-                isApplying ||
-                summary.total === 0
-              }
-              onClick={() =>
-                setConfirming(true)
-              }
-            >
-              {t(
-                "Apply changes"
-              )}
-            </button>
           </div>
         </section>
       )}

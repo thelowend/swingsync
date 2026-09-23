@@ -69,6 +69,11 @@ function createInitialState({
       currentFile: null,
     },
 
+    // Incremented only when a full analyzeAll() batch completes.
+    // Presentation layers can use this as a stable "new batch" signal
+    // without coupling UI behavior to progress timing.
+    analysisBatchRevision: 0,
+
     summary: {
       total: 0,
       pending: 0,

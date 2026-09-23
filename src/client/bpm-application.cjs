@@ -595,6 +595,10 @@ class BpmApplication
         "skip",
       ],
 
+      bulkReviewActions: [
+        "approve-all-suggestions",
+      ],
+
       events: [
         "state",
         "progress",
@@ -794,6 +798,14 @@ class BpmApplication
     await this.cache.flush();
     this.refreshCacheStats();
     this.recalculate();
+
+    this.state.analysisBatchRevision =
+      (
+        this.state
+          .analysisBatchRevision ??
+        0
+      ) + 1;
+
     this.emitProgress();
     this.emitState();
 
@@ -1141,6 +1153,129 @@ class BpmApplication
     this.emitState();
 
     return payload;
+  }
+
+  approveAllSuggestions() {
+    this.assertLibraryOpen();
+
+    const approvals = [];
+    const skipped = [];
+
+    for (
+      const track of
+      this.state.tracks
+    ) {
+      if (
+        track.status !==
+          TRACK_STATUS.ANALYZED ||
+        !track.review.required
+      ) {
+        continue;
+      }
+
+      const result =
+        this.trackResults.get(
+          track.id
+        );
+
+      if (!result) {
+        continue;
+      }
+
+      // Preserve all existing human choices, including Skip and custom BPM.
+      if (
+        result.review
+      ) {
+        continue;
+      }
+
+      const item =
+        createReviewItem(
+          result
+        );
+
+      try {
+        const decision =
+          createReviewDecision({
+            item,
+            action:
+              "use-suggested",
+          });
+
+        const resolved =
+          applyReviewDecision(
+            result,
+            decision
+          );
+
+        this.trackResults.set(
+          track.id,
+          resolved
+        );
+
+        this.updateTrack(
+          track.id,
+          projectTrackResult({
+            trackState:
+              this.getTrackState(
+                track.id
+              ),
+            trackResult:
+              resolved,
+            review:
+              resolved.review,
+          })
+        );
+
+        const payload = {
+          trackId:
+            track.id,
+          decision:
+            cloneSerializable(
+              resolved.review
+            ),
+          track:
+            this.getTrack(
+              track.id
+            ),
+        };
+
+        approvals.push(
+          payload
+        );
+
+        this.emit(
+          "review",
+          payload
+        );
+      } catch (error) {
+        skipped.push({
+          trackId:
+            track.id,
+          filename:
+            track.filename,
+          reason:
+            error.message,
+        });
+      }
+    }
+
+    this.recalculate();
+    this.emitState();
+
+    return cloneSerializable({
+      approved:
+        approvals.length,
+      skipped:
+        skipped.length,
+      approvals,
+      skippedItems:
+        skipped,
+      remaining:
+        this.state.summary
+          .reviewRemaining ??
+        0,
+    });
   }
 
   clearReview(

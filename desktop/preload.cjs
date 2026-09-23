@@ -51,6 +51,11 @@ const api = Object.freeze({
       decision
     ),
 
+  approveAllSuggestions: () =>
+    ipcRenderer.invoke(
+      "swingsync:approve-all-suggestions"
+    ),
+
   clearReview: (trackId) =>
     ipcRenderer.invoke(
       "swingsync:clear-review",

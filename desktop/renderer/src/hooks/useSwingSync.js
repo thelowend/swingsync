@@ -261,6 +261,13 @@ export function useSwingSync() {
         );
       },
 
+      approveAllSuggestions() {
+        return run(
+          () =>
+            window.swingSync.approveAllSuggestions()
+        );
+      },
+
       clearReview(trackId) {
         return run(
           () =>

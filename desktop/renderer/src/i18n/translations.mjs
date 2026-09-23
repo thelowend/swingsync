@@ -166,6 +166,14 @@ export const SPANISH_TRANSLATIONS =
     "remaining": "pendientes",
     "approved": "aprobadas",
     "Continue to Apply": "Proceder a Aplicar",
+    "Approve {count} suggestion":
+      "Aprobar {count} sugerencia",
+    "Approve {count} suggestions":
+      "Aprobar {count} sugerencias",
+    "Approving suggestions…":
+      "Aprobando sugerencias…",
+    "Approve the suggested BPM for every unresolved review item. Existing manual decisions and skipped tracks are left unchanged.":
+      "Aprobar el BPM sugerido para todos los elementos de revisión pendientes. Las decisiones manuales existentes y las pistas omitidas no se modifican.",
     "Loading review queue…":
       "Cargando cola de revisión…",
     "Nothing needs review.":

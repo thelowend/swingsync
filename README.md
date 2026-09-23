@@ -1,4 +1,4 @@
-# SwingSync v15.3 — Boogie-Woogie profile & BPM filename prefix
+# SwingSync v15.5 — Apply action visibility
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -240,3 +240,75 @@ Rock, rock, rock [215 BPM].mp3
 →
 [220] Rock, rock, rock.mp3
 ```
+
+
+## v15.4 — Approve all suggestions
+
+The Review screen now includes a bulk action beside **Continue to Apply**:
+
+```text
+Approve N suggestions
+```
+
+It approves the current SwingSync suggested BPM for every review-required track
+that still has no human decision.
+
+It deliberately does **not** alter tracks that were already:
+
+- approved with detected BPM
+- approved with suggested BPM
+- given a custom BPM
+- skipped
+
+This bulk action only records review decisions. It does not modify music files.
+
+The normal write boundary remains:
+
+```text
+Review
+  → Approve suggestions
+  → Apply plan
+  → Confirm & write
+```
+
+The application API now also exposes:
+
+```js
+app.approveAllSuggestions()
+```
+
+and the Electron preload exposes:
+
+```js
+window.swingSync.approveAllSuggestions()
+```
+
+
+## v15.5 — Apply action at the top
+
+The **Apply changes** button now appears in the Apply view header beside the
+output-mode card, following the same high-visibility pattern used for bulk
+approval in Review.
+
+The lower panel keeps the pending-track and FFmpeg safety information but no
+longer duplicates the Apply button.
+
+## New-batch attention cue
+
+`BpmApplication` now exposes:
+
+```text
+analysisBatchRevision
+```
+
+in application state. It increments only when a full `analyzeAll()` batch
+finishes.
+
+The Apply view uses that revision to briefly emphasize **Apply changes** the
+first time the user opens Apply for that completed analysis batch.
+
+Revisiting Apply during the same batch does not replay the animation. Running
+a new full analysis creates a new revision and enables the cue again.
+
+The cue lasts approximately 1.8 seconds and respects the user's
+`prefers-reduced-motion` setting.

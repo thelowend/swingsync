@@ -537,3 +537,48 @@ compatible.
 
 Language selection itself is intentionally not part of `BpmApplication`;
 it is a presentation preference.
+
+
+---
+
+## Bulk review approval
+
+v15.4 adds:
+
+```js
+const result =
+  app.approveAllSuggestions();
+```
+
+This approves `use-suggested` for every unresolved review-required track.
+
+Existing review decisions are preserved.
+
+The returned summary includes:
+
+```text
+approved
+skipped
+approvals
+skippedItems
+remaining
+```
+
+This method updates review state only; it does not apply file output.
+
+
+---
+
+## Analysis batch revision
+
+v15.5 application state includes:
+
+```js
+state.analysisBatchRevision
+```
+
+It starts at `0` and increments after each completed `analyzeAll()` call.
+
+It is intended as a presentation-safe signal that a new full analysis batch
+has completed. It does not affect BPM analysis, review, output planning, cache
+keys, or metadata behavior.

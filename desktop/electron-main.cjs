@@ -184,6 +184,12 @@ function registerIpcHandlers() {
   );
 
   ipcMain.handle(
+    "swingsync:approve-all-suggestions",
+    async () =>
+      bpmApplication.approveAllSuggestions()
+  );
+
+  ipcMain.handle(
     "swingsync:clear-review",
     async (_event, trackId) =>
       bpmApplication.clearReview(

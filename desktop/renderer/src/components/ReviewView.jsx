@@ -191,6 +191,11 @@ export default function ReviewView({
   const [loading, setLoading] =
     useState(true);
 
+  const [
+    bulkApproving,
+    setBulkApproving,
+  ] = useState(false);
+
   async function refreshQueue(
     preferredTrackId = null
   ) {
@@ -352,6 +357,70 @@ export default function ReviewView({
     }
   }
 
+  async function approveAllSuggestions() {
+    if (
+      bulkApproving ||
+      unresolved.length === 0
+    ) {
+      return;
+    }
+
+    setBulkApproving(
+      true
+    );
+
+    try {
+      const result =
+        await actions.approveAllSuggestions();
+
+      const nextQueue =
+        await actions.getReviewQueue();
+
+      setQueue(
+        nextQueue
+      );
+
+      const firstRemaining =
+        nextQueue.find(
+          (item) =>
+            !item.review
+        );
+
+      if (
+        firstRemaining
+      ) {
+        setSelectedTrackId(
+          firstRemaining.trackId
+        );
+      } else if (
+        selectedTrackId &&
+        nextQueue.some(
+          (item) =>
+            item.trackId ===
+            selectedTrackId
+        )
+      ) {
+        setSelectedTrackId(
+          selectedTrackId
+        );
+      } else {
+        setSelectedTrackId(
+          nextQueue[0]
+            ?.trackId ??
+          null
+        );
+      }
+
+      setCustomBpm("");
+
+      return result;
+    } finally {
+      setBulkApproving(
+        false
+      );
+    }
+  }
+
   const customValue =
     Number(
       customBpm
@@ -416,6 +485,32 @@ export default function ReviewView({
               )}
             </span>
           </div>
+          <button
+            type="button"
+            className="button secondary-button"
+            onClick={
+              approveAllSuggestions
+            }
+            disabled={
+              bulkApproving ||
+              unresolved.length ===
+                0
+            }
+            title={t(
+              "Approve the suggested BPM for every unresolved review item. Existing manual decisions and skipped tracks are left unchanged."
+            )}
+          >
+            {bulkApproving
+              ? t(
+                  "Approving suggestions…"
+                )
+              : plural(
+                  "Approve {count} suggestion",
+                  "Approve {count} suggestions",
+                  unresolved.length
+                )}
+          </button>
+
           <button
             type="button"
             className="button primary-button"
