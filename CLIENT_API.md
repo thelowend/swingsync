@@ -52,7 +52,7 @@ Returns serializable data similar to:
   "profiles": [
     { "name": "generic", "description": "..." },
     { "name": "swing", "description": "..." },
-    { "name": "boogie-woogie", "description": "..." }
+    { "name": "rhythm-and-blues", "description": "..." }
   ],
   "outputModes": [
     "metadata",
@@ -85,7 +85,7 @@ A graphical client should use this instead of hard-coding profiles/actions.
 ```js
 await app.openLibrary({
   folder: "D:\\Music",
-  profile: "boogie-woogie",
+  profile: "rhythm-and-blues",
   outputMode: "metadata",
 });
 ```
@@ -132,7 +132,7 @@ High-level shape:
   "status": "ready",
   "library": {
     "folder": "D:\\Music",
-    "profile": "boogie-woogie",
+    "profile": "rhythm-and-blues",
     "outputMode": "metadata"
   },
   "progress": {
@@ -447,7 +447,7 @@ await app.openLibrary({
     "D:\\Music\\Swing",
     "D:\\Music\\Boogie",
   ],
-  profile: "boogie-woogie",
+  profile: "rhythm-and-blues",
 });
 ```
 
@@ -455,7 +455,7 @@ or omit them to use `.env`:
 
 ```js
 await app.openLibrary({
-  profile: "boogie-woogie",
+  profile: "rhythm-and-blues",
 });
 ```
 
@@ -605,3 +605,21 @@ sustainedMidpointPulse
 
 The signal is intentionally conservative and is used only with an existing
 supported double-time candidate.
+
+
+---
+
+## `pendingToApply`
+
+v15.9 adds:
+
+```js
+state.summary.pendingToApply
+```
+
+`readyToApply` remains the count of analyzed tracks with a usable automatic or
+human-approved BPM. `pendingToApply` is the subset whose current output state
+has not yet been applied.
+
+Output state is invalidated whenever analysis, profile, review decision, or
+output mode changes the context of the pending write.

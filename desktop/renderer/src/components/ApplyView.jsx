@@ -88,7 +88,7 @@ export default function ApplyView({
     );
   }, [
     state.library.outputMode,
-    state.summary.readyToApply,
+    state.summary.pendingToApply,
     state.summary.outputApplied,
   ]);
 

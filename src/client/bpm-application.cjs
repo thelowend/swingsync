@@ -885,6 +885,7 @@ class BpmApplication
             ),
           trackResult:
             result,
+          resetOutput: true,
         });
 
       this.updateTrack(
@@ -1047,6 +1048,7 @@ class BpmApplication
             track,
           trackResult:
             updatedResult,
+          resetOutput: true,
         })
       );
     }
@@ -1069,6 +1071,54 @@ class BpmApplication
     this.state.library.outputMode =
       outputMode;
 
+    for (
+      const track of
+      this.state.tracks
+    ) {
+      if (
+        !track.output?.applied &&
+        !track.output?.status
+      ) {
+        continue;
+      }
+
+      this.updateTrack(
+        track.id,
+        {
+          ...track,
+          output: {
+            status: null,
+            applied: false,
+            mode: null,
+            metadataWritten:
+              null,
+            metadataUnchanged:
+              null,
+            metadataReason:
+              null,
+            finalPath:
+              track.file,
+          },
+        }
+      );
+
+      const result =
+        this.trackResults.get(
+          track.id
+        );
+
+      if (result) {
+        this.trackResults.set(
+          track.id,
+          {
+            ...result,
+            outputResult: null,
+          }
+        );
+      }
+    }
+
+    this.recalculate();
     this.emitState();
 
     return this.getState();
@@ -1128,6 +1178,7 @@ class BpmApplication
           resolved,
         review:
           resolved.review,
+        resetOutput: true,
       })
     );
 
@@ -1224,6 +1275,7 @@ class BpmApplication
               resolved,
             review:
               resolved.review,
+            resetOutput: true,
           })
         );
 
@@ -1306,6 +1358,7 @@ class BpmApplication
         trackResult:
           cleared,
         review: null,
+        resetOutput: true,
       })
     );
 

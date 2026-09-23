@@ -100,8 +100,7 @@ export const SPANISH_TRANSLATIONS =
     "Low": "Baja",
     "Generic": "Genérico",
     "Swing": "Swing",
-    "Boogie": "Boogie-Woogie",
-    "Boogie-Woogie": "Boogie-Woogie",
+    "Rhythm and Blues": "Rhythm and Blues",
     "Metadata": "Metadatos",
     "Filename": "Nombre de archivo",
     "Both": "Ambos",
@@ -230,7 +229,7 @@ export const SPANISH_TRANSLATIONS =
       "Aplicación completada.",
     "{applied} applied · {errors} errors":
       "{applied} aplicadas · {errors} errores",
-    "Back to Library": "Volvé a Biblioteca",
+    "Back to Library": "Volver a Biblioteca",
     "Approved pending": "Aprobadas pendientes",
     "{human} human · {automatic} automatic":
       "{human} humanas · {automatic} automáticas",
@@ -343,8 +342,7 @@ export const DOMAIN_SOURCES =
     profile: {
       generic: "Generic",
       swing: "Swing",
-      boogie: "Boogie-Woogie",
-      "boogie-woogie": "Boogie-Woogie",
+      "rhythm-and-blues": "Rhythm and Blues",
     },
 
     outputMode: {

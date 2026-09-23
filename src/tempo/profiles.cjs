@@ -64,10 +64,10 @@ const TEMPO_PROFILES = {
     },
   },
 
-  "boogie-woogie": {
-    name: "boogie-woogie",
+  "rhythm-and-blues": {
+    name: "rhythm-and-blues",
     description:
-      "Prefer well-supported faster Boogie-Woogie interpretations using consensus, midpoint onsets, rhythm confidence, and histogram clarity.",
+      "Prefer well-supported faster Rhythm and Blues interpretations using consensus, midpoint onsets, rhythm confidence, and histogram clarity.",
 
     doubleTime: {
       enabled: true,
@@ -106,29 +106,17 @@ const TEMPO_PROFILES = {
     },
   },
 };
-const PROFILE_ALIASES = Object.freeze({
-  boogie: "boogie-woogie",
-});
-
 const DEFAULT_PROFILE = "generic";
 
 function normalizeProfileName(
   profileName
 ) {
-  const normalized =
-    String(
-      profileName ??
-      DEFAULT_PROFILE
-    )
-      .trim()
-      .toLowerCase();
-
-  return (
-    PROFILE_ALIASES[
-      normalized
-    ] ??
-    normalized
-  );
+  return String(
+    profileName ??
+    DEFAULT_PROFILE
+  )
+    .trim()
+    .toLowerCase();
 }
 
 function getTempoProfile(
@@ -146,7 +134,6 @@ function getTempoProfile(
 
 module.exports = {
   TEMPO_PROFILES,
-  PROFILE_ALIASES,
   DEFAULT_PROFILE,
   normalizeProfileName,
   getTempoProfile,

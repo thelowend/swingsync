@@ -127,7 +127,7 @@ export default function App() {
     useState("library");
 
   const [profile, setProfile] =
-    useState("boogie-woogie");
+    useState("rhythm-and-blues");
 
   const [outputMode, setOutputMode] =
     useState("metadata");
@@ -496,8 +496,8 @@ export default function App() {
                 : ""
             }
             disabled={
-              state.summary.readyToApply ===
-                0 &&
+              (state.summary.pendingToApply ??
+                0) === 0 &&
               state.summary.outputApplied ===
                 0
             }
@@ -506,14 +506,12 @@ export default function App() {
             {t(
               "Apply"
             )}
-            {state.summary.readyToApply >
-              0 && (
+            {(state.summary.pendingToApply ??
+              0) > 0 && (
               <span>
                 {
                   state.summary
-                    .readyToApply -
-                  state.summary
-                    .outputApplied
+                    .pendingToApply
                 }
               </span>
             )}
@@ -866,11 +864,8 @@ export default function App() {
                 )}
               </span>
               <strong>
-                {Math.max(
-                  0,
-                  state.summary.readyToApply -
-                    state.summary.outputApplied
-                )}
+                {state.summary.pendingToApply ??
+                  0}
               </strong>
               <small>
                 {t(
@@ -898,8 +893,8 @@ export default function App() {
 
           {(state.summary.needsReview >
             0 ||
-            state.summary.readyToApply >
-              0) && (
+            (state.summary.pendingToApply ??
+              0) > 0) && (
             <div className="workflow-cta">
               <div>
                 <strong>
@@ -935,8 +930,8 @@ export default function App() {
                     )}
                   </button>
                 )}
-                {state.summary.readyToApply >
-                  0 && (
+                {(state.summary.pendingToApply ??
+                  0) > 0 && (
                   <button
                     type="button"
                     className="button primary-button"
@@ -976,7 +971,8 @@ export default function App() {
                     t(
                       "Ready"
                     ),
-                    state.summary.readyToApply,
+                    state.summary.pendingToApply ??
+                      0,
                   ],
                   [
                     "errors",
@@ -1094,7 +1090,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.8
+          SwingSync v0.15.9
         </div>
       </footer>
 

@@ -38,8 +38,7 @@ If no folder is supplied, SwingSync uses the default folder list from:
 Options:
 
   --profile <name>       Tempo interpretation profile.
-                         Available: generic, swing, boogie-woogie
-                         Legacy alias: boogie
+                         Available: generic, swing, rhythm-and-blues
                          Default: generic
 
   --output <mode>        Output target after BPM analysis/review.
@@ -79,19 +78,19 @@ Examples:
 
   Use folders configured in .env:
 
-    ${CLI_COMMAND} --profile boogie-woogie
+    ${CLI_COMMAND} --profile rhythm-and-blues
 
   Analyze one explicit folder:
 
-    ${CLI_COMMAND} "D:\\Music\\Swing" --profile boogie-woogie
+    ${CLI_COMMAND} "D:\\Music\\Swing" --profile rhythm-and-blues
 
   Analyze multiple explicit folders:
 
-    ${CLI_COMMAND} "D:\\Music\\Swing" "D:\\Music\\Boogie" "E:\\Rock and Roll" --profile boogie-woogie
+    ${CLI_COMMAND} "D:\\Music\\Swing" "D:\\Music\\Boogie" "E:\\Rock and Roll" --profile rhythm-and-blues
 
   Interactive review using configured defaults:
 
-    ${CLI_COMMAND} --profile boogie-woogie --review --apply
+    ${CLI_COMMAND} --profile rhythm-and-blues --review --apply
 
   Benchmark against the configured roots:
 

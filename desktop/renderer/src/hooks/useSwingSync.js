@@ -33,6 +33,7 @@ const EMPTY_STATE = {
     reviewed: 0,
     reviewSkipped: 0,
     readyToApply: 0,
+    pendingToApply: 0,
     outputApplied: 0,
   },
   tracks: [],

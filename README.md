@@ -1,4 +1,4 @@
-# SwingSync v15.8 — Contrast + Light/Dark themes
+# SwingSync v15.9 — Rhythm and Blues + Apply-state fix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -114,7 +114,7 @@ For example:
 {
   "reasonCode": "interpretation.double-time-preferred",
   "reasonParams": {
-    "profile": "boogie-woogie",
+    "profile": "rhythm-and-blues",
     "candidateBpm": 226.92,
     "detectedBpm": 113.46,
     "totalScore": 6,
@@ -199,21 +199,16 @@ The `music-metadata` dependency remains:
 
 ## v15.3 profile naming
 
-The canonical profile name is now:
+The canonical profile is:
 
 ```text
-boogie-woogie
+rhythm-and-blues
 ```
 
-The UI displays **Boogie-Woogie**.
+The UI displays **Rhythm and Blues**.
 
-For backward compatibility, the CLI/client still accepts the old profile name:
-
-```text
-boogie
-```
-
-and resolves it to `boogie-woogie`.
+Legacy `boogie` and `boogie-woogie` profile names are intentionally not
+accepted by the CLI.
 
 ## v15.3 filename format
 
@@ -421,3 +416,52 @@ v15.8 specifically improves visibility for:
 
 The beveled top-left logo keeps its inset/shadow depth but no longer has a
 visible outline/border.
+
+
+## v15.9 — Rhythm and Blues profile
+
+The former Boogie-Woogie profile is now canonically:
+
+```text
+rhythm-and-blues
+```
+
+CLI usage:
+
+```powershell
+swingsync --profile rhythm-and-blues
+```
+
+Legacy profile names are deliberately rejected:
+
+```text
+boogie
+boogie-woogie
+```
+
+## v15.9 — Apply state lifecycle
+
+A completed output is valid for the interpretation/output configuration that
+produced it. SwingSync now resets per-track output state when:
+
+- a track is analyzed again
+- the profile changes
+- a review decision changes or is cleared
+- the output mode changes
+
+The state summary now includes:
+
+```text
+pendingToApply
+```
+
+This is the actual number of currently approved/automatic tracks that have not
+yet been applied for the current interpretation.
+
+The desktop no longer calculates the Apply badge using:
+
+```text
+readyToApply - outputApplied
+```
+
+so the badge cannot become negative after re-analysis or a profile switch.

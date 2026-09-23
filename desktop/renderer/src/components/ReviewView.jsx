@@ -518,8 +518,8 @@ export default function ReviewView({
             className="button primary-button"
             onClick={onContinue}
             disabled={
-              state.summary.readyToApply ===
-              0
+              (state.summary.pendingToApply ??
+                0) === 0
             }
           >
             {t(
@@ -555,8 +555,8 @@ export default function ReviewView({
             className="button primary-button"
             onClick={onContinue}
             disabled={
-              state.summary.readyToApply ===
-              0
+              (state.summary.pendingToApply ??
+                0) === 0
             }
           >
             {t(

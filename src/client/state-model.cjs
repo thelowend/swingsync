@@ -85,6 +85,7 @@ function createInitialState({
       reviewed: 0,
       reviewSkipped: 0,
       readyToApply: 0,
+      pendingToApply: 0,
       outputApplied: 0,
     },
 
@@ -174,6 +175,7 @@ function projectTrackResult({
   trackResult,
   review = null,
   outputResult = null,
+  resetOutput = false,
 }) {
   const next = {
     ...trackState,
@@ -283,52 +285,66 @@ function projectTrackResult({
         ),
     },
 
-    output: {
-      status:
-        outputResult?.status ??
-        trackState.output
-          ?.status ??
-        null,
-      applied:
-        Boolean(
-          outputResult?.applied ??
-          trackState.output
-            ?.applied
-        ),
-      mode:
-        outputResult
-          ?.outputMode ??
-        trackState.output
-          ?.mode ??
-        null,
-      metadataWritten:
-        outputResult
-          ?.metadataResult
-          ?.written ??
-        trackState.output
-          ?.metadataWritten ??
-        null,
-      metadataUnchanged:
-        outputResult
-          ?.metadataResult
-          ?.unchanged ??
-        trackState.output
-          ?.metadataUnchanged ??
-        null,
-      metadataReason:
-        outputResult
-          ?.metadataResult
-          ?.reason ??
-        trackState.output
-          ?.metadataReason ??
-        null,
-      finalPath:
-        outputResult
-          ?.finalPath ??
-        trackState.output
-          ?.finalPath ??
-        trackResult.file,
-    },
+    output: resetOutput
+      ? {
+          status: null,
+          applied: false,
+          mode: null,
+          metadataWritten:
+            null,
+          metadataUnchanged:
+            null,
+          metadataReason:
+            null,
+          finalPath:
+            trackResult.file,
+        }
+      : {
+          status:
+            outputResult?.status ??
+            trackState.output
+              ?.status ??
+            null,
+          applied:
+            Boolean(
+              outputResult?.applied ??
+              trackState.output
+                ?.applied
+            ),
+          mode:
+            outputResult
+              ?.outputMode ??
+            trackState.output
+              ?.mode ??
+            null,
+          metadataWritten:
+            outputResult
+              ?.metadataResult
+              ?.written ??
+            trackState.output
+              ?.metadataWritten ??
+            null,
+          metadataUnchanged:
+            outputResult
+              ?.metadataResult
+              ?.unchanged ??
+            trackState.output
+              ?.metadataUnchanged ??
+            null,
+          metadataReason:
+            outputResult
+              ?.metadataResult
+              ?.reason ??
+            trackState.output
+              ?.metadataReason ??
+            null,
+          finalPath:
+            outputResult
+              ?.finalPath ??
+            trackState.output
+              ?.finalPath ??
+            trackResult.file,
+        },
   };
 
   return next;
@@ -348,6 +364,7 @@ function calculateSummary(
     reviewed: 0,
     reviewSkipped: 0,
     readyToApply: 0,
+    pendingToApply: 0,
     outputApplied: 0,
   };
 
@@ -423,6 +440,12 @@ function calculateSummary(
       reviewedReady
     ) {
       summary.readyToApply++;
+
+      if (
+        !track.output.applied
+      ) {
+        summary.pendingToApply++;
+      }
     }
 
     if (
