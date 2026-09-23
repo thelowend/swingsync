@@ -1,4 +1,4 @@
-# SwingSync v15.16.2 — Electron Builder install-script approval
+# SwingSync v15.17 — Windows portable packaging
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -707,3 +707,63 @@ and explicitly allows the reviewed install scripts required by the project:
 Keeping the approval version-pinned means npm will warn again if a future
 dependency update introduces a different install-script version, which is
 intentional.
+
+
+## v15.17 — Single-file Windows portable build
+
+SwingSync is configured for Electron Builder's Windows `portable` target.
+
+After dependencies and the local Manbow font asset are installed:
+
+```powershell
+npm run desktop:package:win
+```
+
+Output:
+
+```text
+release\SwingSync-0.15.17-Windows-x64.exe
+```
+
+That `.exe` is the only file a Windows tester needs.
+
+For a quicker runtime/package smoke test before producing the final portable
+wrapper:
+
+```powershell
+npm run desktop:package:win:unpacked
+```
+
+### First build from a fresh source archive
+
+The source ZIP does not redistribute the Manbow font binary. Install your own
+licensed copy once:
+
+```powershell
+npm run desktop:font:install -- "C:\path\to\manbow.zip"
+```
+
+Then:
+
+```powershell
+npm install
+npm run desktop:package:win
+```
+
+### FFmpeg packaging
+
+SwingSync launches FFmpeg using `child_process.spawn()`. Electron Builder now
+explicitly unpacks:
+
+```text
+node_modules/ffmpeg-static/**/*
+```
+
+from ASAR. SwingSync also translates an FFmpeg path containing `app.asar` to
+the corresponding `app.asar.unpacked` path before starting the process.
+
+### Unsigned beta builds
+
+The portable executable can be built without a signing certificate. Windows
+SmartScreen may warn a tester because the executable is unsigned/new. Signing
+can be added later for broader distribution.

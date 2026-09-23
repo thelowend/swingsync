@@ -246,3 +246,27 @@ screen's **Continue to Apply** button.
 Whenever a Review action newly adds work to the Apply queue, the button replays
 the existing `apply-attention` cue. Bulk suggestion approval triggers a single
 pulse for the whole bulk operation.
+
+
+## Windows portable packaging
+
+Create the single-file x64 beta build:
+
+```powershell
+npm run desktop:package:win
+```
+
+Expected output:
+
+```text
+release\SwingSync-<version>-Windows-x64.exe
+```
+
+Create an unpacked test build:
+
+```powershell
+npm run desktop:package:win:unpacked
+```
+
+FFmpeg is explicitly unpacked from ASAR because SwingSync executes it with
+`spawn()`.

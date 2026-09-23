@@ -1,12 +1,15 @@
 const { spawn } = require("node:child_process");
-const ffmpegPath = require("ffmpeg-static");
+
+const {
+  getFfmpegPath,
+} = require("./ffmpeg-path.cjs");
 
 const { SAMPLE_RATE } = require("../config.cjs");
 
 function decodeAudio(filePath) {
   return new Promise((resolve, reject) => {
     const ffmpeg = spawn(
-      ffmpegPath,
+      getFfmpegPath(),
       [
         "-v",
         "error",

@@ -162,14 +162,17 @@ function runFfmpeg(
   // Resolve the binary only when an actual metadata write occurs.
   // This keeps the pure planning/format helpers independent from the
   // runtime FFmpeg dependency and easier to reuse/test.
-  const ffmpegPath =
-    require("ffmpeg-static");
+  const {
+    getFfmpegPath,
+  } = require(
+    "../audio/ffmpeg-path.cjs"
+  );
 
   return new Promise(
     (resolve, reject) => {
       const process =
         spawn(
-          ffmpegPath,
+          getFfmpegPath(),
           args,
           {
             windowsHide: true,
