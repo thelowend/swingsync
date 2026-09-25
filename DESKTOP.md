@@ -270,3 +270,20 @@ npm run desktop:package:win:unpacked
 
 FFmpeg is explicitly unpacked from ASAR because SwingSync executes it with
 `spawn()`.
+
+
+## v15.18 footer sizing
+
+The status bar is fixed at 34px. Header, optional error banner, content, and
+footer are explicitly assigned to app-shell grid rows so sparse views cannot
+stretch the footer into the remaining viewport height.
+
+
+## v15.19 Review/Library UI polish
+
+- Custom BPM uses a theme-aware input surface and whole-number step controls.
+- Skip this track is a visible secondary danger action.
+- The Library Analysis Complete CTA renders the unresolved Review number in a
+  badge.
+- The CTA highlights once per completed `analysisBatchRevision`, for about
+  2.7 seconds, with a reduced-motion fallback.

@@ -3090,3 +3090,149 @@ html[data-theme="dark"]
   max-width: 28rem;
 }
 
+
+
+/* ------------------------------------------------------------------ */
+/* v15.18 Fixed-height footer + explicit app-shell grid placement       */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Keep every direct app-shell surface in its intended row even when
+ * the optional error banner is not rendered. Without explicit placement,
+ * CSS Grid auto-placement can put the footer into the flexible 1fr row.
+ */
+.topbar {
+  grid-row: 1;
+}
+
+.error-banner {
+  grid-row: 2;
+}
+
+.workspace,
+.workflow-view {
+  grid-row: 3;
+}
+
+.statusbar {
+  grid-row: 4;
+  height: 34px;
+  min-height: 34px;
+  max-height: 34px;
+  box-sizing: border-box;
+  align-self: end;
+  flex: none;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* v15.19 Review controls + Analysis Complete attention                */
+/* ------------------------------------------------------------------ */
+
+/* Custom BPM readability fix is intentionally Light-mode only.
+   Dark mode keeps its pre-v15.19 input appearance. */
+html:not([data-theme="dark"])
+.custom-bpm-control input {
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--accent);
+  border-color: var(--border);
+  background: var(--surface-control);
+  color-scheme: light;
+}
+
+html:not([data-theme="dark"])
+.custom-bpm-control input::placeholder {
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted);
+}
+
+/* Skip is intentionally visible as an action, but still visually
+   subordinate to BPM approval choices. */
+.skip-track-button {
+  color: var(--status-error-text);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--danger) 42%,
+      var(--border)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--danger-soft) 72%,
+      var(--surface-control)
+    );
+}
+
+.skip-track-button:hover:not(:disabled) {
+  color: var(--status-error-text);
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* Keep the localized Review ... remaining wording while rendering the
+   numeric part with the same badge language used elsewhere. */
+.workflow-review-button {
+  gap: 7px;
+}
+
+.workflow-review-button > span:not(
+  .workflow-action-count
+) {
+  color: inherit;
+  font-size: inherit;
+}
+
+.workflow-review-count {
+  color: var(--nav-active-text);
+  background: var(--nav-active-bg);
+}
+
+html[data-theme="dark"]
+.workflow-review-count {
+  color: #2b170c;
+  background: #e18a4f;
+}
+
+/* One-time cue after a completed full-library analysis batch. */
+.workflow-cta-attention {
+  animation:
+    swingsync-workflow-cta-attention
+    900ms
+    ease-in-out
+    3;
+}
+
+@keyframes swingsync-workflow-cta-attention {
+  0%,
+  100% {
+    border-color: var(--accent-border);
+    box-shadow:
+      0 0 0 0
+      color-mix(
+        in srgb,
+        var(--accent) 0%,
+        transparent
+      );
+  }
+
+  45% {
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 7px
+      color-mix(
+        in srgb,
+        var(--accent) 16%,
+        transparent
+      );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-cta-attention {
+    animation: none;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}

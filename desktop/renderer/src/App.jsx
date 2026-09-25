@@ -156,6 +156,11 @@ export default function App() {
   const [busyAction, setBusyAction] =
     useState(null);
 
+  const [
+    highlightWorkflowCta,
+    setHighlightWorkflowCta,
+  ] = useState(false);
+
   useEffect(() => {
     if (
       state.library?.folders
@@ -303,12 +308,118 @@ export default function App() {
       filter,
     ]);
 
+  const reviewRemaining =
+    state.summary.reviewRemaining ??
+    0;
+
+  const pendingToApply =
+    state.summary.pendingToApply ??
+    0;
+
+  const workflowCtaVisible =
+    reviewRemaining > 0 ||
+    pendingToApply > 0;
+
+  const reviewRemainingTemplate =
+    t(
+      "Review {count} remaining",
+      {
+        count:
+          "__SWINGSYNC_REVIEW_COUNT__",
+      }
+    );
+
+  const [
+    reviewRemainingBeforeCount,
+    reviewRemainingAfterCount = "",
+  ] =
+    reviewRemainingTemplate.split(
+      "__SWINGSYNC_REVIEW_COUNT__"
+    );
+
   const selectedTrack =
     state.tracks.find(
       (track) =>
         track.id ===
         selectedTrackId
     ) ?? null;
+
+  useEffect(() => {
+    const revision =
+      state.analysisBatchRevision ??
+      0;
+
+    if (
+      view !== "library" ||
+      revision <= 0 ||
+      !workflowCtaVisible ||
+      isAnalyzing
+    ) {
+      setHighlightWorkflowCta(
+        false
+      );
+      return undefined;
+    }
+
+    const storageKey =
+      "swingsync.workflow-cta-highlighted-analysis-batch";
+
+    let lastHighlighted =
+      null;
+
+    try {
+      lastHighlighted =
+        window.sessionStorage.getItem(
+          storageKey
+        );
+    } catch {
+      // Highlighting is purely presentational.
+    }
+
+    if (
+      lastHighlighted ===
+      String(revision)
+    ) {
+      setHighlightWorkflowCta(
+        false
+      );
+      return undefined;
+    }
+
+    setHighlightWorkflowCta(
+      true
+    );
+
+    try {
+      window.sessionStorage.setItem(
+        storageKey,
+        String(revision)
+      );
+    } catch {
+      // Still show the highlight if session storage is unavailable.
+    }
+
+    const timer =
+      window.setTimeout(
+        () => {
+          setHighlightWorkflowCta(
+            false
+          );
+        },
+        2700
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    state.analysisBatchRevision,
+    workflowCtaVisible,
+    isAnalyzing,
+    view,
+  ]);
 
   async function runBusy(
     name,
@@ -929,11 +1040,18 @@ export default function App() {
             </article>
           </div>
 
-          {((state.summary.reviewRemaining ??
-            0) > 0 ||
-            (state.summary.pendingToApply ??
-              0) > 0) && (
-            <div className="workflow-cta">
+          {workflowCtaVisible && (
+            <div
+              key={`workflow-cta-${
+                state.analysisBatchRevision ??
+                0
+              }`}
+              className={`workflow-cta ${
+                highlightWorkflowCta
+                  ? "workflow-cta-attention"
+                  : ""
+              }`}
+            >
               <div>
                 <strong>
                   {t(
@@ -947,28 +1065,37 @@ export default function App() {
                 </span>
               </div>
               <div>
-                {(state.summary.reviewRemaining ??
-                  0) > 0 && (
+                {reviewRemaining >
+                  0 && (
                   <button
                     type="button"
-                    className="button secondary-button"
+                    className="button secondary-button workflow-review-button"
                     onClick={
                       goToReview
                     }
                   >
-                    {t(
-                      "Review {count} remaining",
+                    <span>
                       {
-                        count:
-                          state.summary
-                            .reviewRemaining ??
-                          0,
+                        reviewRemainingBeforeCount
                       }
-                    )}
+                    </span>
+                    <span
+                      className="workflow-action-count workflow-review-count"
+                      aria-label={String(
+                        reviewRemaining
+                      )}
+                    >
+                      {reviewRemaining}
+                    </span>
+                    <span>
+                      {
+                        reviewRemainingAfterCount
+                      }
+                    </span>
                   </button>
                 )}
-                {(state.summary.pendingToApply ??
-                  0) > 0 && (
+                {pendingToApply >
+                  0 && (
                   <button
                     type="button"
                     className="button primary-button"
@@ -1128,7 +1255,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.17
+          SwingSync v0.15.19.1
           {" - By Diego Pablos"}
         </div>
       </footer>

@@ -892,7 +892,7 @@ export default function ReviewView({
                     type="number"
                     min="50"
                     max="240"
-                    step="0.1"
+                    step="1"
                     value={customBpm}
                     onChange={(event) =>
                       setCustomBpm(
@@ -1012,7 +1012,7 @@ export default function ReviewView({
               <div className="review-footer">
                 <button
                   type="button"
-                  className="text-button danger-text"
+                  className="button secondary-button skip-track-button"
                   disabled={busy}
                   onClick={() =>
                     submit("skip")

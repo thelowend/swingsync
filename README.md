@@ -1,4 +1,4 @@
-# SwingSync v15.17 — Windows portable packaging
+# SwingSync v15.19.1 — Light-mode Custom BPM fix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -767,3 +767,67 @@ the corresponding `app.asar.unpacked` path before starting the process.
 The portable executable can be built without a signing certificate. Windows
 SmartScreen may warn a tester because the executable is unsigned/new. Signing
 can be added later for broader distribution.
+
+
+## v15.18 — Fixed-height footer
+
+The desktop status bar now remains at its compact 34px height even when the
+current view contains very little content.
+
+The app-shell grid rows are now assigned explicitly:
+
+```text
+1  Header
+2  Optional error banner
+3  Main view (absorbs remaining height)
+4  Status bar (34px)
+```
+
+This prevents CSS Grid auto-placement from moving the footer into the flexible
+`1fr` content row when the optional error banner is absent.
+
+
+## v15.19 — Custom BPM input
+
+The Custom BPM field now follows the active Light/Dark theme rather than using
+a hard-coded dark background.
+
+Its number input step is now:
+
+```html
+step="1"
+```
+
+because SwingSync ultimately applies whole-number BPM metadata.
+
+## v15.19 — Skip track action
+
+**Skip this track** is now rendered as a visible secondary button with a
+danger-tinted treatment instead of a low-emphasis text link.
+
+## v15.19 — Analysis Complete Review count
+
+The Library workflow CTA now renders the unresolved Review count as a badge
+while preserving the localized word order:
+
+```text
+Review [12] remaining
+```
+
+The entire Analysis Complete CTA briefly highlights once when it first appears
+after each completed full-library analysis batch. The cue is keyed to
+`analysisBatchRevision`, stored in session storage, and does not replay simply
+because the user navigates away and returns.
+
+
+## v15.19.1 — Custom BPM theme correction
+
+The v15.19 Custom BPM readability override is now scoped to Light mode only.
+
+Dark mode uses the same input styling it had before v15.19.
+
+The whole-number input behavior remains:
+
+```html
+step="1"
+```
