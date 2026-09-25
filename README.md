@@ -1,4 +1,4 @@
-# SwingSync v15.21.2 — Review Play alignment refinement
+# SwingSync v15.21.4 — Review Play caption
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -973,3 +973,28 @@ of Play and Play remains the rightmost action.
 
 The circular play treatment is now outline-only: the arrow has a circle drawn
 around it without a filled badge background.
+
+
+## v15.21.3 — Play button rollback
+
+The Review playback control has been restored to the original v15.21 design:
+a compact circular play icon beside the selected track title.
+
+The external-player behavior, IPC safety model, packaged smoke-test contract,
+and verified Windows release flow remain unchanged.
+
+
+## v15.21.4 — Review Play caption
+
+The Review screen keeps the original compact circular play button from v15.21
+and adds a small localized caption directly underneath it:
+
+```text
+  ▶
+ Play
+```
+
+Spanish uses `Reproducir`.
+
+The playback behavior is unchanged: SwingSync still opens the selected track
+in the operating system's default audio player.

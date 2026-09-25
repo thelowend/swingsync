@@ -750,7 +750,7 @@ export default function ReviewView({
           {selected && (
             <article className="review-editor">
               <div className="review-editor-heading">
-                <div className="review-heading-copy">
+                <div>
                   <span className="eyebrow">
                     {t(
                       "Track {current} of {total}",
@@ -763,69 +763,66 @@ export default function ReviewView({
                       }
                     )}
                   </span>
-                  <h2>
-                    {selected.filename ??
-                      basename(
-                        selected.file
-                      ) ??
-                      t(
-                        "Unknown track"
-                      )}
-                  </h2>
+                  <div className="review-title-row">
+                    <h2>
+                      {selected.filename ??
+                        basename(
+                          selected.file
+                        ) ??
+                        t(
+                          "Unknown track"
+                        )}
+                    </h2>
+
+                    <div className="review-play-control">
+                      <button
+                        type="button"
+                        className="review-play-button"
+                        onClick={
+                          openSelectedTrack
+                        }
+                        disabled={
+                          openingTrack
+                        }
+                        title={t(
+                          "Play in default player"
+                        )}
+                        aria-label={t(
+                          "Play track"
+                        )}
+                      >
+                        <PlayIcon />
+                      </button>
+                      <span className="review-play-caption">
+                        {t("Play")}
+                      </span>
+                    </div>
+                  </div>
                   <span className="path-copy">
                     {selected.relativePath ??
                       selected.file}
                   </span>
                 </div>
 
-                <div className="review-heading-actions">
-                  {selected.review && (
-                    <div className="approved-badge">
-                      {selected.review.skipped
-                        ? t(
-                            "Skipped"
-                          )
-                        : t(
-                            "Approved {bpm}",
-                            {
-                              bpm:
-                                formatBpm(
-                                  selected.review
-                                    .selectedBpm,
-                                  1
-                                ),
-                            }
-                          )}
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    className="review-play-button"
-                    onClick={
-                      openSelectedTrack
-                    }
-                    disabled={
-                      openingTrack
-                    }
-                    title={t(
-                      "Play in default player"
-                    )}
-                    aria-label={t(
-                      "Play track"
-                    )}
-                  >
-                    <span className="review-play-label">
-                      {t("Play")}
-                    </span>
-                    <span
-                      className="review-play-icon"
-                      aria-hidden="true"
-                    >
-                      <PlayIcon />
-                    </span>
-                  </button>
-                </div>
+                {selected.review && (
+                  <div className="approved-badge">
+                    {selected.review.skipped
+                      ? t(
+                          "Skipped"
+                        )
+                      : t(
+                          "Approved {bpm}",
+                          {
+                            bpm:
+                              formatBpm(
+                                selected.review
+                                  .selectedBpm,
+                                1
+                              ),
+                          }
+                        )}
+                  </div>
+                )}
               </div>
 
               <div className="review-tempo-grid">
