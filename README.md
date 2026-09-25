@@ -1,4 +1,4 @@
-# SwingSync v15.21.5 — Adaptive Review queue height
+# SwingSync v15.21.6 — Editor-driven Review height
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1018,3 +1018,30 @@ As a selected track makes the Review editor taller or shorter,
 
 For the narrow single-column layout (`max-width: 1000px`), the existing 220px
 queue cap is preserved so the queue does not dominate the stacked interface.
+
+
+## v15.21.6 — Editor-driven Review height
+
+On the desktop two-column Review screen, the `review-editor` is now the only
+child that participates in the height calculation of `review-layout`.
+
+The queue column is positioned to fill that resulting height:
+
+```text
+review-editor content
+        ↓
+determines review-layout height
+        ↓
+review-list fills exactly that height
+        ↓
+review-list-scroll scrolls internally
+```
+
+The number of tracks in the queue therefore cannot make the Review box taller.
+
+When the selected track produces a taller editor, the whole Review box grows
+and the queue gets more visible height. When the editor becomes shorter, the
+box and queue contract again.
+
+The narrow stacked layout keeps the queue in normal document flow and retains
+its 220px maximum height.

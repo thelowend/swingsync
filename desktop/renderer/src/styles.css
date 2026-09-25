@@ -1065,9 +1065,13 @@ svg {
 /* ------------------------------------------------------------------ */
 
 .review-layout {
+  --review-list-width: 330px;
+  position: relative;
   min-height: 570px;
   display: grid;
-  grid-template-columns: 330px minmax(0, 1fr);
+  grid-template-columns:
+    var(--review-list-width)
+    minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--border-soft);
   border-radius: 12px;
@@ -1075,6 +1079,9 @@ svg {
 }
 
 .review-list {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--review-list-width);
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -1178,9 +1185,10 @@ svg {
 }
 
 .review-editor {
+  grid-column: 2;
   min-width: 0;
   padding: 25px 28px 28px;
-  overflow: auto;
+  overflow: visible;
 }
 
 .review-editor-heading {
@@ -1732,7 +1740,7 @@ svg {
   }
 
   .review-layout {
-    grid-template-columns: 280px minmax(0, 1fr);
+    --review-list-width: 280px;
   }
 
   .evidence-grid {
@@ -1742,10 +1750,13 @@ svg {
 
 @media (max-width: 1000px) {
   .review-layout {
+    --review-list-width: 100%;
     grid-template-columns: 1fr;
   }
 
   .review-list {
+    position: static;
+    width: auto;
     overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--border-soft);
@@ -1754,6 +1765,10 @@ svg {
   .review-list-scroll {
     flex: none;
     max-height: 220px;
+  }
+
+  .review-editor {
+    grid-column: 1;
   }
 
   .review-tempo-grid,

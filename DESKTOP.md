@@ -342,3 +342,12 @@ remaining height beneath the queue header and therefore tracks changes in the
 height of the selected track's Review editor.
 
 The responsive stacked layout keeps a 220px maximum queue height.
+
+
+## v15.21.6 Review height ownership
+
+Desktop Review height is owned by `review-editor`. The queue is absolutely
+fitted to the parent and therefore cannot contribute its track-list content to
+the parent height.
+
+At `max-width: 1000px` the queue returns to normal flow for the stacked layout.
