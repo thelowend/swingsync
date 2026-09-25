@@ -1,3 +1,4 @@
+const fs = require("node:fs");
 const path = require("node:path");
 
 const {
@@ -12,9 +13,35 @@ const {
   PRODUCT_NAME,
 } = require("../src/client/public-api.cjs");
 
+const {
+  getFfmpegPath,
+} = require("../src/audio/ffmpeg-path.cjs");
+
 const EVENT_CHANNEL = "swingsync:event";
 const DEV_SERVER_URL =
   process.env.SWINGSYNC_VITE_DEV_SERVER_URL ?? null;
+
+const PACKAGED_SMOKE_TEST =
+  process.env.SWINGSYNC_PACKAGED_SMOKE_TEST ===
+  "1";
+
+const SMOKE_RESULT_FILE =
+  process.env.SWINGSYNC_SMOKE_RESULT ??
+  null;
+
+const SMOKE_USER_DATA =
+  process.env.SWINGSYNC_SMOKE_USER_DATA ??
+  null;
+
+if (
+  PACKAGED_SMOKE_TEST &&
+  SMOKE_USER_DATA
+) {
+  app.setPath(
+    "userData",
+    SMOKE_USER_DATA
+  );
+}
 
 let mainWindow = null;
 let bpmApplication = null;
@@ -318,7 +345,11 @@ async function createWindow() {
   mainWindow.once(
     "ready-to-show",
     () => {
-      mainWindow.show();
+      if (
+        !PACKAGED_SMOKE_TEST
+      ) {
+        mainWindow.show();
+      }
     }
   );
 
@@ -335,6 +366,394 @@ async function createWindow() {
       )
     );
   }
+}
+
+function createSmokeCheck(
+  name,
+  passed,
+  details = null
+) {
+  return {
+    name,
+    passed: Boolean(
+      passed
+    ),
+    details,
+  };
+}
+
+function writeSmokeResult(
+  result
+) {
+  if (!SMOKE_RESULT_FILE) {
+    return;
+  }
+
+  fs.mkdirSync(
+    path.dirname(
+      SMOKE_RESULT_FILE
+    ),
+    {
+      recursive: true,
+    }
+  );
+
+  fs.writeFileSync(
+    SMOKE_RESULT_FILE,
+    JSON.stringify(
+      result,
+      null,
+      2
+    ) + "\n",
+    "utf8"
+  );
+}
+
+async function runPackagedSmokeTest() {
+  const checks = [];
+
+  try {
+    checks.push(
+      createSmokeCheck(
+        "Electron reports packaged mode",
+        app.isPackaged,
+        {
+          isPackaged:
+            app.isPackaged,
+          appPath:
+            app.getAppPath(),
+        }
+      )
+    );
+
+    checks.push(
+      createSmokeCheck(
+        "Renderer uses packaged file URL",
+        mainWindow
+          .webContents
+          .getURL()
+          .startsWith(
+            "file://"
+          ),
+        {
+          url:
+            mainWindow
+              .webContents
+              .getURL(),
+        }
+      )
+    );
+
+    const ffmpegPath =
+      getFfmpegPath();
+
+    const ffmpegExists =
+      fs.existsSync(
+        ffmpegPath
+      );
+
+    const ffmpegInsideAsar =
+      ffmpegPath.includes(
+        `app.asar${path.sep}`
+      );
+
+    checks.push(
+      createSmokeCheck(
+        "FFmpeg executable exists",
+        ffmpegExists,
+        {
+          ffmpegPath,
+        }
+      )
+    );
+
+    checks.push(
+      createSmokeCheck(
+        "FFmpeg resolves outside app.asar",
+        !ffmpegInsideAsar,
+        {
+          ffmpegPath,
+        }
+      )
+    );
+
+    const rendererResult =
+      await mainWindow
+        .webContents
+        .executeJavaScript(
+          `
+          (async () => {
+            const waitUntil = async (
+              predicate,
+              timeoutMs = 10000
+            ) => {
+              const started =
+                Date.now();
+
+              while (
+                Date.now() -
+                  started <
+                timeoutMs
+              ) {
+                if (predicate()) {
+                  return;
+                }
+
+                await new Promise(
+                  (resolve) =>
+                    setTimeout(
+                      resolve,
+                      100
+                    )
+                );
+              }
+
+              throw new Error(
+                "Timed out waiting for SwingSync renderer."
+              );
+            };
+
+            await waitUntil(
+              () =>
+                document.querySelector(
+                  ".brand-name"
+                )
+            );
+
+            const api =
+              window.swingSync;
+
+            if (!api) {
+              throw new Error(
+                "window.swingSync was not exposed by preload."
+              );
+            }
+
+            const bootstrap =
+              await api.bootstrap();
+
+            const fontFaces =
+              await document.fonts.load(
+                '24px "Manbow Lines-Regular"',
+                "SwingSync"
+              );
+
+            return {
+              brand:
+                document
+                  .querySelector(
+                    ".brand-name"
+                  )
+                  ?.textContent
+                  ?.trim() ??
+                null,
+              apiMethods:
+                Object.keys(
+                  api
+                ).sort(),
+              bootstrapState:
+                bootstrap
+                  ?.state
+                  ?.status ??
+                null,
+              hasCapabilities:
+                Boolean(
+                  bootstrap
+                    ?.capabilities
+                ),
+              fontFaceCount:
+                fontFaces.length,
+              fontReady:
+                document.fonts.check(
+                  '24px "Manbow Lines-Regular"',
+                  "SwingSync"
+                ),
+            };
+          })()
+          `,
+          true
+        );
+
+    const requiredApiMethods = [
+      "analyzeAll",
+      "bootstrap",
+      "getApplyPlan",
+      "getReviewQueue",
+      "setProfile",
+    ];
+
+    const missingMethods =
+      requiredApiMethods.filter(
+        (method) =>
+          !rendererResult
+            .apiMethods
+            .includes(
+              method
+            )
+      );
+
+    checks.push(
+      createSmokeCheck(
+        "React renderer mounted",
+        rendererResult.brand ===
+          "SwingSync",
+        {
+          brand:
+            rendererResult.brand,
+        }
+      )
+    );
+
+    checks.push(
+      createSmokeCheck(
+        "Preload API exposed",
+        missingMethods.length ===
+          0,
+        {
+          missingMethods,
+          apiMethods:
+            rendererResult
+              .apiMethods,
+        }
+      )
+    );
+
+    checks.push(
+      createSmokeCheck(
+        "IPC bootstrap succeeds",
+        Boolean(
+          rendererResult
+            .bootstrapState
+        ) &&
+          rendererResult
+            .hasCapabilities,
+        {
+          state:
+            rendererResult
+              .bootstrapState,
+          hasCapabilities:
+            rendererResult
+              .hasCapabilities,
+        }
+      )
+    );
+
+    checks.push(
+      createSmokeCheck(
+        "Manbow Lines font loads",
+        rendererResult
+            .fontFaceCount >
+          0 &&
+          rendererResult
+            .fontReady,
+        {
+          fontFaceCount:
+            rendererResult
+              .fontFaceCount,
+          fontReady:
+            rendererResult
+              .fontReady,
+        }
+      )
+    );
+  } catch (error) {
+    checks.push(
+      createSmokeCheck(
+        "Smoke-test execution",
+        false,
+        {
+          message:
+            error?.message ??
+            String(error),
+          stack:
+            error?.stack ??
+            null,
+        }
+      )
+    );
+  }
+
+  const failed =
+    checks.filter(
+      (check) =>
+        !check.passed
+    );
+
+  const result = {
+    product:
+      PRODUCT_NAME,
+    version:
+      app.getVersion(),
+    platform:
+      process.platform,
+    arch:
+      process.arch,
+    passed:
+      failed.length === 0,
+    checks,
+  };
+
+  writeSmokeResult(
+    result
+  );
+
+  if (
+    bpmApplication &&
+    bpmApplication
+      .getState()
+      .status !== "closed"
+  ) {
+    await bpmApplication.close();
+  }
+
+  app.exit(
+    result.passed
+      ? 0
+      : 1
+  );
+}
+
+async function handleStartupError(
+  error
+) {
+  if (
+    PACKAGED_SMOKE_TEST
+  ) {
+    const result = {
+      product:
+        PRODUCT_NAME,
+      version:
+        app.getVersion(),
+      platform:
+        process.platform,
+      arch:
+        process.arch,
+      passed: false,
+      checks: [
+        createSmokeCheck(
+          "Application startup",
+          false,
+          {
+            message:
+              error?.message ??
+              String(error),
+            stack:
+              error?.stack ??
+              null,
+          }
+        ),
+      ],
+    };
+
+    writeSmokeResult(
+      result
+    );
+
+    app.exit(1);
+    return;
+  }
+
+  throw error;
 }
 
 app.whenReady().then(
@@ -362,6 +781,13 @@ app.whenReady().then(
     registerIpcHandlers();
     await createWindow();
 
+    if (
+      PACKAGED_SMOKE_TEST
+    ) {
+      await runPackagedSmokeTest();
+      return;
+    }
+
     app.on(
       "activate",
       async () => {
@@ -374,6 +800,8 @@ app.whenReady().then(
       }
     );
   }
+).catch(
+  handleStartupError
 );
 
 app.on(

@@ -1,4 +1,4 @@
-# SwingSync v15.19.2 — Review badge contrast hotfix
+# SwingSync v15.20 — Packaged-app smoke test
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -840,3 +840,55 @@ foreground color in Light mode so the number remains readable against the
 accent-colored badge.
 
 Dark-mode badge styling is unchanged.
+
+
+## v15.20 — Automated packaged-app smoke test
+
+SwingSync now contains a smoke-test mode that runs inside the packaged Electron
+application, plus a Windows runner that launches `release\win-unpacked`.
+
+Test an existing unpacked package:
+
+```powershell
+npm run test:packaged
+```
+
+Build the unpacked Windows app and immediately test it:
+
+```powershell
+npm run desktop:package:win:smoke
+```
+
+Recommended release command:
+
+```powershell
+npm run desktop:package:win:verified
+```
+
+That command:
+
+```text
+1. builds the Vite renderer
+2. creates the win-unpacked Electron app
+3. launches the packaged SwingSync.exe in hidden smoke-test mode
+4. verifies the packaged runtime
+5. only if the smoke test passes, creates the portable Windows .exe
+```
+
+The packaged smoke test checks:
+
+- Electron reports `app.isPackaged === true`
+- renderer URL uses `file://`
+- FFmpeg exists
+- FFmpeg resolves outside `app.asar`
+- the React renderer mounts and shows the SwingSync brand
+- the preload bridge exposes required API methods
+- the real IPC `bootstrap` call succeeds
+- the bundled `Manbow Lines-Regular` font loads in the renderer
+
+The smoke run uses a temporary Electron `userData` directory and removes it
+after the test, so it does not touch the tester/developer's normal SwingSync
+cache.
+
+A failing check produces a non-zero process exit, which makes the npm release
+command stop before producing the final portable artifact.

@@ -287,3 +287,31 @@ stretch the footer into the remaining viewport height.
   badge.
 - The CTA highlights once per completed `analysisBatchRevision`, for about
   2.7 seconds, with a reduced-motion fallback.
+
+
+## v15.20 packaged Windows smoke test
+
+Existing unpacked package:
+
+```powershell
+npm run test:packaged
+```
+
+Build + smoke:
+
+```powershell
+npm run desktop:package:win:smoke
+```
+
+Verified portable release:
+
+```powershell
+npm run desktop:package:win:verified
+```
+
+The smoke test runs the packaged `SwingSync.exe` with a private environment
+flag. The normal application never enters smoke mode.
+
+Inside the packaged process it verifies packaged mode, renderer/preload/IPC,
+FFmpeg's unpacked path and the bundled Manbow font. A JSON result is written to
+a temporary directory for the parent test runner, then deleted by the runner.
