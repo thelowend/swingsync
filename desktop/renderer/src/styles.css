@@ -3185,7 +3185,7 @@ html:not([data-theme="dark"])
 }
 
 .workflow-review-count {
-  color: var(--nav-active-text);
+  color: #fff8ef;
   background: var(--nav-active-bg);
 }
 

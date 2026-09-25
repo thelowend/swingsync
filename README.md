@@ -1,4 +1,4 @@
-# SwingSync v15.19.1 — Light-mode Custom BPM fix
+# SwingSync v15.19.2 — Review badge contrast hotfix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -831,3 +831,12 @@ The whole-number input behavior remains:
 ```html
 step="1"
 ```
+
+
+## v15.19.2 — Review badge contrast
+
+The unresolved Review count inside the Library workflow CTA now uses a light
+foreground color in Light mode so the number remains readable against the
+accent-colored badge.
+
+Dark-mode badge styling is unchanged.
