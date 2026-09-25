@@ -1,4 +1,4 @@
-# SwingSync v15.22.1 — Tap Tempo interaction polish
+# SwingSync v15.23 — Accessibility controls
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1115,3 +1115,50 @@ than becoming increasingly sluggish over a very long sequence.
 
 A pause longer than 2.5 seconds still starts a fresh sequence and resets the
 visible count to 1 on the next accepted tap.
+
+
+## v15.23 — Accessibility controls
+
+The top navigation now has an Accessibility button immediately to the left of
+the workflow navigation.
+
+Its dropdown contains persistent preferences for:
+
+- Larger text / interface scaling
+- High contrast
+- Color-vision adaptive palettes:
+  - Deuteranopia
+  - Protanopia
+  - Tritanopia
+- Reduce motion
+- Reset to defaults
+
+Preferences are stored in:
+
+```text
+swingsync.accessibility
+```
+
+and restored at startup.
+
+### Color-vision modes
+
+These are accessibility-oriented alternate palettes, not simulations of color
+blindness. They remap semantic accent, success, error and information colors
+to combinations intended to remain easier to distinguish for the selected
+color-vision profile.
+
+### Reduce motion
+
+The explicit Reduce Motion setting suppresses SwingSync's pulse/highlight
+animations and transitions even when the operating system itself does not
+request reduced motion.
+
+On first use, if there is no stored SwingSync preference, the setting respects
+the operating system's `prefers-reduced-motion` value.
+
+### Accessibility settings test
+
+```powershell
+npm run test:accessibility
+```

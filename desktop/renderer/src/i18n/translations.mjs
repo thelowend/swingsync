@@ -30,6 +30,25 @@ export const SPANISH_TRANSLATIONS =
     "Light": "Claro",
     "Dark": "Oscuro",
     "SwingSync desktop theme": "Tema visual de SwingSync",
+    "Accessibility": "Accesibilidad",
+    "Display options": "Opciones de visualización",
+    "Reset": "Restablecer",
+    "Larger text": "Texto más grande",
+    "Increase interface and text size":
+      "Aumentar el tamaño de la interfaz y del texto",
+    "High contrast": "Alto contraste",
+    "Increase separation between text, controls, and surfaces":
+      "Aumentar la separación entre texto, controles y superficies",
+    "Color vision filter": "Filtro de visión de color",
+    "Use an alternate palette for color distinctions":
+      "Usar una paleta alternativa para distinguir colores",
+    "No color filter": "Sin filtro de color",
+    "Deuteranopia": "Deuteranopía",
+    "Protanopia": "Protanopía",
+    "Tritanopia": "Tritanopía",
+    "Reduce motion": "Reducir movimiento",
+    "Minimize pulses, transitions, and animated emphasis":
+      "Minimizar pulsos, transiciones y énfasis animados",
 
     // Brand / loading
     "Starting the music library engine…":

@@ -26,6 +26,9 @@ import LanguageToggle from
 import ThemeToggle from
   "./components/ThemeToggle.jsx";
 
+import AccessibilityMenu from
+  "./components/AccessibilityMenu.jsx";
+
 import {
   useLanguage,
 } from "./i18n/LanguageContext.jsx";
@@ -570,84 +573,88 @@ export default function App() {
           </div>
         </div>
 
-        <nav
-          className="app-navigation"
-          aria-label={t(
-            "Workflow"
-          )}
-        >
-          <button
-            type="button"
-            className={
-              view === "library"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setView("library")
-            }
-          >
-            {t(
-              "Library"
-            )}
-          </button>
+        <div className="navigation-cluster">
+          <AccessibilityMenu />
 
-          <button
-            type="button"
-            className={
-              view === "review"
-                ? "active"
-                : ""
-            }
-            disabled={
-              state.summary.needsReview ===
-              0
-            }
-            onClick={goToReview}
+          <nav
+            className="app-navigation"
+            aria-label={t(
+              "Workflow"
+            )}
           >
-            {t(
-              "Review"
-            )}
-            {state.summary.reviewRemaining >
-              0 && (
-              <span>
-                {
-                  state.summary
-                    .reviewRemaining
-                }
-              </span>
-            )}
-          </button>
+            <button
+              type="button"
+              className={
+                view === "library"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setView("library")
+              }
+            >
+              {t(
+                "Library"
+              )}
+            </button>
 
-          <button
-            type="button"
-            className={
-              view === "apply"
-                ? "active"
-                : ""
-            }
-            disabled={
-              (state.summary.pendingToApply ??
-                0) === 0 &&
-              state.summary.outputApplied ===
+            <button
+              type="button"
+              className={
+                view === "review"
+                  ? "active"
+                  : ""
+              }
+              disabled={
+                state.summary.needsReview ===
                 0
-            }
-            onClick={goToApply}
-          >
-            {t(
-              "Apply"
-            )}
-            {(state.summary.pendingToApply ??
-              0) > 0 && (
-              <span>
-                {
-                  state.summary
-                    .pendingToApply
-                }
-              </span>
-            )}
-          </button>
-        </nav>
+              }
+              onClick={goToReview}
+            >
+              {t(
+                "Review"
+              )}
+              {state.summary.reviewRemaining >
+                0 && (
+                <span>
+                  {
+                    state.summary
+                      .reviewRemaining
+                  }
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              className={
+                view === "apply"
+                  ? "active"
+                  : ""
+              }
+              disabled={
+                (state.summary.pendingToApply ??
+                  0) === 0 &&
+                state.summary.outputApplied ===
+                  0
+              }
+              onClick={goToApply}
+            >
+              {t(
+                "Apply"
+              )}
+              {(state.summary.pendingToApply ??
+                0) > 0 && (
+                <span>
+                  {
+                    state.summary
+                      .pendingToApply
+                  }
+                </span>
+              )}
+            </button>
+          </nav>
+        </div>
 
         <div className="topbar-controls">
           <ThemeToggle />
@@ -1255,7 +1262,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.22.1
+          SwingSync v0.15.23
           {" - By Diego Pablos"}
         </div>
       </footer>

@@ -3492,3 +3492,408 @@ html[data-theme="dark"]
   color: var(--accent-strong);
   background: var(--surface-control);
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.23 Accessibility menu + display preferences                    */
+/* ------------------------------------------------------------------ */
+
+.navigation-cluster {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.accessibility-menu {
+  position: relative;
+  flex: none;
+}
+
+.accessibility-trigger {
+  width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--nav-border);
+  border-radius: 10px;
+  color: var(--nav-text);
+  background: var(--nav-bg);
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.12);
+}
+
+.accessibility-trigger svg {
+  width: 21px;
+  height: 21px;
+}
+
+.accessibility-trigger:hover,
+.accessibility-trigger.active {
+  color: var(--nav-active-text);
+  border-color: var(--accent-border);
+  background: var(--nav-active-bg);
+}
+
+html[data-theme="dark"]
+.accessibility-trigger:hover,
+html[data-theme="dark"]
+.accessibility-trigger.active {
+  color: #2b170c;
+}
+
+.accessibility-popover {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 330px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  background: var(--modal-bg);
+  box-shadow:
+    0 16px 40px
+    var(--shadow-strong);
+}
+
+.accessibility-popover-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 2px 12px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.accessibility-popover-header > div {
+  display: grid;
+  gap: 3px;
+}
+
+.accessibility-popover-header strong {
+  font-size: 16px;
+}
+
+.accessibility-reset {
+  min-height: 28px;
+  border: 0;
+  padding: 0 3px;
+  color: var(--accent-strong);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.accessibility-reset:hover {
+  text-decoration: underline;
+}
+
+.accessibility-options {
+  display: grid;
+  gap: 4px;
+  padding-top: 8px;
+}
+
+.accessibility-switch,
+.accessibility-select-option {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 8px;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+}
+
+.accessibility-switch:hover {
+  background: var(--surface-control-hover);
+}
+
+.accessibility-option-copy,
+.accessibility-select-option label {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.accessibility-option-copy strong,
+.accessibility-select-option label strong {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.accessibility-option-copy small,
+.accessibility-select-option label small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.accessibility-switch-track {
+  width: 36px;
+  height: 20px;
+  position: relative;
+  flex: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-inset);
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.accessibility-switch-track > span {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 999px;
+  background: var(--muted-strong);
+  transition:
+    transform 120ms ease,
+    background 120ms ease;
+}
+
+.accessibility-switch-track.on {
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.accessibility-switch-track.on > span {
+  transform: translateX(16px);
+  background: var(--accent-strong);
+}
+
+.accessibility-select-option {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.accessibility-select-option select {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 30px 0 10px;
+  color: var(--text);
+  background: var(--surface-control);
+}
+
+/* Larger text uses Chromium's CSS zoom so existing fixed-pixel typography
+   scales consistently without recursively compounding nested font sizes. */
+html[data-a11y-text="large"]
+.app-shell,
+html[data-a11y-text="large"]
+.loading-screen {
+  width: 89.285714%;
+  min-height: 89.285714vh;
+  zoom: 1.12;
+}
+
+/* Manual Reduce Motion setting mirrors the existing OS-level media-query
+   behavior, but can be enabled explicitly from the accessibility menu. */
+html[data-a11y-motion="reduced"] *,
+html[data-a11y-motion="reduced"] *::before,
+html[data-a11y-motion="reduced"] *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* High contrast keeps the chosen theme polarity while removing low-contrast
+   surface differences and soft shadows. Semantic accent colors remain
+   available and can still be remapped by a color-vision palette below. */
+html[data-a11y-contrast="high"][data-theme="light"] {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-soft: #f2f2f2;
+  --panel-hover: #e5e5e5;
+  --border: #161616;
+  --border-soft: #444444;
+  --text: #000000;
+  --muted: #242424;
+  --muted-strong: #111111;
+  --accent: #b84f13;
+  --accent-strong: #843000;
+  --accent-soft: #fff0e5;
+  --accent-border: #843000;
+  --surface-topbar: #ffffff;
+  --surface-control: #ffffff;
+  --surface-control-hover: #ededed;
+  --surface-inset: #eeeeee;
+  --surface-raised: #ffffff;
+  --nav-bg: #ffffff;
+  --nav-border: #111111;
+  --nav-text: #000000;
+  --nav-hover-bg: #e5e5e5;
+  --nav-active-bg: #111111;
+  --nav-active-text: #ffffff;
+  --nav-disabled-text: #555555;
+  --table-head-bg: #e8e8e8;
+  --table-head-text: #000000;
+  --modal-bg: #ffffff;
+  --modal-inset: #f0f0f0;
+  --shadow-soft: transparent;
+  --shadow-strong: rgba(0, 0, 0, 0.34);
+}
+
+html[data-a11y-contrast="high"][data-theme="dark"] {
+  --bg: #000000;
+  --panel: #000000;
+  --panel-soft: #111111;
+  --panel-hover: #242424;
+  --border: #ffffff;
+  --border-soft: #bdbdbd;
+  --text: #ffffff;
+  --muted: #ededed;
+  --muted-strong: #ffffff;
+  --accent: #ff9a57;
+  --accent-strong: #ffc099;
+  --accent-soft: rgba(255, 154, 87, 0.18);
+  --accent-border: #ffc099;
+  --surface-topbar: #000000;
+  --surface-control: #101010;
+  --surface-control-hover: #292929;
+  --surface-inset: #080808;
+  --surface-raised: #000000;
+  --nav-bg: #000000;
+  --nav-border: #ffffff;
+  --nav-text: #ffffff;
+  --nav-hover-bg: #242424;
+  --nav-active-bg: #ffffff;
+  --nav-active-text: #000000;
+  --nav-disabled-text: #bdbdbd;
+  --table-head-bg: #171717;
+  --table-head-text: #ffffff;
+  --modal-bg: #000000;
+  --modal-inset: #111111;
+  --shadow-soft: transparent;
+  --shadow-strong: rgba(0, 0, 0, 0.82);
+}
+
+html[data-a11y-contrast="high"]
+button:focus-visible,
+html[data-a11y-contrast="high"]
+select:focus-visible,
+html[data-a11y-contrast="high"]
+input:focus-visible {
+  outline-width: 3px;
+  outline-offset: 3px;
+}
+
+/* Color-vision profiles are adaptive palettes, not simulations. They remap
+   semantic UI colors so important states do not depend on the default
+   orange/green/red distinctions alone. */
+html[data-a11y-color-vision="deuteranopia"] {
+  --accent: #d55e00;
+  --accent-strong: #a64600;
+  --good: #0072b2;
+  --danger: #aa4499;
+  --info: #56b4e9;
+}
+
+html[data-a11y-color-vision="protanopia"] {
+  --accent: #e69f00;
+  --accent-strong: #9b6900;
+  --good: #0072b2;
+  --danger: #cc79a7;
+  --info: #009e73;
+}
+
+html[data-a11y-color-vision="tritanopia"] {
+  --accent: #d55e00;
+  --accent-strong: #9d3f00;
+  --good: #009e73;
+  --danger: #882255;
+  --info: #332288;
+}
+
+html:not([data-a11y-color-vision="none"]) {
+  --accent-soft:
+    color-mix(
+      in srgb,
+      var(--accent) 14%,
+      transparent
+    );
+  --accent-border:
+    color-mix(
+      in srgb,
+      var(--accent) 48%,
+      var(--border)
+    );
+  --good-soft:
+    color-mix(
+      in srgb,
+      var(--good) 16%,
+      var(--panel)
+    );
+  --danger-soft:
+    color-mix(
+      in srgb,
+      var(--danger) 16%,
+      var(--panel)
+    );
+  --info-soft:
+    color-mix(
+      in srgb,
+      var(--info) 16%,
+      var(--panel)
+    );
+
+  --status-review-text:
+    var(--accent-strong);
+  --status-review-bg:
+    color-mix(
+      in srgb,
+      var(--accent) 15%,
+      var(--panel)
+    );
+  --status-ready-text:
+    var(--good);
+  --status-ready-bg:
+    color-mix(
+      in srgb,
+      var(--good) 15%,
+      var(--panel)
+    );
+  --status-error-text:
+    var(--danger);
+  --status-error-bg:
+    color-mix(
+      in srgb,
+      var(--danger) 15%,
+      var(--panel)
+    );
+  --status-info-text:
+    var(--info);
+  --status-info-bg:
+    color-mix(
+      in srgb,
+      var(--info) 15%,
+      var(--panel)
+    );
+}
+
+@media (max-width: 1180px) {
+  .navigation-cluster {
+    gap: 5px;
+  }
+
+  .accessibility-trigger {
+    width: 38px;
+    height: 38px;
+  }
+}

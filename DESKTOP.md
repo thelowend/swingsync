@@ -382,3 +382,14 @@ the visible counter can grow without bound during one continuous sequence.
 
 `Tap BPM` replays a short pulse animation for each click/touch. The animation
 is disabled under `prefers-reduced-motion`.
+
+
+## v15.23 Accessibility
+
+`AccessibilityProvider` owns persistent display preferences and applies them to
+the root HTML element through `data-a11y-*` attributes.
+
+The navigation-level Accessibility popover supports Larger Text, High
+Contrast, Deuteranopia/Protanopia/Tritanopia adaptive palettes and Reduce
+Motion. Preferences are renderer-local and do not alter analysis or file
+output behavior.

@@ -13,6 +13,10 @@ import {
   ThemeProvider,
 } from "./theme/ThemeContext.jsx";
 
+import {
+  AccessibilityProvider,
+} from "./accessibility/AccessibilityContext.jsx";
+
 import "./styles.css";
 
 createRoot(
@@ -21,10 +25,12 @@ createRoot(
   )
 ).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
-    </ThemeProvider>
+    <AccessibilityProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
+      </ThemeProvider>
+    </AccessibilityProvider>
   </React.StrictMode>
 );
