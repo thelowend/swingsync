@@ -1,4 +1,4 @@
-# SwingSync v15.25.1 — Topbar and accessibility polish
+# SwingSync v15.25.2 — Default-window fit and badge centering
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1297,3 +1297,35 @@ The source ZIP does not contain the font binaries.
 - The gap between Accessibility option rows is removed.
 - The Color Vision select uses 14px text and a custom chevron positioned
   farther inward from the right edge.
+
+
+## v15.25.2 — Default-window fit
+
+The Profile and Output selects now use:
+
+```css
+padding: 0 16px 0 11px;
+```
+
+The topbar also uses tighter horizontal spacing.
+
+To avoid horizontal clipping after the larger brand typography was introduced,
+the header becomes a two-row grid at `1480px` and below:
+
+```text
+Swing/Sync                         display/settings controls
+              LIBRARY  REVIEW  APPLY
+```
+
+At `1180px` and below, display/settings controls get their own row as well.
+This keeps the interface usable down to the existing 980px BrowserWindow
+minimum without requiring the user to manually widen the window.
+
+## v15.25.2 — Numeric badge centering
+
+Dynamic numeric badges now use the same neutral system-font metrics as
+`action-step-number`, rather than inheriting stylized Engebrechtre numerals.
+
+Navigation and workflow count pills also use the same 20px vertical geometry
+as the correctly centered step-number circles while retaining normal
+`font-weight: 400`.

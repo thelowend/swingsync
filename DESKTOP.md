@@ -443,3 +443,16 @@ The Accessibility trigger is styled as a one-button version of the Theme and
 Language grouped controls. Accessibility option copy is enlarged to 15px/14px
 (title/description), option-row gap is removed, and the color-vision select
 uses 14px text with an inset custom chevron.
+
+
+## v15.25.2 Default window sizing
+
+Header spacing is reduced and compact Profile/Output selects use
+`padding: 0 16px 0 11px`.
+
+At <=1480px, workflow navigation occupies a centered second header row. At
+<=1180px, topbar settings occupy their own row too. This prevents the enlarged
+branding/topbar controls from exceeding the default Electron window width.
+
+Numeric navigation/workflow badges explicitly use the base UI numeral metrics
+and 20px centering geometry instead of inheriting Engebrechtre.
