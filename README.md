@@ -1,4 +1,4 @@
-# SwingSync v15.21.7 — Track Inspector polish
+# SwingSync v15.22 — Tap Tempo review aid
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1057,3 +1057,25 @@ The Human Review callout is unchanged.
 The inspector close control now uses a centered SVG X instead of a text `×`
 glyph. This avoids font-baseline offsets and keeps the X optically centered in
 the existing 34×34 square button.
+
+
+## v15.22 — Tap Tempo
+
+Review now includes a manual Tap Tempo row above Custom BPM.
+
+Play the track, press **Tap BPM** once per beat, and SwingSync estimates a
+whole-number BPM from the median of recent tap intervals. The estimate fills
+Custom BPM automatically, but the user still has to explicitly choose
+**Approve custom** before anything becomes eligible for Apply.
+
+The estimator keeps the most recent nine taps, ignores accidental ultra-fast
+double clicks, and begins a fresh count after a 2.5-second pause.
+
+Run its dependency-free test with:
+
+```powershell
+npm run test:tap-tempo
+```
+
+Track Inspector sections now use the same 8px horizontal inset as Detail
+content. The separate Human Review callout is unchanged.

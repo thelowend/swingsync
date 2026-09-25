@@ -767,7 +767,7 @@ svg {
 }
 
 .inspector-section {
-  padding: 20px 0;
+  padding: 20px 8px;
   border-bottom: 1px solid var(--border-soft);
 }
 
@@ -777,7 +777,7 @@ svg {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-inline: 8px;
+  padding-inline: 0;
   color: var(--muted);
   font-size: 12px;
 }
@@ -1301,6 +1301,89 @@ svg {
   font-weight: 720;
 }
 
+.tap-tempo-row {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 15px 17px;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: #14161b;
+}
+
+.tap-tempo-copy {
+  min-width: 0;
+}
+
+.tap-tempo-copy p {
+  max-width: 560px;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.tap-tempo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: none;
+}
+
+.tap-tempo-button {
+  min-width: 96px;
+  min-height: 44px;
+  font-weight: 760;
+  touch-action: manipulation;
+}
+
+.tap-tempo-readout {
+  min-width: 78px;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 4px;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.tap-tempo-readout strong {
+  color: var(--muted-strong);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tap-tempo-readout > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+}
+
+.tap-tempo-readout small {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 9px;
+  text-align: center;
+}
+
+.tap-tempo-readout.has-value strong {
+  color: var(--accent);
+}
+
+.tap-tempo-reset {
+  min-width: 54px;
+  text-align: center;
+}
+
 .custom-review-row {
   margin-top: 13px;
   display: flex;
@@ -1781,6 +1864,19 @@ svg {
   .review-tempo-grid,
   .apply-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tap-tempo-row,
+  .custom-review-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tap-tempo-controls,
+  .custom-bpm-control {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }
 
@@ -2593,6 +2689,7 @@ html[data-theme="dark"]
 
 .review-editor,
 .tempo-choice,
+.tap-tempo-row,
 .custom-review-row,
 .evidence-card,
 .candidate-chip {

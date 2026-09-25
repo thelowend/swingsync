@@ -1,12 +1,18 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import {
   useLanguage,
 } from "../i18n/LanguageContext.jsx";
+
+import {
+  addTempoTap,
+  estimateTapTempoBpm,
+} from "../utils/tapTempo.mjs";
 
 function basename(file) {
   if (!file) {
@@ -201,6 +207,15 @@ export default function ReviewView({
   const [customBpm, setCustomBpm] =
     useState("");
 
+  const tapTimesRef =
+    useRef([]);
+
+  const [tapBpm, setTapBpm] =
+    useState(null);
+
+  const [tapCount, setTapCount] =
+    useState(0);
+
   const [busy, setBusy] =
     useState(false);
 
@@ -334,6 +349,75 @@ export default function ReviewView({
     );
     onContinue();
   }
+
+  function resetTapTempo({
+    clearCustom = false,
+  } = {}) {
+    tapTimesRef.current = [];
+    setTapBpm(null);
+    setTapCount(0);
+
+    if (clearCustom) {
+      setCustomBpm("");
+    }
+  }
+
+  function registerTempoTap() {
+    const currentTaps =
+      tapTimesRef.current;
+
+    const nextTaps =
+      addTempoTap(
+        currentTaps,
+        performance.now()
+      );
+
+    if (
+      nextTaps ===
+      currentTaps
+    ) {
+      return;
+    }
+
+    tapTimesRef.current =
+      nextTaps;
+
+    setTapCount(
+      nextTaps.length
+    );
+
+    const estimate =
+      estimateTapTempoBpm(
+        nextTaps
+      );
+
+    setTapBpm(
+      estimate
+    );
+
+    if (
+      Number.isFinite(
+        estimate
+      )
+    ) {
+      setCustomBpm(
+        String(
+          estimate
+        )
+      );
+    } else if (
+      nextTaps.length ===
+      1
+    ) {
+      setCustomBpm("");
+    }
+  }
+
+  useEffect(() => {
+    resetTapTempo();
+  }, [
+    selectedTrackId,
+  ]);
 
   async function openSelectedTrack() {
     if (
@@ -940,6 +1024,89 @@ export default function ReviewView({
                     )}
                   </em>
                 </button>
+              </div>
+
+              <div className="tap-tempo-row">
+                <div className="tap-tempo-copy">
+                  <span className="section-label">
+                    {t(
+                      "Find BPM by tapping"
+                    )}
+                  </span>
+                  <p>
+                    {t(
+                      "Play the track and tap this button once per beat. The estimate will fill Custom BPM automatically."
+                    )}
+                  </p>
+                </div>
+
+                <div className="tap-tempo-controls">
+                  <button
+                    type="button"
+                    className="button secondary-button tap-tempo-button"
+                    disabled={busy}
+                    onClick={
+                      registerTempoTap
+                    }
+                    title={t(
+                      "Tap once on every beat"
+                    )}
+                  >
+                    {t(
+                      "Tap BPM"
+                    )}
+                  </button>
+
+                  <div
+                    className={`tap-tempo-readout ${
+                      Number.isFinite(
+                        tapBpm
+                      )
+                        ? "has-value"
+                        : ""
+                    }`}
+                    aria-live="polite"
+                  >
+                    <strong>
+                      {Number.isFinite(
+                        tapBpm
+                      )
+                        ? tapBpm
+                        : "—"}
+                    </strong>
+                    <span>BPM</span>
+                    <small>
+                      {tapCount === 0
+                        ? t(
+                            "Tap to start"
+                          )
+                        : plural(
+                            "{count} tap",
+                            "{count} taps",
+                            tapCount
+                          )}
+                    </small>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="text-button tap-tempo-reset"
+                    disabled={
+                      busy ||
+                      tapCount === 0
+                    }
+                    onClick={() =>
+                      resetTapTempo({
+                        clearCustom:
+                          true,
+                      })
+                    }
+                  >
+                    {t(
+                      "Reset taps"
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="custom-review-row">

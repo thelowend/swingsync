@@ -219,6 +219,21 @@ export const SPANISH_TRANSLATIONS =
     "{relationship} · {confidence}":
       "{relationship} · {confidence}",
     "Approve suggested": "Aprobar sugerido",
+    "Find BPM by tapping":
+      "Encontrá el BPM marcando el pulso",
+    "Play the track and tap this button once per beat. The estimate will fill Custom BPM automatically.":
+      "Reproducí la pista y tocá este botón una vez por pulso. La estimación completará el BPM personalizado automáticamente.",
+    "Tap once on every beat":
+      "Tocá una vez por cada pulso",
+    "Tap BPM": "Marcar BPM",
+    "Tap to start":
+      "Marcá para empezar",
+    "{count} tap":
+      "{count} marcación",
+    "{count} taps":
+      "{count} marcaciones",
+    "Reset taps":
+      "Reiniciar marcaciones",
     "Custom BPM": "BPM personalizado",
     "Enter your own value if neither interpretation matches how you count the song.":
       "Ingresá tu propio valor si ninguna interpretación coincide con la forma en que contás la canción.",

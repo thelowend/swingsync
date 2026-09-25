@@ -358,3 +358,14 @@ At `max-width: 1000px` the queue returns to normal flow for the stacked layout.
 - Inspector Detail rows use 8px left/right padding.
 - Review callout spacing is unchanged.
 - Close button uses a 16×16 SVG X centered inside the existing 34×34 hit area.
+
+
+## v15.22 Tap Tempo
+
+Tap Tempo is renderer-only and does not write files or invoke IPC. It estimates
+BPM from recent tap intervals and copies the whole-number result into Custom BPM.
+
+## v15.22 Track Inspector spacing
+
+`inspector-section` now owns the 8px horizontal inset. Detail rows no longer
+add a second nested inset. The standalone review callout is unchanged.

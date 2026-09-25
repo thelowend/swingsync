@@ -1,6 +1,6 @@
 {
   "name": "swingsync",
-  "version": "0.15.21.7",
+  "version": "0.15.22",
   "private": true,
   "description": "SwingSync multilingual desktop and CLI app for swing/Boogie-Woogie-aware tempo analysis, review, and BPM metadata synchronization.",
   "main": "src/client/public-api.cjs",
@@ -20,7 +20,8 @@
     "predesktop:package:win:unpacked": "node scripts/check-windows-package.cjs",
     "test:packaged": "node scripts/smoke-packaged-windows.cjs",
     "desktop:package:win:smoke": "npm run desktop:package:win:unpacked && npm run test:packaged",
-    "desktop:package:win:verified": "npm run desktop:package:win:smoke && electron-builder --win portable --x64"
+    "desktop:package:win:verified": "npm run desktop:package:win:smoke && electron-builder --win portable --x64",
+    "test:tap-tempo": "node scripts/test-tap-tempo.mjs"
   },
   "dependencies": {
     "essentia.js": "*",
