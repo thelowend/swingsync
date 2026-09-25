@@ -1,4 +1,4 @@
-# SwingSync v15.25.2 — Default-window fit and badge centering
+# SwingSync v15.25.3 — Single-row workflow navigation
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1329,3 +1329,20 @@ Dynamic numeric badges now use the same neutral system-font metrics as
 Navigation and workflow count pills also use the same 20px vertical geometry
 as the correctly centered step-number circles while retaining normal
 `font-weight: 400`.
+
+
+## v15.25.3 — Single-row workflow navigation
+
+The responsive rule introduced in v15.25.2 that moved Library / Review / Apply
+onto a second header row has been removed.
+
+Workflow navigation now remains on the primary topbar row at desktop widths.
+
+The other v15.25.2 width optimizations remain in place:
+
+- Profile / Output select padding remains `0 16px 0 11px`
+- topbar gap remains reduced
+- topbar side padding remains reduced
+- topbar-controls spacing remains reduced
+- compact-field internal spacing remains reduced
+- numeric badge centering improvements remain unchanged

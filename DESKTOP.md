@@ -456,3 +456,11 @@ branding/topbar controls from exceeding the default Electron window width.
 
 Numeric navigation/workflow badges explicitly use the base UI numeral metrics
 and 20px centering geometry instead of inheriting Engebrechtre.
+
+
+## v15.25.3 Single-row navigation
+
+Library / Review / Apply no longer move to a second row at 1480px or below.
+The workflow navigation remains inline with the brand and topbar controls.
+
+The compact select and spacing reductions from v15.25.2 are preserved.

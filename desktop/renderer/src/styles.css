@@ -4291,71 +4291,6 @@ html[data-theme="dark"]
   gap: 6px;
 }
 
-/* At the default 1440px Electron window, move workflow navigation onto a
-   centered second row before the header can overflow horizontally. */
-@media (max-width: 1480px) {
-  .topbar {
-    display: grid;
-    grid-template-columns:
-      minmax(0, 1fr)
-      auto;
-    align-items: center;
-    column-gap: 18px;
-    row-gap: 9px;
-  }
-
-  .topbar .brand-block {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-  }
-
-  .topbar-controls {
-    grid-column: 2;
-    grid-row: 1;
-    min-width: 0;
-  }
-
-  .app-navigation {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    justify-self: center;
-    width: auto;
-    order: initial;
-  }
-
-  .app-navigation button {
-    flex: none;
-  }
-}
-
-/* At genuinely narrow desktop widths, give display/settings controls their
-   own row as well. This keeps the app usable all the way down to the current
-   980px BrowserWindow minimum without horizontal resizing. */
-@media (max-width: 1180px) {
-  .topbar {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .topbar .brand-block {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: start;
-  }
-
-  .topbar-controls {
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: center;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .app-navigation {
-    grid-column: 1;
-    grid-row: 3;
-  }
-}
 
 /* Use the same neutral font metrics as the correctly centered step-number
    circles. This is especially important in the topbar, where counts would
@@ -4396,4 +4331,31 @@ html[data-theme="dark"]
   min-width: 1.15em;
   text-align: center;
   vertical-align: baseline;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* v15.25.3 Keep workflow navigation on the primary topbar row         */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1160px) {
+  .topbar {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .app-navigation {
+    order: initial;
+    width: auto;
+    flex: none;
+  }
+
+  .app-navigation button {
+    flex: none;
+    justify-content: center;
+  }
+
+  .topbar-controls {
+    flex-wrap: nowrap;
+  }
 }
