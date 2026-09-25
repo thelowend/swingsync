@@ -1340,6 +1340,54 @@ svg {
   touch-action: manipulation;
 }
 
+.tap-tempo-button.tap-tempo-pulse {
+  animation:
+    tap-tempo-button-pulse
+    260ms
+    ease-out;
+}
+
+@keyframes tap-tempo-button-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 0
+      color-mix(
+        in srgb,
+        var(--accent) 0%,
+        transparent
+      );
+  }
+
+  45% {
+    transform: scale(1.055);
+    box-shadow:
+      0 0 0 7px
+      color-mix(
+        in srgb,
+        var(--accent) 18%,
+        transparent
+      );
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 0
+      color-mix(
+        in srgb,
+        var(--accent) 0%,
+        transparent
+      );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-tempo-button.tap-tempo-pulse {
+    animation: none;
+  }
+}
+
 .tap-tempo-readout {
   min-width: 78px;
   display: grid;

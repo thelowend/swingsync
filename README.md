@@ -1,4 +1,4 @@
-# SwingSync v15.22 — Tap Tempo review aid
+# SwingSync v15.22.1 — Tap Tempo interaction polish
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1079,3 +1079,39 @@ npm run test:tap-tempo
 
 Track Inspector sections now use the same 8px horizontal inset as Detail
 content. The separate Human Review callout is unchanged.
+
+
+## v15.22.1 — Tap Tempo interaction polish
+
+### Tap feedback
+
+The **Tap BPM** button now gives a short visual pulse on every physical
+click/tap. Re-keying the button restarts the CSS animation for every tap so
+rapid rhythm input still produces distinct visual feedback.
+
+Users with reduced-motion enabled do not receive the scale animation.
+
+### Per-track unapproved drafts
+
+Review now keeps a renderer-local draft for each track while the Review screen
+remains open. Switching to another track and back restores:
+
+- the last Tap BPM estimate
+- the visible tap count
+- the recent timing window used by the estimator
+- the exact Custom BPM input value, including a manual edit that differs from
+  the Tap BPM estimate
+
+The draft is cleared once that track is explicitly approved or skipped.
+
+### Tap count vs estimator window
+
+The visible tap counter is no longer tied to the estimator's nine-tap rolling
+window. A continuous sequence can therefore show 10, 20, 30 taps, etc.
+
+SwingSync still calculates the estimate from only the most recent nine tap
+timestamps so the BPM remains responsive to the user's current tapping rather
+than becoming increasingly sluggish over a very long sequence.
+
+A pause longer than 2.5 seconds still starts a fresh sequence and resets the
+visible count to 1 on the next accepted tap.

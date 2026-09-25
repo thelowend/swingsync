@@ -32,4 +32,26 @@ assert.deepEqual(ignored, taps);
 const restarted = addTempoTap(taps, 5000);
 assert.deepEqual(restarted, [5000]);
 
+
+let rolling = [];
+
+for (let index = 0; index < 15; index += 1) {
+  rolling = addTempoTap(
+    rolling,
+    index * 500
+  );
+}
+
+assert.equal(
+  rolling.length,
+  9
+);
+
+assert.equal(
+  estimateTapTempoBpm(
+    rolling
+  ),
+  120
+);
+
 console.log("Tap Tempo tests passed.");

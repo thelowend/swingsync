@@ -369,3 +369,16 @@ BPM from recent tap intervals and copies the whole-number result into Custom BPM
 
 `inspector-section` now owns the 8px horizontal inset. Detail rows no longer
 add a second nested inset. The standalone review callout is unchanged.
+
+
+## v15.22.1 Tap Tempo drafts and feedback
+
+Review keeps unapproved Tap Tempo/Custom BPM state per `trackId` in a
+renderer-local Map. Queue navigation loads the corresponding draft instead of
+resetting the controls.
+
+The UI tap count is independent from the nine-timestamp estimator window, so
+the visible counter can grow without bound during one continuous sequence.
+
+`Tap BPM` replays a short pulse animation for each click/touch. The animation
+is disabled under `prefers-reduced-motion`.

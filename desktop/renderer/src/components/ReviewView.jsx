@@ -210,11 +210,21 @@ export default function ReviewView({
   const tapTimesRef =
     useRef([]);
 
+  const reviewDraftsRef =
+    useRef(
+      new Map()
+    );
+
   const [tapBpm, setTapBpm] =
     useState(null);
 
   const [tapCount, setTapCount] =
     useState(0);
+
+  const [
+    tapPulseKey,
+    setTapPulseKey,
+  ] = useState(0);
 
   const [busy, setBusy] =
     useState(false);
@@ -350,40 +360,162 @@ export default function ReviewView({
     onContinue();
   }
 
+  function updateReviewDraft(
+    trackId,
+    patch
+  ) {
+    if (!trackId) {
+      return;
+    }
+
+    const previous =
+      reviewDraftsRef.current.get(
+        trackId
+      ) ?? {
+        customBpm: "",
+        tapBpm: null,
+        tapCount: 0,
+        tapTimes: [],
+      };
+
+    reviewDraftsRef.current.set(
+      trackId,
+      {
+        ...previous,
+        ...patch,
+      }
+    );
+  }
+
+  function loadReviewDraft(
+    trackId
+  ) {
+    const draft =
+      trackId
+        ? reviewDraftsRef.current.get(
+            trackId
+          )
+        : null;
+
+    const tapTimes =
+      Array.isArray(
+        draft?.tapTimes
+      )
+        ? [
+            ...draft.tapTimes,
+          ]
+        : [];
+
+    tapTimesRef.current =
+      tapTimes;
+
+    setTapBpm(
+      Number.isFinite(
+        draft?.tapBpm
+      )
+        ? draft.tapBpm
+        : null
+    );
+
+    setTapCount(
+      Number.isFinite(
+        draft?.tapCount
+      )
+        ? draft.tapCount
+        : 0
+    );
+
+    setCustomBpm(
+      draft?.customBpm ??
+      ""
+    );
+
+    setTapPulseKey(0);
+  }
+
+  function clearReviewDraft(
+    trackId
+  ) {
+    if (!trackId) {
+      return;
+    }
+
+    reviewDraftsRef.current.delete(
+      trackId
+    );
+  }
+
   function resetTapTempo({
     clearCustom = false,
   } = {}) {
     tapTimesRef.current = [];
     setTapBpm(null);
     setTapCount(0);
+    setTapPulseKey(0);
+
+    const nextCustom =
+      clearCustom
+        ? ""
+        : customBpm;
 
     if (clearCustom) {
       setCustomBpm("");
     }
+
+    updateReviewDraft(
+      selectedTrackId,
+      {
+        tapTimes: [],
+        tapBpm: null,
+        tapCount: 0,
+        customBpm:
+          nextCustom,
+      }
+    );
   }
 
   function registerTempoTap() {
+    // Re-keying the button restarts its short CSS animation on every
+    // physical click/tap, even if the timing sample itself is ignored.
+    setTapPulseKey(
+      (current) =>
+        current + 1
+    );
+
     const currentTaps =
       tapTimesRef.current;
+
+    const timestamp =
+      performance.now();
 
     const nextTaps =
       addTempoTap(
         currentTaps,
-        performance.now()
+        timestamp
       );
 
-    if (
-      nextTaps ===
-      currentTaps
-    ) {
+    const accepted =
+      nextTaps.at(-1) ===
+      timestamp;
+
+    if (!accepted) {
       return;
     }
+
+    const restarted =
+      currentTaps.length > 0 &&
+      nextTaps.length === 1;
+
+    const nextTapCount =
+      restarted
+        ? 1
+        : tapCount + 1;
 
     tapTimesRef.current =
       nextTaps;
 
     setTapCount(
-      nextTaps.length
+      nextTapCount
     );
 
     const estimate =
@@ -395,26 +527,66 @@ export default function ReviewView({
       estimate
     );
 
+    let nextCustom =
+      customBpm;
+
     if (
       Number.isFinite(
         estimate
       )
     ) {
-      setCustomBpm(
+      nextCustom =
         String(
           estimate
-        )
+        );
+
+      setCustomBpm(
+        nextCustom
       );
     } else if (
       nextTaps.length ===
       1
     ) {
+      nextCustom = "";
       setCustomBpm("");
     }
+
+    updateReviewDraft(
+      selectedTrackId,
+      {
+        tapTimes: [
+          ...nextTaps,
+        ],
+        tapBpm:
+          estimate,
+        tapCount:
+          nextTapCount,
+        customBpm:
+          nextCustom,
+      }
+    );
+  }
+
+  function changeCustomBpm(
+    value
+  ) {
+    setCustomBpm(
+      value
+    );
+
+    updateReviewDraft(
+      selectedTrackId,
+      {
+        customBpm:
+          value,
+      }
+    );
   }
 
   useEffect(() => {
-    resetTapTempo();
+    loadReviewDraft(
+      selectedTrackId
+    );
   }, [
     selectedTrackId,
   ]);
@@ -511,6 +683,10 @@ export default function ReviewView({
             !item.review
         );
 
+      clearReviewDraft(
+        selected.trackId
+      );
+
       if (nextUnresolved) {
         setSelectedTrackId(
           nextUnresolved.trackId
@@ -519,9 +695,11 @@ export default function ReviewView({
         setSelectedTrackId(
           selected.trackId
         );
-      }
 
-      setCustomBpm("");
+        loadReviewDraft(
+          selected.trackId
+        );
+      }
     } finally {
       setBusy(false);
     }
@@ -582,32 +760,42 @@ export default function ReviewView({
             !item.review
         );
 
-      if (
-        firstRemaining
+      for (
+        const item of
+        nextQueue
       ) {
-        setSelectedTrackId(
-          firstRemaining.trackId
-        );
-      } else if (
-        selectedTrackId &&
-        nextQueue.some(
-          (item) =>
-            item.trackId ===
-            selectedTrackId
-        )
-      ) {
-        setSelectedTrackId(
-          selectedTrackId
-        );
-      } else {
-        setSelectedTrackId(
-          nextQueue[0]
-            ?.trackId ??
-          null
-        );
+        if (
+          item.review
+        ) {
+          clearReviewDraft(
+            item.trackId
+          );
+        }
       }
 
-      setCustomBpm("");
+      const nextSelectedTrackId =
+        firstRemaining
+          ?.trackId ??
+        (
+          selectedTrackId &&
+          nextQueue.some(
+            (item) =>
+              item.trackId ===
+              selectedTrackId
+          )
+            ? selectedTrackId
+            : nextQueue[0]
+                ?.trackId ??
+              null
+        );
+
+      setSelectedTrackId(
+        nextSelectedTrackId
+      );
+
+      loadReviewDraft(
+        nextSelectedTrackId
+      );
 
       return result;
     } finally {
@@ -823,7 +1011,6 @@ export default function ReviewView({
                       setSelectedTrackId(
                         item.trackId
                       );
-                      setCustomBpm("");
                     }}
                   />
                 )
@@ -1042,8 +1229,16 @@ export default function ReviewView({
 
                 <div className="tap-tempo-controls">
                   <button
+                    key={`tap-tempo-${
+                      selectedTrackId ??
+                      "none"
+                    }-${tapPulseKey}`}
                     type="button"
-                    className="button secondary-button tap-tempo-button"
+                    className={`button secondary-button tap-tempo-button ${
+                      tapPulseKey > 0
+                        ? "tap-tempo-pulse"
+                        : ""
+                    }`}
                     disabled={busy}
                     onClick={
                       registerTempoTap
@@ -1130,7 +1325,7 @@ export default function ReviewView({
                     step="1"
                     value={customBpm}
                     onChange={(event) =>
-                      setCustomBpm(
+                      changeCustomBpm(
                         event.target.value
                       )
                     }
