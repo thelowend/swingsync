@@ -431,3 +431,15 @@ stack instead of inheriting Engebrechtre.
 
 Peignot and Engebrechtre are local build inputs and are checked together with
 Manbow before desktop development/builds.
+
+
+## v15.25.1 Topbar/accessibility polish
+
+Workflow navigation labels are uppercase with 16px horizontal padding.
+
+Numeric workflow/navigation/filter badges use normal font weight.
+
+The Accessibility trigger is styled as a one-button version of the Theme and
+Language grouped controls. Accessibility option copy is enlarged to 15px/14px
+(title/description), option-row gap is removed, and the color-vision select
+uses 14px text with an inset custom chevron.

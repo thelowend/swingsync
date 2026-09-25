@@ -1,4 +1,4 @@
-# SwingSync v15.25 — Brand typography refresh
+# SwingSync v15.25.1 — Topbar and accessibility polish
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1281,3 +1281,19 @@ npm run desktop:font:install:engebrechtre -- "C:\path\to\engebrechtre.zip"
 ```
 
 The source ZIP does not contain the font binaries.
+
+
+## v15.25.1 — Topbar and accessibility polish
+
+- Library / Review / Apply labels render uppercase.
+- Workflow navigation horizontal button padding increases from 12px to 16px.
+- Numeric badge/count indicators use normal font weight.
+- Accessibility now visually matches the Theme and Language grouped controls:
+  - same outer surface/border/padding
+  - same 34×29 inner button size
+  - same hover/active treatment
+  - same 15px icon size as the theme icons
+- Accessibility option titles use 15px text and descriptions use 14px text.
+- The gap between Accessibility option rows is removed.
+- The Color Vision select uses 14px text and a custom chevron positioned
+  farther inward from the right edge.

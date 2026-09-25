@@ -4148,3 +4148,118 @@ html[data-a11y-motion="reduced"]
     font-size: 20px;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.25.1 Topbar + accessibility polish                             */
+/* ------------------------------------------------------------------ */
+
+/* Workflow navigation: uppercase labels and slightly roomier buttons. */
+.app-navigation button {
+  padding-inline: 16px;
+  text-transform: uppercase;
+}
+
+/* Numeric indicators should read as neutral information rather than
+   emphasized text. */
+.app-navigation button span,
+.segmented-control button span,
+.workflow-action-count,
+.approved-badge {
+  font-weight: 400;
+}
+
+/* Accessibility is now a single-segment sibling of the Theme and Language
+   grouped controls, matching their surface, border, padding and height. */
+.accessibility-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-control);
+}
+
+.accessibility-trigger {
+  width: 34px;
+  min-width: 34px;
+  height: 29px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--muted-strong);
+  background: transparent;
+  box-shadow: none;
+}
+
+.accessibility-trigger svg {
+  width: 15px;
+  height: 15px;
+}
+
+.accessibility-trigger:hover {
+  color: var(--text);
+  border-color: transparent;
+  background: var(--surface-control-hover);
+}
+
+.accessibility-trigger.active {
+  color: var(--nav-active-text);
+  border-color: transparent;
+  background: var(--nav-active-bg);
+}
+
+html[data-theme="dark"]
+.accessibility-trigger.active {
+  color: #2b170c;
+  background: #e18a4f;
+}
+
+/* Larger accessibility-menu copy, compensated by removing the space between
+   option rows. */
+.accessibility-options {
+  gap: 0;
+}
+
+.accessibility-option-copy strong,
+.accessibility-select-option label strong {
+  font-size: 15px;
+}
+
+.accessibility-option-copy small,
+.accessibility-select-option label small {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* Slightly larger select text and a custom chevron inset farther from the
+   right edge than the native Chromium arrow. */
+.accessibility-select-option select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 42px;
+  font-size: 14px;
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      currentColor 50%
+    ),
+    linear-gradient(
+      135deg,
+      currentColor 50%,
+      transparent 50%
+    );
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 14px) 50%;
+  background-size:
+    4px 4px,
+    4px 4px;
+  background-repeat: no-repeat;
+}
