@@ -1,4 +1,4 @@
-# SwingSync v15.21.1 — Review Play button layout
+# SwingSync v15.21.2 — Review Play alignment refinement
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -958,3 +958,18 @@ Play   (▶)
 
 The play arrow sits inside its own circular accent badge. The existing
 OS-default-player behavior and IPC safety model are unchanged.
+
+
+## v15.21.2 — Review Play alignment refinement
+
+The Review Play control is now part of a dedicated right-side heading action
+area instead of the title's inner content row.
+
+This means it is genuinely justified against the right side of the
+`review-editor-heading`, with an 8px internal inset from that heading edge.
+
+When a review status badge is present, the status sits immediately to the left
+of Play and Play remains the rightmost action.
+
+The circular play treatment is now outline-only: the arrow has a circle drawn
+around it without a filled badge background.

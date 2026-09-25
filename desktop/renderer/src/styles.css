@@ -3244,17 +3244,19 @@ html[data-theme="dark"]
 /* v15.21 Review external playback                                    */
 /* ------------------------------------------------------------------ */
 
-.review-title-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.review-heading-copy {
   min-width: 0;
-  width: 100%;
+  flex: 1 1 auto;
 }
 
-.review-title-row h2 {
-  min-width: 0;
-  margin-right: 0;
+.review-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: none;
+  margin-left: auto;
+  margin-right: 8px;
 }
 
 .review-play-button {
@@ -3263,9 +3265,8 @@ html[data-theme="dark"]
   justify-content: center;
   gap: 9px;
   flex: none;
-  margin-left: auto;
   min-height: 36px;
-  padding: 4px 5px 4px 13px;
+  padding: 4px 7px 4px 13px;
   border: 1px solid var(--accent-border);
   border-radius: 8px;
   color: var(--accent-strong);
@@ -3289,9 +3290,10 @@ html[data-theme="dark"]
   display: inline-grid;
   place-items: center;
   flex: none;
+  border: 1px solid currentColor;
   border-radius: 999px;
-  color: var(--nav-active-text);
-  background: var(--nav-active-bg);
+  color: var(--accent-strong);
+  background: transparent;
 }
 
 .review-play-icon svg {
@@ -3304,6 +3306,11 @@ html[data-theme="dark"]
   border-color: var(--accent);
   background: var(--surface-control-hover);
   transform: translateY(-1px);
+}
+
+.review-play-button:hover:not(:disabled)
+.review-play-icon {
+  color: var(--accent);
 }
 
 .review-play-button:focus-visible {
@@ -3324,6 +3331,6 @@ html[data-theme="dark"]
 
 html[data-theme="dark"]
 .review-play-icon {
-  color: #2b170c;
-  background: #e18a4f;
+  color: var(--accent-strong);
+  background: transparent;
 }
