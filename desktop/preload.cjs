@@ -40,6 +40,12 @@ const api = Object.freeze({
       trackId
     ),
 
+  resetTrackAnalysis: (trackId) =>
+    ipcRenderer.invoke(
+      "swingsync:reset-track-analysis",
+      trackId
+    ),
+
   getReviewQueue: () =>
     ipcRenderer.invoke(
       "swingsync:get-review-queue"
@@ -83,6 +89,16 @@ const api = Object.freeze({
   getApplyPlan: () =>
     ipcRenderer.invoke(
       "swingsync:get-apply-plan"
+    ),
+
+  getBackupStatus: () =>
+    ipcRenderer.invoke(
+      "swingsync:get-backup-status"
+    ),
+
+  undoLastApply: () =>
+    ipcRenderer.invoke(
+      "swingsync:undo-last-apply"
     ),
 
   applyTrack: (

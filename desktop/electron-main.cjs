@@ -22,6 +22,12 @@ const EVENT_CHANNEL = "swingsync:event";
 const DEV_SERVER_URL =
   process.env.SWINGSYNC_VITE_DEV_SERVER_URL ?? null;
 
+const IS_DEVELOPMENT =
+  Boolean(
+    DEV_SERVER_URL
+  ) &&
+  !app.isPackaged;
+
 const PACKAGED_SMOKE_TEST =
   process.env.SWINGSYNC_PACKAGED_SMOKE_TEST ===
   "1";
@@ -130,6 +136,8 @@ function registerIpcHandlers() {
         bpmApplication.getCapabilities(),
       state:
         bpmApplication.getState(),
+      backupStatus:
+        await bpmApplication.getBackupStatus(),
     })
   );
 
@@ -185,6 +193,14 @@ function registerIpcHandlers() {
     "swingsync:analyze-one",
     async (_event, trackId) =>
       bpmApplication.analyzeOne(
+        trackId
+      )
+  );
+
+  ipcMain.handle(
+    "swingsync:reset-track-analysis",
+    async (_event, trackId) =>
+      bpmApplication.resetTrackAnalysis(
         trackId
       )
   );
@@ -305,6 +321,22 @@ function registerIpcHandlers() {
   );
 
   ipcMain.handle(
+    "swingsync:get-backup-status",
+    async () =>
+      bpmApplication.getBackupStatus()
+  );
+
+  ipcMain.handle(
+    "swingsync:undo-last-apply",
+    async () =>
+      runExclusive(
+        "undoing the last Apply",
+        () =>
+          bpmApplication.undoLastApply()
+      )
+  );
+
+  ipcMain.handle(
     "swingsync:apply-all-approved",
     async (_event, options) =>
       runExclusive(
@@ -343,6 +375,8 @@ async function createWindow() {
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
+        devTools:
+          IS_DEVELOPMENT,
       },
     });
 
@@ -355,6 +389,50 @@ async function createWindow() {
       action: "deny",
     })
   );
+
+  if (IS_DEVELOPMENT) {
+    mainWindow.webContents.on(
+      "before-input-event",
+      (event, input) => {
+        const key =
+          input.key?.toLowerCase();
+
+        const toggleByF12 =
+          key === "f12";
+
+        const toggleByWindowsLinux =
+          input.control &&
+          input.shift &&
+          key === "i";
+
+        const toggleByMac =
+          input.meta &&
+          input.alt &&
+          key === "i";
+
+        if (
+          toggleByF12 ||
+          toggleByWindowsLinux ||
+          toggleByMac
+        ) {
+          event.preventDefault();
+
+          if (
+            mainWindow.webContents
+              .isDevToolsOpened()
+          ) {
+            mainWindow.webContents
+              .closeDevTools();
+          } else {
+            mainWindow.webContents
+              .openDevTools({
+                mode: "detach",
+              });
+          }
+        }
+      }
+    );
+  }
 
   mainWindow.webContents.on(
     "will-navigate",
@@ -624,8 +702,11 @@ async function runPackagedSmokeTest() {
       "bootstrap",
       "getApplyPlan",
       "getReviewQueue",
+      "getBackupStatus",
       "openTrackExternal",
+      "resetTrackAnalysis",
       "setProfile",
+      "undoLastApply",
     ];
 
     const missingMethods =

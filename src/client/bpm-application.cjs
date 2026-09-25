@@ -38,6 +38,10 @@ const {
 } = require("../app/apply-bpm-output.cjs");
 
 const {
+  BackupManager,
+} = require("../app/backup-manager.cjs");
+
+const {
   createReviewItem,
   createReviewDecision,
   applyReviewDecision,
@@ -53,6 +57,7 @@ const {
   cloneSerializable,
   createInitialState,
   createTrackState,
+  resetTrackAnalysisState,
   projectTrackResult,
   calculateSummary,
 } = require("./state-model.cjs");
@@ -166,6 +171,23 @@ class BpmApplication
 
     this.trackIdsByFile =
       new Map();
+
+    const backupBasePath =
+      this.cache.filePath
+        ? path.dirname(
+            this.cache.filePath
+          )
+        : process.cwd();
+
+    this.backupManager =
+      new BackupManager({
+        rootDir:
+          path.join(
+            backupBasePath,
+            "swingsync-backups",
+            "last-apply"
+          ),
+      });
 
     this.nextTrackNumber = 1;
   }
@@ -335,6 +357,286 @@ class BpmApplication
     return cloneSerializable(
       items
     );
+  }
+
+  async resetTrackAnalysis(
+    trackId
+  ) {
+    this.assertLibraryOpen();
+
+    if (
+      this.state.status ===
+        APPLICATION_STATUS.ANALYZING ||
+      this.state.status ===
+        APPLICATION_STATUS.APPLYING
+    ) {
+      throw new Error(
+        "Cannot reset a track while SwingSync is busy"
+      );
+    }
+
+    const track =
+      this.getTrackState(
+        trackId
+      );
+
+    this.trackResults.delete(
+      trackId
+    );
+
+    await this.cache.deleteEntry(
+      track.file
+    );
+    await this.cache.flush();
+
+    this.updateTrack(
+      trackId,
+      resetTrackAnalysisState(
+        track
+      )
+    );
+
+    this.recalculate();
+    this.emitTrack(
+      trackId
+    );
+    this.emitState();
+
+    return this.getTrack(
+      trackId
+    );
+  }
+
+  async getBackupStatus() {
+    return cloneSerializable(
+      await this.backupManager
+        .getStatus()
+    );
+  }
+
+  async undoLastApply() {
+    this.assertLibraryOpen();
+
+    if (
+      this.state.status ===
+        APPLICATION_STATUS.ANALYZING ||
+      this.state.status ===
+        APPLICATION_STATUS.APPLYING
+    ) {
+      throw new Error(
+        "Cannot undo while SwingSync is busy"
+      );
+    }
+
+    this.setApplicationStatus(
+      APPLICATION_STATUS.APPLYING
+    );
+
+    this.state.progress = {
+      phase: "undo",
+      total: 0,
+      completed: 0,
+      failed: 0,
+      currentTrackId: null,
+      currentFile: null,
+    };
+
+    this.emitProgress();
+    this.emitState();
+
+    try {
+      const undo =
+        await this.backupManager
+          .undoLastApply();
+
+      this.state.progress = {
+        ...this.state.progress,
+        total:
+          undo.restored.length,
+      };
+
+      for (
+        const restored of
+        undo.restored
+      ) {
+        const originalPath =
+          path.resolve(
+            restored.originalPath
+          );
+
+        const finalPath =
+          path.resolve(
+            restored.finalPath ??
+            originalPath
+          );
+
+        await this.cache.deleteEntry(
+          originalPath
+        );
+
+        if (
+          finalPath !==
+          originalPath
+        ) {
+          await this.cache.deleteEntry(
+            finalPath
+          );
+        }
+
+        const track =
+          this.state.tracks.find(
+            (candidate) =>
+              candidate.id ===
+                restored.trackId ||
+              path.resolve(
+                candidate.file
+              ) === finalPath ||
+              path.resolve(
+                candidate.file
+              ) === originalPath
+          );
+
+        if (track) {
+          const previousPath =
+            path.resolve(
+              track.file
+            );
+
+          this.trackIdsByFile.delete(
+            previousPath
+          );
+          this.trackIdsByFile.delete(
+            finalPath
+          );
+          this.trackIdsByFile.set(
+            originalPath,
+            track.id
+          );
+
+          const result =
+            this.trackResults.get(
+              track.id
+            );
+
+          if (result) {
+            const restoredResult = {
+              ...result,
+              file:
+                originalPath,
+              existingMetadataBpm:
+                restored.originalMetadataBpm,
+              metadata:
+                result.metadata
+                  ? {
+                      ...result.metadata,
+                      bpm:
+                        restored.originalMetadataBpm,
+                    }
+                  : result.metadata,
+              outputResult: null,
+            };
+
+            this.trackResults.set(
+              track.id,
+              restoredResult
+            );
+
+            const projected =
+              projectTrackResult({
+                trackState: {
+                  ...track,
+                  file:
+                    originalPath,
+                },
+                trackResult:
+                  restoredResult,
+                review:
+                  restoredResult.review ??
+                  null,
+                resetOutput: true,
+              });
+
+            projected.relativePath =
+              this.relativePathForFile(
+                originalPath
+              );
+
+            this.updateTrack(
+              track.id,
+              projected
+            );
+          } else {
+            const resetTrack =
+              resetTrackAnalysisState({
+                ...track,
+                file:
+                  originalPath,
+                filename:
+                  path.basename(
+                    originalPath
+                  ),
+                relativePath:
+                  this.relativePathForFile(
+                    originalPath
+                  ),
+              });
+
+            this.updateTrack(
+              track.id,
+              resetTrack
+            );
+          }
+        }
+
+        this.state.progress = {
+          ...this.state.progress,
+          completed:
+            this.state.progress
+              .completed + 1,
+        };
+
+        this.emitProgress();
+      }
+
+      await this.cache.flush();
+      this.refreshCacheStats();
+      this.recalculate();
+
+      this.state.progress = {
+        ...this.state.progress,
+        phase: "idle",
+        currentTrackId: null,
+        currentFile: null,
+      };
+
+      this.setApplicationStatus(
+        APPLICATION_STATUS.READY
+      );
+
+      this.emitProgress();
+      this.emitState();
+
+      return cloneSerializable({
+        restored:
+          undo.restored.length,
+        items:
+          undo.restored,
+      });
+    } catch (error) {
+      this.state.progress = {
+        ...this.state.progress,
+        phase: "idle",
+        currentTrackId: null,
+        currentFile: null,
+      };
+
+      this.setApplicationStatus(
+        APPLICATION_STATUS.READY
+      );
+      this.emitProgress();
+      this.emitState();
+      throw error;
+    }
   }
 
   getApplyPlan() {
@@ -1518,6 +1820,7 @@ class BpmApplication
 
   async applyAllApproved({
     applyChanges = true,
+    createBackup = false,
   } = {}) {
     this.assertLibraryOpen();
 
@@ -1553,6 +1856,63 @@ class BpmApplication
           (track) =>
             track.id
         );
+
+    let backupTrackIds =
+      new Set();
+
+    if (applyChanges) {
+      if (createBackup) {
+        const plan =
+          this.getApplyPlan();
+
+        const backupItems =
+          plan.items
+            .filter(
+              (item) =>
+                item.status ===
+                "will-change"
+            )
+            .map(
+              (item) => ({
+                trackId:
+                  item.trackId,
+                file:
+                  item.file,
+                originalMetadataBpm:
+                  item.existingMetadataBpm,
+              })
+            );
+
+        if (
+          backupItems.length > 0
+        ) {
+          await this.backupManager
+            .begin({
+              outputMode:
+                this.state.library
+                  .outputMode,
+              items:
+                backupItems,
+            });
+
+          backupTrackIds =
+            new Set(
+              backupItems.map(
+                (item) =>
+                  item.trackId
+              )
+            );
+        } else {
+          await this.backupManager
+            .clear();
+        }
+      } else {
+        // Undo always belongs to the most recent Apply. Starting a new
+        // destructive pass without backups invalidates any older set.
+        await this.backupManager
+          .clear();
+      }
+    }
 
     this.setApplicationStatus(
       APPLICATION_STATUS.APPLYING
@@ -1591,6 +1951,18 @@ class BpmApplication
 
       this.emitProgress();
 
+      if (
+        applyChanges &&
+        backupTrackIds.has(
+          trackId
+        )
+      ) {
+        await this.backupManager
+          .markAttempted(
+            trackId
+          );
+      }
+
       try {
         const output =
           await this.applyTrack(
@@ -1603,6 +1975,28 @@ class BpmApplication
         results.push(
           output
         );
+
+        if (
+          applyChanges &&
+          backupTrackIds.has(
+            trackId
+          )
+        ) {
+          await this.backupManager
+            .recordResult(
+              trackId,
+              {
+                finalPath:
+                  output.result
+                    ?.finalPath ??
+                  track.file,
+                status:
+                  output.result
+                    ?.status ??
+                  null,
+              }
+            );
+        }
 
         this.state.progress = {
           ...this.state.progress,
@@ -1617,6 +2011,26 @@ class BpmApplication
           error:
             error.message,
         });
+
+        if (
+          applyChanges &&
+          backupTrackIds.has(
+            trackId
+          )
+        ) {
+          await this.backupManager
+            .recordResult(
+              trackId,
+              {
+                finalPath:
+                  track.file,
+                status:
+                  "error",
+                error:
+                  error.message,
+              }
+            );
+        }
 
         this.state.progress = {
           ...this.state.progress,
@@ -1639,6 +2053,14 @@ class BpmApplication
       }
 
       this.emitProgress();
+    }
+
+    if (
+      applyChanges &&
+      backupTrackIds.size > 0
+    ) {
+      await this.backupManager
+        .finalize();
     }
 
     await this.cache.flush();
@@ -1722,6 +2144,51 @@ class BpmApplication
     }
 
     return null;
+  }
+
+  relativePathForFile(
+    file
+  ) {
+    const absoluteFile =
+      path.resolve(
+        file
+      );
+
+    for (
+      const root of
+      this.state.library
+        .folders ?? []
+    ) {
+      const relative =
+        path.relative(
+          root,
+          absoluteFile
+        );
+
+      if (
+        relative === ""
+      ) {
+        return path.basename(
+          absoluteFile
+        );
+      }
+
+      if (
+        !relative.startsWith(
+          `..${path.sep}`
+        ) &&
+        relative !== ".." &&
+        !path.isAbsolute(
+          relative
+        )
+      ) {
+        return relative;
+      }
+    }
+
+    return path.basename(
+      absoluteFile
+    );
   }
 
   allocateTrackId() {

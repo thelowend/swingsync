@@ -623,3 +623,36 @@ has not yet been applied.
 
 Output state is invalidated whenever analysis, profile, review decision, or
 output mode changes the context of the pending write.
+
+## v15.24 additions
+
+### `resetTrackAnalysis(trackId)`
+
+Clears a track's current analysis/review/output projection, invalidates its
+analysis-cache entry, and returns the track to `pending`. It does not revert
+file changes already committed to disk.
+
+### `getBackupStatus()`
+
+Returns the status of the backup associated with the most recent Apply pass:
+
+```js
+{
+  available,
+  createdAt,
+  completedAt,
+  itemCount,
+  outputMode
+}
+```
+
+### `applyAllApproved({ applyChanges, createBackup })`
+
+When `createBackup: true`, files that the Apply plan says will change are
+copied before the first mutation. Starting a destructive Apply with
+`createBackup: false` clears any older last-Apply backup.
+
+### `undoLastApply()`
+
+Restores the originals in the most recent backup set, including original
+filenames for filename-output changes, then clears that backup set.

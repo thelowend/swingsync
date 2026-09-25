@@ -117,6 +117,7 @@ export default function App() {
     loading,
     actionError,
     selectedFolders,
+    backupStatus,
     actions,
   } = useSwingSync();
 
@@ -222,7 +223,13 @@ export default function App() {
     state.status ===
       "applying" ||
     state.progress?.phase ===
-      "output";
+      "output" ||
+    state.progress?.phase ===
+      "undo";
+
+  const isUndoing =
+    state.progress?.phase ===
+      "undo";
 
   const progressPercent =
     formatProgress(
@@ -339,6 +346,36 @@ export default function App() {
     reviewRemainingTemplate.split(
       "__SWINGSYNC_REVIEW_COUNT__"
     );
+
+  const selectedProfile =
+    (capabilities?.profiles ?? [])
+      .find(
+        (item) =>
+          item.name ===
+          profile
+      );
+
+  const profileEffect =
+    t(
+      selectedProfile
+        ?.description ??
+      ""
+    );
+
+  const outputEffect =
+    outputMode ===
+      "metadata"
+      ? t(
+          "Writes approved BPM values to supported audio metadata tags without renaming files."
+        )
+      : outputMode ===
+        "filename"
+      ? t(
+          "Renames files with a [120 BPM] prefix without changing audio metadata."
+        )
+      : t(
+          "Writes supported BPM metadata and renames files with a [120 BPM] prefix."
+        );
 
   const selectedTrack =
     state.tracks.find(
@@ -528,6 +565,28 @@ export default function App() {
     }
   }
 
+  async function resetSelectedTrackAnalysis() {
+    if (!selectedTrackId) {
+      return;
+    }
+
+    const trackId =
+      selectedTrackId;
+
+    await runBusy(
+      "reset-track",
+      async () => {
+        await actions.resetTrackAnalysis(
+          trackId
+        );
+
+        setTrackDetails(
+          null
+        );
+      }
+    );
+  }
+
   function goToReview() {
     setSelectedTrackId(null);
     setTrackDetails(null);
@@ -636,7 +695,11 @@ export default function App() {
                 (state.summary.pendingToApply ??
                   0) === 0 &&
                 state.summary.outputApplied ===
-                  0
+                  0 &&
+                !(
+                  isLibraryOpen &&
+                  backupStatus.available
+                )
               }
               onClick={goToApply}
             >
@@ -660,7 +723,10 @@ export default function App() {
           <ThemeToggle />
           <LanguageToggle />
 
-          <label className="compact-field">
+          <label
+            className="compact-field has-tooltip"
+            data-tooltip={profileEffect}
+          >
             <span>
               {t(
                 "Profile"
@@ -668,6 +734,7 @@ export default function App() {
             </span>
             <select
               value={profile}
+              aria-describedby="profile-effect-description"
               onChange={(event) =>
                 changeProfile(
                   event.target.value
@@ -694,9 +761,18 @@ export default function App() {
                 )
               )}
             </select>
+            <span
+              id="profile-effect-description"
+              className="sr-only"
+            >
+              {profileEffect}
+            </span>
           </label>
 
-          <label className="compact-field">
+          <label
+            className="compact-field has-tooltip"
+            data-tooltip={outputEffect}
+          >
             <span>
               {t(
                 "Output"
@@ -704,6 +780,7 @@ export default function App() {
             </span>
             <select
               value={outputMode}
+              aria-describedby="output-effect-description"
               onChange={(event) =>
                 changeOutputMode(
                   event.target.value
@@ -728,6 +805,12 @@ export default function App() {
                 )
               )}
             </select>
+            <span
+              id="output-effect-description"
+              className="sr-only"
+            >
+              {outputEffect}
+            </span>
           </label>
         </div>
       </header>
@@ -1249,6 +1332,10 @@ export default function App() {
             ? t(
                 "Engine needs attention"
               )
+            : isUndoing
+            ? t(
+                "Engine restoring backup"
+              )
             : isApplying
             ? t(
                 "Engine writing changes"
@@ -1262,7 +1349,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.23
+          SwingSync v0.15.24.1
           {" - By Diego Pablos"}
         </div>
       </footer>
@@ -1272,6 +1359,13 @@ export default function App() {
           track={selectedTrack}
           details={trackDetails}
           loading={detailsLoading}
+          resetting={
+            busyAction ===
+            "reset-track"
+          }
+          onResetAnalysis={
+            resetSelectedTrackAnalysis
+          }
           onClose={() => {
             setSelectedTrackId(null);
             setTrackDetails(null);

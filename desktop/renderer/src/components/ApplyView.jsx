@@ -7,6 +7,21 @@ import {
   useLanguage,
 } from "../i18n/LanguageContext.jsx";
 
+const BACKUP_PREFERENCE_KEY =
+  "swingsync.create-backup-before-apply";
+
+function initialBackupPreference() {
+  try {
+    return (
+      window.localStorage.getItem(
+        BACKUP_PREFERENCE_KEY
+      ) === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
 function PlanStatus({
   item,
 }) {
@@ -61,6 +76,32 @@ export default function ApplyView({
   const [confirming, setConfirming] =
     useState(false);
 
+  const [
+    confirmingUndo,
+    setConfirmingUndo,
+  ] = useState(false);
+
+  const [undoing, setUndoing] =
+    useState(false);
+
+  const [undoComplete, setUndoComplete] =
+    useState(false);
+
+  const [
+    createBackup,
+    setCreateBackup,
+  ] = useState(
+    initialBackupPreference
+  );
+
+  const [
+    backupStatus,
+    setBackupStatus,
+  ] = useState({
+    available: false,
+    itemCount: 0,
+  });
+
   const [lastResults, setLastResults] =
     useState(null);
 
@@ -82,6 +123,34 @@ export default function ApplyView({
     }
   }
 
+  async function refreshBackupStatus() {
+    const next =
+      await actions.getBackupStatus();
+
+    setBackupStatus(
+      next
+    );
+  }
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        BACKUP_PREFERENCE_KEY,
+        String(createBackup)
+      );
+    } catch {
+      // Backup preference can remain session-local when storage is unavailable.
+    }
+  }, [
+    createBackup,
+  ]);
+
+  useEffect(() => {
+    refreshBackupStatus().catch(
+      () => {}
+    );
+  }, []);
+
   useEffect(() => {
     refreshPlan().catch(
       () => {}
@@ -99,17 +168,41 @@ export default function ApplyView({
       const results =
         await actions.applyAllApproved({
           applyChanges: true,
+          createBackup,
         });
 
       setLastResults(
         results
       );
+      setUndoComplete(false);
 
       setConfirming(false);
 
-      await refreshPlan();
+      await Promise.all([
+        refreshPlan(),
+        refreshBackupStatus(),
+      ]);
     } finally {
       setApplying(false);
+    }
+  }
+
+  async function undoLastApply() {
+    setUndoing(true);
+
+    try {
+      await actions.undoLastApply();
+
+      setLastResults(null);
+      setUndoComplete(true);
+      setConfirmingUndo(false);
+
+      await Promise.all([
+        refreshPlan(),
+        refreshBackupStatus(),
+      ]);
+    } finally {
+      setUndoing(false);
     }
   }
 
@@ -195,12 +288,17 @@ export default function ApplyView({
 
   const isApplying =
     applying ||
+    undoing ||
     state.progress?.phase ===
-      "output";
+      "output" ||
+    state.progress?.phase ===
+      "undo";
 
   const completed =
     state.progress?.phase ===
-      "output"
+      "output" ||
+    state.progress?.phase ===
+      "undo"
       ? state.progress.completed +
         state.progress.failed
       : 0;
@@ -304,6 +402,68 @@ export default function ApplyView({
           </button>
         </div>
       </div>
+
+      <div className="apply-safety-row">
+        <label className="backup-option">
+          <input
+            type="checkbox"
+            checked={createBackup}
+            disabled={isApplying}
+            onChange={(event) =>
+              setCreateBackup(
+                event.target.checked
+              )
+            }
+          />
+          <span>
+            <strong>
+              {t(
+                "Create backup before modifying files"
+              )}
+            </strong>
+            <small>
+              {t(
+                "Keeps the originals from the next Apply so you can undo it."
+              )}
+            </small>
+          </span>
+        </label>
+
+        {backupStatus.available && (
+          <button
+            type="button"
+            className="button secondary-button undo-apply-button"
+            disabled={isApplying}
+            onClick={() =>
+              setConfirmingUndo(true)
+            }
+          >
+            {t(
+              "Undo last Apply"
+            )}
+            <span className="workflow-action-count">
+              {backupStatus.itemCount}
+            </span>
+          </button>
+        )}
+      </div>
+
+      {undoComplete && (
+        <div className="success-banner">
+          <div>
+            <strong>
+              {t(
+                "Last Apply undone."
+              )}
+            </strong>
+            <span>
+              {t(
+                "Original files and filenames were restored from the backup."
+              )}
+            </span>
+          </div>
+        </div>
+      )}
 
       {lastResults && (
         <div className="success-banner">
@@ -577,7 +737,10 @@ export default function ApplyView({
             <div className="apply-progress">
               <strong>
                 {t(
-                  "Writing changes…"
+                  state.progress?.phase ===
+                    "undo"
+                    ? "Restoring files…"
+                    : "Writing changes…"
                 )}
               </strong>
               <span>
@@ -689,6 +852,14 @@ export default function ApplyView({
               )}
             </p>
 
+            {createBackup && (
+              <p className="backup-confirm-note">
+                {t(
+                  "SwingSync will copy every file that is about to change before writing. This enables Undo last Apply."
+                )}
+              </p>
+            )}
+
             <div className="modal-actions">
               <button
                 type="button"
@@ -716,6 +887,82 @@ export default function ApplyView({
                     )
                   : t(
                       "Confirm & write"
+                    )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmingUndo && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onMouseDown={() => {
+            if (!undoing) {
+              setConfirmingUndo(false);
+            }
+          }}
+        >
+          <div
+            className="confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="undo-apply-title"
+            onMouseDown={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <span className="eyebrow">
+              {t(
+                "Restore backup"
+              )}
+            </span>
+            <h2 id="undo-apply-title">
+              {t(
+                "Undo the last Apply?"
+              )}
+            </h2>
+            <p>
+              {plural(
+                "SwingSync will restore {count} file to its state before the last Apply.",
+                "SwingSync will restore {count} files to their state before the last Apply.",
+                backupStatus.itemCount
+              )}
+            </p>
+            <p className="muted">
+              {t(
+                "This restores original metadata and original filenames. The backup is removed after a successful undo."
+              )}
+            </p>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="button secondary-button"
+                disabled={undoing}
+                onClick={() =>
+                  setConfirmingUndo(false)
+                }
+              >
+                {t(
+                  "Cancel"
+                )}
+              </button>
+              <button
+                type="button"
+                className="button primary-button"
+                disabled={undoing}
+                onClick={
+                  undoLastApply
+                }
+              >
+                {undoing
+                  ? t(
+                      "Restoring…"
+                    )
+                  : t(
+                      "Restore originals"
                     )}
               </button>
             </div>

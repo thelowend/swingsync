@@ -393,3 +393,25 @@ The navigation-level Accessibility popover supports Larger Text, High
 Contrast, Deuteranopia/Protanopia/Tritanopia adaptive palettes and Reduce
 Motion. Preferences are renderer-local and do not alter analysis or file
 output behavior.
+
+
+## v15.24 Apply safety and inspector controls
+
+- Filename mode writes `[<BPM> BPM]` and replaces older SwingSync BPM filename
+  decorations.
+- Track Inspector can reset one track to Pending and invalidate its cached
+  analysis.
+- Profile and Output selects expose localized effect descriptions via tooltip
+  and accessible description text.
+- Apply can create a last-pass backup set before mutation and restore it with
+  Undo last Apply. Backup data is stored under the cache/user-data directory,
+  not alongside the music library.
+
+
+## v15.24.1 Development DevTools
+
+When `SWINGSYNC_VITE_DEV_SERVER_URL` is present and Electron is not packaged,
+DevTools are enabled and can be toggled with F12, Ctrl+Shift+I, or
+Cmd+Option+I.
+
+Release builds set `webPreferences.devTools` to false.

@@ -27,6 +27,8 @@ export default function TrackInspector({
   track,
   details,
   loading,
+  resetting = false,
+  onResetAnalysis,
   onClose,
 }) {
   const {
@@ -232,6 +234,43 @@ export default function TrackInspector({
             )}
           </p>
         )}
+      </div>
+
+      <div className="inspector-section inspector-reset-section">
+        <div>
+          <span className="section-label">
+            {t(
+              "Reset analysis"
+            )}
+          </span>
+          <p className="muted">
+            {t(
+              "Send this track back to Pending and discard its current analysis, review, and Apply state. This does not undo file changes already written."
+            )}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="button secondary-button"
+          disabled={
+            resetting ||
+            track.status ===
+              "pending" ||
+            track.status ===
+              "analyzing"
+          }
+          onClick={
+            onResetAnalysis
+          }
+        >
+          {resetting
+            ? t(
+                "Resetting…"
+              )
+            : t(
+                "Reset to pending"
+              )}
+        </button>
       </div>
     </aside>
   );

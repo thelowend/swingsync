@@ -4,8 +4,8 @@ function cleanExistingBpmDecoration(
   originalName
 ) {
   return originalName
-    // Current/canonical prefix: [215] Song
-    // Also accepts a possible legacy prefix: [215 BPM] Song
+    // Canonical prefix: [215 BPM] Song
+    // Also accepts the older SwingSync prefix: [215] Song
     .replace(
       /^\s*\[\d+(?:\.\d+)?(?:\s*BPM)?\]\s*/i,
       ""
@@ -44,7 +44,7 @@ function buildNewFilename(
 
   return path.join(
     directory,
-    `[${roundedBpm}] ${cleanName}${extension}`
+    `[${roundedBpm} BPM] ${cleanName}${extension}`
   );
 }
 

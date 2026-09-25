@@ -225,6 +225,34 @@ class AnalysisCache {
     this.dirty = true;
   }
 
+  async deleteEntry(
+    filePath
+  ) {
+    if (!this.enabled) {
+      return;
+    }
+
+    const absolutePath =
+      normalizePath(
+        filePath
+      );
+
+    if (
+      !Object.prototype.hasOwnProperty.call(
+        this.entries,
+        absolutePath
+      )
+    ) {
+      return;
+    }
+
+    delete this.entries[
+      absolutePath
+    ];
+
+    this.dirty = true;
+  }
+
   async moveEntry(
     oldPath,
     newPath

@@ -1,4 +1,4 @@
-# SwingSync v15.23 — Accessibility controls
+# SwingSync v15.24.1 — Development DevTools
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -217,15 +217,15 @@ Filename output now prefixes the rounded BPM:
 ```text
 Rock, rock, rock.mp3
 →
-[215] Rock, rock, rock.mp3
+[215 BPM] Rock, rock, rock.mp3
 ```
 
 A later run replaces an existing SwingSync BPM prefix rather than stacking it:
 
 ```text
-[215] Rock, rock, rock.mp3
+[215 BPM] Rock, rock, rock.mp3
 →
-[220] Rock, rock, rock.mp3
+[220 BPM] Rock, rock, rock.mp3
 ```
 
 Legacy suffix filenames are migrated automatically:
@@ -233,7 +233,7 @@ Legacy suffix filenames are migrated automatically:
 ```text
 Rock, rock, rock [215 BPM].mp3
 →
-[220] Rock, rock, rock.mp3
+[220 BPM] Rock, rock, rock.mp3
 ```
 
 
@@ -1162,3 +1162,95 @@ the operating system's `prefers-reduced-motion` value.
 ```powershell
 npm run test:accessibility
 ```
+
+
+## v15.24 — Canonical filename BPM prefix
+
+Filename output now uses the explicit canonical format:
+
+```text
+[120 BPM] Song.mp3
+```
+
+SwingSync recognizes and replaces its older `[120]` prefix, the canonical
+`[120 BPM]` prefix, and the legacy `Song [120 BPM]` suffix before writing a new
+value. Re-analysis or a changed review decision can therefore replace an old BPM
+decoration cleanly instead of stacking another prefix.
+
+Run:
+
+```powershell
+npm run test:filename-output
+```
+
+## v15.24 — Reset a track to Pending
+
+The Library Track Inspector now includes **Reset to pending**. It clears that
+track's current analysis, review decision and Apply state, removes its analysis
+cache entry, and returns the track to Pending so the next analysis is recomputed.
+It does not undo file changes that were already written; use the Apply backup
+feature for that.
+
+## v15.24 — Profile and Output guidance
+
+The Profile and Output dropdowns expose the selected option's effect through a
+native hover tooltip and an `aria-describedby` description for assistive
+technology. Profile guidance is sourced from the actual profile descriptions;
+Output guidance explains metadata-only, filename-only and combined behavior.
+
+## v15.24 — Optional Apply backup and Undo last Apply
+
+The Apply screen now has a persistent optional setting:
+
+```text
+☐ Create backup before modifying files
+```
+
+When enabled, SwingSync copies every file that is actually planned to change
+before the first write starts. The last backup set lives beside the application
+cache in SwingSync's user-data directory.
+
+**Undo last Apply** restores the backed-up bytes and, when filename output was
+used, restores the original filename as well. After a successful undo, that
+backup set is removed.
+
+Starting a later Apply with backups disabled invalidates any older backup so the
+Undo action can never point at an earlier Apply pass.
+
+Run the backup regression test with:
+
+```powershell
+npm run test:backup
+```
+
+
+## v15.24.1 — Development DevTools
+
+Chromium DevTools are explicitly enabled only when SwingSync is running from
+the Vite development server (`npm run desktop:dev`).
+
+Development shortcuts:
+
+```text
+F12
+Ctrl+Shift+I      Windows / Linux
+Cmd+Option+I      macOS
+```
+
+The shortcut toggles detached Chromium DevTools.
+
+Packaged and normal built runs explicitly set Electron `webPreferences.devTools`
+to false, so these shortcuts do not expose DevTools in release builds.
+
+### Auditioning locally installed fonts
+
+Chromium DevTools can use fonts installed on the developer machine. Inspect an
+element and temporarily add, for example:
+
+```css
+font-family: "Font Family Name", sans-serif;
+```
+
+This is useful for visual experimentation only. A font selected for the final
+product should still be bundled with SwingSync (subject to its license) so the
+UI does not depend on fonts installed on an end user's machine.

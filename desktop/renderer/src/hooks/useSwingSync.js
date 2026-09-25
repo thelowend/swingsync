@@ -48,6 +48,14 @@ export function useSwingSync() {
   const [capabilities, setCapabilities] =
     useState(null);
 
+  const [
+    backupStatus,
+    setBackupStatus,
+  ] = useState({
+    available: false,
+    itemCount: 0,
+  });
+
   const [loading, setLoading] =
     useState(true);
 
@@ -127,6 +135,8 @@ export function useSwingSync() {
             initialState,
           capabilities:
             initialCapabilities,
+          backupStatus:
+            initialBackupStatus,
         }) => {
           if (!mounted) {
             return;
@@ -138,6 +148,13 @@ export function useSwingSync() {
 
           setCapabilities(
             initialCapabilities
+          );
+
+          setBackupStatus(
+            initialBackupStatus ?? {
+              available: false,
+              itemCount: 0,
+            }
           );
 
           setSelectedFolders(
@@ -246,6 +263,17 @@ export function useSwingSync() {
         );
       },
 
+      resetTrackAnalysis(
+        trackId
+      ) {
+        return run(
+          () =>
+            window.swingSync.resetTrackAnalysis(
+              trackId
+            )
+        );
+      },
+
       getReviewQueue() {
         return run(
           () =>
@@ -296,6 +324,37 @@ export function useSwingSync() {
         );
       },
 
+      async getBackupStatus() {
+        const next =
+          await run(
+            () =>
+              window.swingSync.getBackupStatus()
+          );
+
+        setBackupStatus(
+          next
+        );
+
+        return next;
+      },
+
+      async undoLastApply() {
+        const result =
+          await run(
+            () =>
+              window.swingSync.undoLastApply()
+          );
+
+        const next =
+          await window.swingSync.getBackupStatus();
+
+        setBackupStatus(
+          next
+        );
+
+        return result;
+      },
+
       applyTrack(
         trackId,
         options = {}
@@ -309,15 +368,25 @@ export function useSwingSync() {
         );
       },
 
-      applyAllApproved(
+      async applyAllApproved(
         options = {}
       ) {
-        return run(
-          () =>
-            window.swingSync.applyAllApproved(
-              options
-            )
+        const result =
+          await run(
+            () =>
+              window.swingSync.applyAllApproved(
+                options
+              )
+          );
+
+        const next =
+          await window.swingSync.getBackupStatus();
+
+        setBackupStatus(
+          next
         );
+
+        return result;
       },
 
       setProfile(profile) {
@@ -351,6 +420,7 @@ export function useSwingSync() {
     loading,
     actionError,
     selectedFolders,
+    backupStatus,
     actions,
   };
 }

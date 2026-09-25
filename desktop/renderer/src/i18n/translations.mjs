@@ -24,6 +24,18 @@ export const SPANISH_TRANSLATIONS =
     "Apply": "Aplicar",
     "Profile": "Perfil",
     "Output": "Salida",
+    "Prefer well-supported faster Rhythm and Blues interpretations using consensus, midpoint onsets, rhythm confidence, and histogram clarity.":
+      "Prefiere interpretaciones más rápidas de Rhythm and Blues cuando están bien respaldadas por consenso, ataques en el punto medio, confianza rítmica y claridad del histograma.",
+    "Prefer well-supported swing metrical interpretations using multiple rhythmic signals rather than a BPM cutoff.":
+      "Prefiere interpretaciones métricas de swing bien respaldadas usando múltiples señales rítmicas en lugar de un corte fijo de BPM.",
+    "No genre-specific metrical interpretation preference.":
+      "No aplica ninguna preferencia de interpretación métrica específica de género.",
+    "Writes approved BPM values to supported audio metadata tags without renaming files.":
+      "Escribe los BPM aprobados en las etiquetas de metadatos compatibles sin renombrar archivos.",
+    "Renames files with a [120 BPM] prefix without changing audio metadata.":
+      "Renombra los archivos con un prefijo [120 BPM] sin modificar los metadatos de audio.",
+    "Writes supported BPM metadata and renames files with a [120 BPM] prefix.":
+      "Escribe los metadatos BPM compatibles y renombra los archivos con un prefijo [120 BPM].",
     "Dismiss": "Cerrar",
     "SwingSync desktop language": "Idioma de SwingSync",
     "Theme": "Tema",
@@ -144,6 +156,8 @@ export const SPANISH_TRANSLATIONS =
     "Engine analyzing": "Motor analizando",
     "Engine writing changes":
       "Motor escribiendo cambios",
+    "Engine restoring backup":
+      "Motor restaurando copia de seguridad",
     "Engine needs attention":
       "El motor requiere atención",
 
@@ -167,6 +181,11 @@ export const SPANISH_TRANSLATIONS =
     "Source": "Fuente",
     "No analysis details yet.":
       "Todavía no hay detalles del análisis.",
+    "Reset analysis": "Reiniciar análisis",
+    "Send this track back to Pending and discard its current analysis, review, and Apply state. This does not undo file changes already written.":
+      "Devolvé esta pista a Pendiente y descartá su análisis, revisión y estado de Aplicar actuales. Esto no deshace cambios que ya se hayan escrito en el archivo.",
+    "Reset to pending": "Volver a pendiente",
+    "Resetting…": "Reiniciando…",
 
     // Review
     "Unknown track": "Pista desconocida",
@@ -314,6 +333,7 @@ export const SPANISH_TRANSLATIONS =
     "Write {bpm}": "Escribir {bpm}",
     "Not requested": "No solicitado",
     "Writing changes…": "Escribiendo cambios…",
+    "Restoring files…": "Restaurando archivos…",
     "{count} approved track pending":
       "{count} pista aprobada pendiente",
     "{count} approved tracks pending":
@@ -321,6 +341,26 @@ export const SPANISH_TRANSLATIONS =
     "Metadata writes use FFmpeg stream copy; audio is not re-encoded.":
       "La escritura de metadatos usa copia directa de streams con FFmpeg; el audio no se recodifica.",
     "Apply changes": "Aplicar cambios",
+    "Create backup before modifying files":
+      "Crear copia de seguridad antes de modificar archivos",
+    "Keeps the originals from the next Apply so you can undo it.":
+      "Conserva los originales de la próxima aplicación para que puedas deshacerla.",
+    "Undo last Apply": "Deshacer última aplicación",
+    "Last Apply undone.": "Última aplicación deshecha.",
+    "Original files and filenames were restored from the backup.":
+      "Los archivos y nombres originales fueron restaurados desde la copia de seguridad.",
+    "SwingSync will copy every file that is about to change before writing. This enables Undo last Apply.":
+      "SwingSync copiará cada archivo que esté por modificarse antes de escribir. Esto habilita Deshacer última aplicación.",
+    "Restore backup": "Restaurar copia de seguridad",
+    "Undo the last Apply?": "¿Deshacer la última aplicación?",
+    "SwingSync will restore {count} file to its state before the last Apply.":
+      "SwingSync restaurará {count} archivo al estado anterior a la última aplicación.",
+    "SwingSync will restore {count} files to their state before the last Apply.":
+      "SwingSync restaurará {count} archivos al estado anterior a la última aplicación.",
+    "This restores original metadata and original filenames. The backup is removed after a successful undo.":
+      "Esto restaura los metadatos y nombres de archivo originales. La copia de seguridad se elimina después de deshacer correctamente.",
+    "Restoring…": "Restaurando…",
+    "Restore originals": "Restaurar originales",
     "Final confirmation": "Confirmación final",
     "Write approved BPM changes?":
       "¿Querés escribir los cambios de BPM aprobados?",

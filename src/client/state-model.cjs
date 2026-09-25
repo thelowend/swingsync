@@ -170,6 +170,58 @@ function createTrackState({
   };
 }
 
+function resetTrackAnalysisState(
+  trackState
+) {
+  return {
+    ...trackState,
+
+    status:
+      TRACK_STATUS.PENDING,
+    error: null,
+    analysisSource: null,
+
+    metadata: {
+      existingBpm: null,
+      readError: null,
+      supported: null,
+    },
+
+    tempo: {
+      detectedBpm: null,
+      detectionConfidence: null,
+      detectionScore: null,
+      suggestedBpm: null,
+      interpretationConfidence: null,
+      adjusted: false,
+      relationship: null,
+      reason: null,
+      reasonCode: null,
+      reasonParams: null,
+      autoApply: false,
+    },
+
+    review: {
+      required: false,
+      decision: null,
+      selectedBpm: null,
+      source: null,
+      skipped: false,
+    },
+
+    output: {
+      status: null,
+      applied: false,
+      mode: null,
+      metadataWritten: null,
+      metadataUnchanged: null,
+      metadataReason: null,
+      finalPath:
+        trackState.file,
+    },
+  };
+}
+
 function projectTrackResult({
   trackState,
   trackResult,
@@ -464,6 +516,7 @@ module.exports = {
   cloneSerializable,
   createInitialState,
   createTrackState,
+  resetTrackAnalysisState,
   projectTrackResult,
   calculateSummary,
 };

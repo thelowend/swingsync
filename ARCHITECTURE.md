@@ -225,3 +225,17 @@ median normalized timing error <= 0.06
 The thresholds are profile configuration, not hard-coded interpretation
 branches. This signal contributes one evidence point and cannot accept
 double-time without candidate consensus and midpoint support.
+
+## v15.24 Apply backup boundary
+
+The destructive Apply boundary can optionally be preceded by a full-file
+backup step. `BackupManager` stores a manifest and copies under the same
+user-data directory that owns the analysis cache. All planned-to-change files
+are backed up before the first write starts.
+
+Undo restores bytes from those copies and restores the original path when a
+file was renamed. The application then reconciles current track paths/output
+state and invalidates cache entries for restored paths.
+
+The backup is intentionally single-generation: it represents only the most
+recent Apply. A newer Apply without backups clears the older generation.
