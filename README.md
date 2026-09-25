@@ -1,4 +1,4 @@
-# SwingSync v15.20 — Packaged-app smoke test
+# SwingSync v15.20.1 — Review badge specificity fix
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -892,3 +892,31 @@ cache.
 
 A failing check produces a non-zero process exit, which makes the npm release
 command stop before producing the final portable artifact.
+
+
+## v15.20.1 — Analysis Complete Review badge contrast
+
+The light-mode Review-count badge inside the Analysis Complete CTA was still
+rendering brown because this older rule:
+
+```css
+.workflow-cta span
+```
+
+has higher selector specificity than the previous:
+
+```css
+.workflow-review-count
+```
+
+override.
+
+The badge is now targeted as:
+
+```css
+.workflow-cta .workflow-review-count
+```
+
+so its light cream foreground reliably wins in Light mode.
+
+Dark-mode badge colors are unchanged.

@@ -3184,12 +3184,14 @@ html:not([data-theme="dark"])
   font-size: inherit;
 }
 
+.workflow-cta
 .workflow-review-count {
   color: #fff8ef;
   background: var(--nav-active-bg);
 }
 
 html[data-theme="dark"]
+.workflow-cta
 .workflow-review-count {
   color: #2b170c;
   background: #e18a4f;
