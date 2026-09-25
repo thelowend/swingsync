@@ -3247,8 +3247,9 @@ html[data-theme="dark"]
 .review-title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   min-width: 0;
+  width: 100%;
 }
 
 .review-title-row h2 {
@@ -3257,16 +3258,20 @@ html[data-theme="dark"]
 }
 
 .review-play-button {
-  width: 34px;
-  height: 34px;
-  display: inline-grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
   flex: none;
-  padding: 0;
+  margin-left: auto;
+  min-height: 36px;
+  padding: 4px 5px 4px 13px;
   border: 1px solid var(--accent-border);
-  border-radius: 999px;
+  border-radius: 8px;
   color: var(--accent-strong);
   background: var(--surface-control);
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
   transition:
     transform 120ms ease,
@@ -3274,9 +3279,24 @@ html[data-theme="dark"]
     background 120ms ease;
 }
 
-.review-play-button svg {
-  width: 16px;
-  height: 16px;
+.review-play-label {
+  line-height: 1;
+}
+
+.review-play-icon {
+  width: 27px;
+  height: 27px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 999px;
+  color: var(--nav-active-text);
+  background: var(--nav-active-bg);
+}
+
+.review-play-icon svg {
+  width: 14px;
+  height: 14px;
   transform: translateX(1px);
 }
 
@@ -3300,4 +3320,10 @@ html[data-theme="dark"]
 .review-play-button {
   color: var(--accent-strong);
   background: var(--surface-control);
+}
+
+html[data-theme="dark"]
+.review-play-icon {
+  color: #2b170c;
+  background: #e18a4f;
 }

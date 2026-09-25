@@ -151,6 +151,7 @@ export const SPANISH_TRANSLATIONS =
 
     // Review
     "Unknown track": "Pista desconocida",
+    "Play": "Reproducir",
     "Play track": "Reproducir pista",
     "Play in default player":
       "Reproducir en el reproductor predeterminado",

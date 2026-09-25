@@ -790,7 +790,15 @@ export default function ReviewView({
                         "Play track"
                       )}
                     >
-                      <PlayIcon />
+                      <span className="review-play-label">
+                        {t("Play")}
+                      </span>
+                      <span
+                        className="review-play-icon"
+                        aria-hidden="true"
+                      >
+                        <PlayIcon />
+                      </span>
                     </button>
                   </div>
                   <span className="path-copy">

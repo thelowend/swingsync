@@ -1,4 +1,4 @@
-# SwingSync v15.21 — Review playback shortcut
+# SwingSync v15.21.1 — Review Play button layout
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -944,3 +944,17 @@ macOS or Linux audio-file association.
 The packaged-app smoke test also verifies that the packaged preload bridge
 exposes the new `openTrackExternal` API. It intentionally does not launch an
 external media player during automated testing.
+
+
+## v15.21.1 — Review Play control layout
+
+The Review playback action is now aligned to the far right of the title row.
+
+Instead of a standalone circular icon, it is a rectangular action containing:
+
+```text
+Play   (▶)
+```
+
+The play arrow sits inside its own circular accent badge. The existing
+OS-default-player behavior and IPC safety model are unchanged.
