@@ -16,6 +16,20 @@ function basename(file) {
   return file.split(/[\\/]/).pop();
 }
 
+function PlayIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        d="M8.25 5.25v13.5L19 12 8.25 5.25Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function ReviewQueueItem({
   item,
   selected,
@@ -199,6 +213,11 @@ export default function ReviewView({
   ] = useState(false);
 
   const [
+    openingTrack,
+    setOpeningTrack,
+  ] = useState(false);
+
+  const [
     continueApplyPulse,
     setContinueApplyPulse,
   ] = useState(0);
@@ -314,6 +333,29 @@ export default function ReviewView({
       false
     );
     onContinue();
+  }
+
+  async function openSelectedTrack() {
+    if (
+      !selected?.trackId ||
+      openingTrack
+    ) {
+      return;
+    }
+
+    setOpeningTrack(
+      true
+    );
+
+    try {
+      await actions.openTrackExternal(
+        selected.trackId
+      );
+    } finally {
+      setOpeningTrack(
+        false
+      );
+    }
   }
 
   async function submit(
@@ -721,15 +763,36 @@ export default function ReviewView({
                       }
                     )}
                   </span>
-                  <h2>
-                    {selected.filename ??
-                      basename(
-                        selected.file
-                      ) ??
-                      t(
-                        "Unknown track"
+                  <div className="review-title-row">
+                    <h2>
+                      {selected.filename ??
+                        basename(
+                          selected.file
+                        ) ??
+                        t(
+                          "Unknown track"
+                        )}
+                    </h2>
+
+                    <button
+                      type="button"
+                      className="review-play-button"
+                      onClick={
+                        openSelectedTrack
+                      }
+                      disabled={
+                        openingTrack
+                      }
+                      title={t(
+                        "Play in default player"
                       )}
-                  </h2>
+                      aria-label={t(
+                        "Play track"
+                      )}
+                    >
+                      <PlayIcon />
+                    </button>
+                  </div>
                   <span className="path-copy">
                     {selected.relativePath ??
                       selected.file}

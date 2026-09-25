@@ -253,6 +253,17 @@ export function useSwingSync() {
         );
       },
 
+      openTrackExternal(
+        trackId
+      ) {
+        return run(
+          () =>
+            window.swingSync.openTrackExternal(
+              trackId
+            )
+        );
+      },
+
       submitReview(decision) {
         return run(
           () =>

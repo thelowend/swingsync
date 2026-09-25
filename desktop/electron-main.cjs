@@ -6,6 +6,7 @@ const {
   BrowserWindow,
   dialog,
   ipcMain,
+  shell,
 } = require("electron");
 
 const {
@@ -200,6 +201,50 @@ function registerIpcHandlers() {
     "swingsync:get-review-queue",
     async () =>
       bpmApplication.getReviewQueue()
+  );
+
+  ipcMain.handle(
+    "swingsync:open-track-external",
+    async (_event, trackId) => {
+      const track =
+        bpmApplication.getTrack(
+          trackId
+        );
+
+      if (
+        !track?.file
+      ) {
+        throw new Error(
+          "Track not found."
+        );
+      }
+
+      if (
+        !fs.existsSync(
+          track.file
+        )
+      ) {
+        throw new Error(
+          "The audio file no longer exists."
+        );
+      }
+
+      const errorMessage =
+        await shell.openPath(
+          track.file
+        );
+
+      if (errorMessage) {
+        throw new Error(
+          errorMessage
+        );
+      }
+
+      return {
+        opened: true,
+        trackId,
+      };
+    }
   );
 
   ipcMain.handle(
@@ -579,6 +624,7 @@ async function runPackagedSmokeTest() {
       "bootstrap",
       "getApplyPlan",
       "getReviewQueue",
+      "openTrackExternal",
       "setProfile",
     ];
 

@@ -45,6 +45,12 @@ const api = Object.freeze({
       "swingsync:get-review-queue"
     ),
 
+  openTrackExternal: (trackId) =>
+    ipcRenderer.invoke(
+      "swingsync:open-track-external",
+      trackId
+    ),
+
   submitReview: (decision) =>
     ipcRenderer.invoke(
       "swingsync:submit-review",

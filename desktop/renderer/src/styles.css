@@ -3238,3 +3238,66 @@ html[data-theme="dark"]
     outline-offset: 3px;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.21 Review external playback                                    */
+/* ------------------------------------------------------------------ */
+
+.review-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.review-title-row h2 {
+  min-width: 0;
+  margin-right: 0;
+}
+
+.review-play-button {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  background: var(--surface-control);
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.review-play-button svg {
+  width: 16px;
+  height: 16px;
+  transform: translateX(1px);
+}
+
+.review-play-button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--surface-control-hover);
+  transform: translateY(-1px);
+}
+
+.review-play-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.review-play-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+html[data-theme="dark"]
+.review-play-button {
+  color: var(--accent-strong);
+  background: var(--surface-control);
+}

@@ -1,4 +1,4 @@
-# SwingSync v15.20.1 — Review badge specificity fix
+# SwingSync v15.21 — Review playback shortcut
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -920,3 +920,27 @@ The badge is now targeted as:
 so its light cream foreground reliably wins in Light mode.
 
 Dark-mode badge colors are unchanged.
+
+
+## v15.21 — Play reviewed track in the default player
+
+The Review editor now shows a play button immediately beside the selected
+track title.
+
+Clicking it asks Electron's main process to open the track with the operating
+system's default application for that audio file.
+
+The renderer never sends an arbitrary filesystem path. It sends only the
+internal `trackId`; the main process resolves that ID through the current
+`BpmApplication` state, checks that the file still exists, then calls:
+
+```js
+shell.openPath(track.file)
+```
+
+This preserves the renderer sandbox and works with the user's normal Windows,
+macOS or Linux audio-file association.
+
+The packaged-app smoke test also verifies that the packaged preload bridge
+exposes the new `openTrackExternal` API. It intentionally does not launch an
+external media player during automated testing.

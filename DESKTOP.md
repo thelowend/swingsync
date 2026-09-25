@@ -315,3 +315,21 @@ flag. The normal application never enters smoke mode.
 Inside the packaged process it verifies packaged mode, renderer/preload/IPC,
 FFmpeg's unpacked path and the bundled Manbow font. A JSON result is written to
 a temporary directory for the parent test runner, then deleted by the runner.
+
+
+## v15.21 Review playback shortcut
+
+Review exposes a play-icon button beside the selected track title.
+
+Flow:
+
+```text
+renderer trackId
+→ preload openTrackExternal(trackId)
+→ main-process IPC
+→ BpmApplication.getTrack(trackId)
+→ Electron shell.openPath(file)
+→ OS default audio player
+```
+
+No Node or direct filesystem capability is exposed to the renderer.
