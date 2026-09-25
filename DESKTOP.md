@@ -475,3 +475,12 @@ the Library/Review/Apply content below.
 Dynamic numeric badges expose `data-count-digits` and use fixed widths plus
 monospace tabular numerals to keep one-, two-, and three-digit counts
 optically centered.
+
+
+## v15.25.5 Navigation tagline
+
+The tagline is centered above the workflow tabs at 10px Peignot. The
+`Swing/Sync` wordmark is 66px.
+
+The selected workflow tab and the Library/Review/Apply content areas share
+`--workflow-surface` for a cleaner fused-tab seam.

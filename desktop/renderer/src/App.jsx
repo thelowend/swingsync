@@ -619,20 +619,20 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand-block">
-          <div>
-            <div className="brand-name">
-              Swing/Sync
-            </div>
-            <div className="brand-tagline">
-              {t(
-                "Tempo intelligence for a golden era of music"
-              )}
-            </div>
+          <div className="brand-name">
+            Swing/Sync
           </div>
         </div>
 
-        <nav
-          className="app-navigation"
+        <div className="workflow-nav-cluster">
+          <div className="brand-tagline">
+            {t(
+              "Tempo intelligence for a golden era of music"
+            )}
+          </div>
+
+          <nav
+            className="app-navigation"
           aria-label={t(
             "Workflow"
           )}
@@ -723,7 +723,8 @@ export default function App() {
               </span>
             )}
           </button>
-        </nav>
+          </nav>
+        </div>
 
         <div className="topbar-controls">
           <AccessibilityMenu />
@@ -1364,7 +1365,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.25.4
+          SwingSync v0.15.25.5
           {" - By Diego Pablos"}
         </div>
       </footer>

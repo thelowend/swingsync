@@ -1,4 +1,4 @@
-# SwingSync v15.25.4 — Fused workflow tabs
+# SwingSync v15.25.5 — Navigation tagline refinement
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1380,3 +1380,15 @@ Liberation Mono) with zero horizontal padding. This prevents the visible
 rightward skew that appeared with two-digit values.
 
 Library filter counts use the same numeral metrics.
+
+
+## v15.25.5 — Header/navigation refinement
+
+- `Swing/Sync` reduced from 68px to 66px.
+- The Peignot tagline now sits centered directly above Library / Review / Apply.
+- Tagline size reduced to 10px.
+- Tagline and workflow tabs are grouped in `workflow-nav-cluster`.
+
+The active workflow tab and the workflow content area now share the same
+`--workflow-surface` color. The active border is softened and the bottom seam
+overlap is deeper, so the selected tab blends more cleanly into the view below.
