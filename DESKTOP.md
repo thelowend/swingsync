@@ -484,3 +484,13 @@ The tagline is centered above the workflow tabs at 10px Peignot. The
 
 The selected workflow tab and the Library/Review/Apply content areas share
 `--workflow-surface` for a cleaner fused-tab seam.
+
+
+## v15.25.6 Tab shadow bridge
+
+The Peignot navigation tagline is 15px with `letter-spacing: 0.01em` and sits
+one pixel higher.
+
+The selected workflow tab now extends a 15px `--workflow-surface` bridge below
+the topbar. This masks the topbar's downward shadow directly under the active
+tab, eliminating the visible cutoff while preserving the shadow elsewhere.

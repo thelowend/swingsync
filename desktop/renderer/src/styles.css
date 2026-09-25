@@ -4603,3 +4603,72 @@ html[data-theme="dark"]
     font-size: 10px;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.25.6 Tagline sizing + shadow-bridge tab seam                    */
+/* ------------------------------------------------------------------ */
+
+.workflow-nav-cluster .brand-tagline {
+  margin-bottom: 2px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+/* The topbar casts a blurred shadow below the header. A short 4px tab
+   pseudo-element cannot cover that entire shadow band, which makes the
+   selected tab look cut off from the workflow surface. Extend the selected
+   tab's surface bridge through the shadow region instead. */
+.topbar {
+  z-index: 4;
+}
+
+.workspace,
+.workflow-view {
+  position: relative;
+  z-index: 1;
+}
+
+.app-navigation button.active {
+  z-index: 5;
+}
+
+.app-navigation button.active::after {
+  z-index: 6;
+  right: -1px;
+  bottom: -14px;
+  left: -1px;
+  height: 15px;
+  background: var(--workflow-surface);
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Soften the exact vertical edges of the bridge without reintroducing a
+   horizontal line across the selected tab/workflow connection. */
+.app-navigation button.active::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  right: -3px;
+  bottom: -14px;
+  left: -3px;
+  height: 15px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0,
+      var(--workflow-surface) 3px,
+      var(--workflow-surface)
+        calc(100% - 3px),
+      transparent 100%
+    );
+  pointer-events: none;
+}
+
+@media (max-width: 1160px) {
+  .workflow-nav-cluster .brand-tagline {
+    font-size: 15px;
+    letter-spacing: 0.01em;
+  }
+}

@@ -1,4 +1,4 @@
-# SwingSync v15.25.5 — Navigation tagline refinement
+# SwingSync v15.25.6 — Tagline and tab seam polish
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1392,3 +1392,27 @@ Library filter counts use the same numeral metrics.
 The active workflow tab and the workflow content area now share the same
 `--workflow-surface` color. The active border is softened and the bottom seam
 overlap is deeper, so the selected tab blends more cleanly into the view below.
+
+
+## v15.25.6 — Header/tab polish
+
+The navigation tagline now uses:
+
+```css
+font-size: 15px;
+letter-spacing: 0.01em;
+```
+
+Its bottom margin increases from 1px to 2px, moving it one pixel upward from
+the tabs.
+
+### Selected-tab seam
+
+The apparent seam beneath the active workflow tab came from the topbar's
+downward box shadow. The previous active-tab bridge covered only four pixels
+below the header, while the blurred header shadow extended farther.
+
+The selected tab now extends its `--workflow-surface` bridge 15px below the
+header, above the workflow surface and through the shadow band. A very small
+horizontal gradient at the bridge edges prevents hard vertical cutoffs while
+leaving the rest of the topbar shadow intact.

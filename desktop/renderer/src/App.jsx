@@ -1365,7 +1365,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.25.5
+          SwingSync v0.15.25.6
           {" - By Diego Pablos"}
         </div>
       </footer>
