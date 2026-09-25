@@ -333,3 +333,12 @@ renderer trackId
 ```
 
 No Node or direct filesystem capability is exposed to the renderer.
+
+
+## v15.21.5 Review queue sizing
+
+Desktop Review uses a flex-based left column. `review-list-scroll` fills the
+remaining height beneath the queue header and therefore tracks changes in the
+height of the selected track's Review editor.
+
+The responsive stacked layout keeps a 220px maximum queue height.

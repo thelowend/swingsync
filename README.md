@@ -1,4 +1,4 @@
-# SwingSync v15.21.4 — Review Play caption
+# SwingSync v15.21.5 — Adaptive Review queue height
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -998,3 +998,23 @@ Spanish uses `Reproducir`.
 
 The playback behavior is unchanged: SwingSync still opens the selected track
 in the operating system's default audio player.
+
+
+## v15.21.5 — Adaptive Review queue height
+
+On the desktop two-column Review layout, the review queue no longer has an
+independent viewport-based maximum height.
+
+The left queue column is now a flex column:
+
+```text
+Review queue header
+↓
+scroll area fills all remaining review-layout height
+```
+
+As a selected track makes the Review editor taller or shorter,
+`review-list-scroll` grows or shrinks with the same `review-layout`.
+
+For the narrow single-column layout (`max-width: 1000px`), the existing 220px
+queue cap is preserved so the queue does not dominate the stacked interface.
