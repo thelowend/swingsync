@@ -415,3 +415,19 @@ DevTools are enabled and can be toggled with F12, Ctrl+Shift+I, or
 Cmd+Option+I.
 
 Release builds set `webPreferences.devTools` to false.
+
+
+## v15.25 Header typography
+
+The desktop topbar now uses:
+
+- Manbow Lines-Regular, 68px: `Swing/Sync`
+- Peignot, 20px: tagline
+- Engebrechtre: workflow navigation and topbar controls
+
+Accessibility has moved into `topbar-controls`, immediately before
+`ThemeToggle`. Profile/Output CSS tooltips explicitly use the default UI font
+stack instead of inheriting Engebrechtre.
+
+Peignot and Engebrechtre are local build inputs and are checked together with
+Manbow before desktop development/builds.

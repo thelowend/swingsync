@@ -1,4 +1,4 @@
-# SwingSync v15.24.1 — Development DevTools
+# SwingSync v15.25 — Brand typography refresh
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1254,3 +1254,30 @@ font-family: "Font Family Name", sans-serif;
 This is useful for visual experimentation only. A font selected for the final
 product should still be bundled with SwingSync (subject to its license) so the
 UI does not depend on fonts installed on an end user's machine.
+
+
+## v15.25 — Brand typography refresh
+
+Header changes:
+
+- Removes the logo artwork from the top-left header; the loading screen can
+  still use the existing artwork.
+- Changes the visible wordmark from `SwingSync` to `Swing/Sync`.
+- Wordmark size is now `68px`.
+- Tagline uses locally supplied Peignot at `20px`.
+- Workflow navigation and topbar controls use locally supplied Engebrechtre.
+- Library / Review / Apply navigation text increases from `12px` to `14px`.
+- Accessibility moves immediately to the left of the Light/Dark theme toggle.
+- Profile and Output explanatory tooltips deliberately keep the original UI
+  font stack for small-text legibility.
+
+Before running the desktop app or making a build, install the three local font
+families:
+
+```powershell
+npm run desktop:font:install -- "C:\path\to\manbow.zip"
+npm run desktop:font:install:peignot -- "C:\path\to\peignot.zip"
+npm run desktop:font:install:engebrechtre -- "C:\path\to\engebrechtre.zip"
+```
+
+The source ZIP does not contain the font binaries.

@@ -1,6 +1,6 @@
 {
   "name": "swingsync",
-  "version": "0.15.24.1",
+  "version": "0.15.25",
   "private": true,
   "description": "SwingSync multilingual desktop and CLI app for swing/Boogie-Woogie-aware tempo analysis, review, and BPM metadata synchronization.",
   "main": "src/client/public-api.cjs",
@@ -12,8 +12,8 @@
     "cli": "node index.cjs",
     "benchmark": "node index.cjs --benchmark benchmark.json",
     "desktop:font:install": "node scripts/install-manbow-font.cjs",
-    "predesktop:dev": "node scripts/check-manbow-font.cjs",
-    "predesktop:build": "node scripts/check-manbow-font.cjs",
+    "predesktop:dev": "node scripts/check-ui-fonts.cjs",
+    "predesktop:build": "node scripts/check-ui-fonts.cjs",
     "desktop:package:win": "npm run desktop:build && electron-builder --win portable --x64",
     "desktop:package:win:unpacked": "npm run desktop:build && electron-builder --win --x64 --dir",
     "predesktop:package:win": "node scripts/check-windows-package.cjs",
@@ -26,7 +26,10 @@
     "test:filename-output": "node scripts/test-filename-output.cjs",
     "test:backup": "node scripts/test-backup-manager.cjs",
     "test:reset-track": "node scripts/test-reset-track-analysis.cjs",
-    "test:apply-backup-flow": "node scripts/test-apply-backup-flow.cjs"
+    "test:apply-backup-flow": "node scripts/test-apply-backup-flow.cjs",
+    "desktop:font:install:peignot": "node scripts/install-ui-font.cjs peignot",
+    "desktop:font:install:engebrechtre": "node scripts/install-ui-font.cjs engebrechtre",
+    "desktop:font:check": "node scripts/check-ui-fonts.cjs"
   },
   "dependencies": {
     "essentia.js": "*",

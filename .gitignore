@@ -73,3 +73,7 @@ desktop/dist/
 
 # Locally supplied licensed wordmark font
 desktop/renderer/src/assets/fonts/Manbow-Lines.otf
+
+desktop/renderer/src/assets/fonts/Peignot.ttf
+desktop/renderer/src/assets/fonts/Engebrechtre-Regular.otf
+desktop/renderer/src/assets/fonts/Engebrechtre-Bold.otf

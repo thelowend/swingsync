@@ -604,7 +604,7 @@ export default function App() {
       <main className="loading-screen">
         <BrandLogo large />
         <div>
-          <h1>SwingSync</h1>
+          <h1>Swing/Sync</h1>
           <p>
             {t(
               "Starting the music library engine…"
@@ -619,10 +619,9 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand-block">
-          <BrandLogo />
           <div>
             <div className="brand-name">
-              SwingSync
+              Swing/Sync
             </div>
             <div className="brand-tagline">
               {t(
@@ -632,94 +631,91 @@ export default function App() {
           </div>
         </div>
 
-        <div className="navigation-cluster">
-          <AccessibilityMenu />
-
-          <nav
-            className="app-navigation"
-            aria-label={t(
-              "Workflow"
-            )}
+        <nav
+          className="app-navigation"
+          aria-label={t(
+            "Workflow"
+          )}
+        >
+          <button
+            type="button"
+            className={
+              view === "library"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setView("library")
+            }
           >
-            <button
-              type="button"
-              className={
-                view === "library"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setView("library")
-              }
-            >
-              {t(
-                "Library"
-              )}
-            </button>
+            {t(
+              "Library"
+            )}
+          </button>
 
-            <button
-              type="button"
-              className={
-                view === "review"
-                  ? "active"
-                  : ""
-              }
-              disabled={
-                state.summary.needsReview ===
-                0
-              }
-              onClick={goToReview}
-            >
-              {t(
-                "Review"
-              )}
-              {state.summary.reviewRemaining >
-                0 && (
-                <span>
-                  {
-                    state.summary
-                      .reviewRemaining
-                  }
-                </span>
-              )}
-            </button>
+          <button
+            type="button"
+            className={
+              view === "review"
+                ? "active"
+                : ""
+            }
+            disabled={
+              state.summary.needsReview ===
+              0
+            }
+            onClick={goToReview}
+          >
+            {t(
+              "Review"
+            )}
+            {state.summary.reviewRemaining >
+              0 && (
+              <span>
+                {
+                  state.summary
+                    .reviewRemaining
+                }
+              </span>
+            )}
+          </button>
 
-            <button
-              type="button"
-              className={
-                view === "apply"
-                  ? "active"
-                  : ""
-              }
-              disabled={
-                (state.summary.pendingToApply ??
-                  0) === 0 &&
-                state.summary.outputApplied ===
-                  0 &&
-                !(
-                  isLibraryOpen &&
-                  backupStatus.available
-                )
-              }
-              onClick={goToApply}
-            >
-              {t(
-                "Apply"
-              )}
-              {(state.summary.pendingToApply ??
-                0) > 0 && (
-                <span>
-                  {
-                    state.summary
-                      .pendingToApply
-                  }
-                </span>
-              )}
-            </button>
-          </nav>
-        </div>
+          <button
+            type="button"
+            className={
+              view === "apply"
+                ? "active"
+                : ""
+            }
+            disabled={
+              (state.summary.pendingToApply ??
+                0) === 0 &&
+              state.summary.outputApplied ===
+                0 &&
+              !(
+                isLibraryOpen &&
+                backupStatus.available
+              )
+            }
+            onClick={goToApply}
+          >
+            {t(
+              "Apply"
+            )}
+            {(state.summary.pendingToApply ??
+              0) > 0 && (
+              <span>
+                {
+                  state.summary
+                    .pendingToApply
+                }
+              </span>
+            )}
+          </button>
+        </nav>
 
         <div className="topbar-controls">
+          <AccessibilityMenu />
           <ThemeToggle />
           <LanguageToggle />
 
@@ -1349,7 +1345,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.24.1
+          SwingSync v0.15.25
           {" - By Diego Pablos"}
         </div>
       </footer>

@@ -20,7 +20,7 @@ const checks = [
       "Manbow-Lines.otf"
     ),
     help:
-      'Run: npm run desktop:font:install -- "path/to/manbow.zip"',
+      'npm run desktop:font:install -- "path/to/manbow.zip"',
   },
   {
     label:
@@ -35,7 +35,7 @@ const checks = [
       "Peignot.ttf"
     ),
     help:
-      'Run: npm run desktop:font:install:peignot -- "path/to/peignot.zip"',
+      'npm run desktop:font:install:peignot -- "path/to/peignot.zip"',
   },
   {
     label:
@@ -50,7 +50,7 @@ const checks = [
       "Engebrechtre-Regular.otf"
     ),
     help:
-      'Run: npm run desktop:font:install:engebrechtre -- "path/to/engebrechtre.zip"',
+      'npm run desktop:font:install:engebrechtre -- "path/to/engebrechtre.zip"',
   },
   {
     label:
@@ -65,49 +65,39 @@ const checks = [
       "Engebrechtre-Bold.otf"
     ),
     help:
-      'Run: npm run desktop:font:install:engebrechtre -- "path/to/engebrechtre.zip"',
-  },
-  {
-    label:
-      "SwingSync build icon",
-    path: path.join(
-      root,
-      "build",
-      "icon.png"
-    ),
-    help:
-      "The build/icon.png resource is missing.",
+      'npm run desktop:font:install:engebrechtre -- "path/to/engebrechtre.zip"',
   },
 ];
 
-let failed = false;
-
-for (
-  const check of checks
-) {
-  if (
-    fs.existsSync(
-      check.path
-    )
-  ) {
-    continue;
-  }
-
-  failed = true;
-
-  console.error(
-    [
-      "",
-      `${check.label} is missing.`,
-      check.help,
-    ].join("\n")
+const missing =
+  checks.filter(
+    (check) =>
+      !fs.existsSync(
+        check.path
+      )
   );
+
+if (
+  missing.length === 0
+) {
+  process.exit(0);
 }
 
-if (failed) {
-  process.exit(1);
-}
-
-console.log(
-  "SwingSync Windows packaging preflight passed."
+console.error(
+  [
+    "",
+    "SwingSync local UI fonts are incomplete.",
+    "",
+    ...missing.flatMap(
+      (check) => [
+        `Missing: ${check.label}`,
+        `  Install with: ${check.help}`,
+      ]
+    ),
+    "",
+    "Then rerun the desktop command.",
+    "",
+  ].join("\n")
 );
+
+process.exit(1);
