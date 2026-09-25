@@ -671,7 +671,12 @@ export default function App() {
             )}
             {state.summary.reviewRemaining >
               0 && (
-              <span>
+              <span
+                className="navigation-count-badge"
+                data-count-digits={String(
+                  state.summary.reviewRemaining
+                ).length}
+              >
                 {
                   state.summary
                     .reviewRemaining
@@ -704,7 +709,13 @@ export default function App() {
             )}
             {(state.summary.pendingToApply ??
               0) > 0 && (
-              <span>
+              <span
+                className="navigation-count-badge"
+                data-count-digits={String(
+                  state.summary.pendingToApply ??
+                    0
+                ).length}
+              >
                 {
                   state.summary
                     .pendingToApply
@@ -1167,6 +1178,9 @@ export default function App() {
                     </span>
                     <span
                       className="workflow-action-count workflow-review-count"
+                      data-count-digits={String(
+                        reviewRemaining
+                      ).length}
                       aria-label={String(
                         reviewRemaining
                       )}
@@ -1254,7 +1268,12 @@ export default function App() {
                       }
                     >
                       {label}
-                      <span>
+                      <span
+                        className="segmented-count"
+                        data-count-digits={String(
+                          count
+                        ).length}
+                      >
                         {count}
                       </span>
                     </button>
@@ -1345,7 +1364,7 @@ export default function App() {
               )}
         </div>
         <div>
-          SwingSync v0.15.25.3
+          SwingSync v0.15.25.4
           {" - By Diego Pablos"}
         </div>
       </footer>

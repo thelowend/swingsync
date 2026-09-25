@@ -464,3 +464,14 @@ Library / Review / Apply no longer move to a second row at 1480px or below.
 The workflow navigation remains inline with the brand and topbar controls.
 
 The compact select and spacing reductions from v15.25.2 are preserved.
+
+
+## v15.25.4 Fused workflow tabs
+
+Topbar workflow navigation is visually rendered as 52px tabs. The active tab
+uses `var(--bg)` and overlaps the header separator so it reads as connected to
+the Library/Review/Apply content below.
+
+Dynamic numeric badges expose `data-count-digits` and use fixed widths plus
+monospace tabular numerals to keep one-, two-, and three-digit counts
+optically centered.

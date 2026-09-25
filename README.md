@@ -1,4 +1,4 @@
-# SwingSync v15.25.3 — Single-row workflow navigation
+# SwingSync v15.25.4 — Fused workflow tabs
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1346,3 +1346,37 @@ The other v15.25.2 width optimizations remain in place:
 - topbar-controls spacing remains reduced
 - compact-field internal spacing remains reduced
 - numeric badge centering improvements remain unchanged
+
+
+## v15.25.4 — Fused workflow tabs
+
+Library / Review / Apply are now rendered as tall topbar tabs rather than an
+enclosed segmented navigation pill.
+
+The tabs remain on the primary header row. The selected tab:
+
+- is 52px tall
+- uses the workflow/page background
+- has rounded upper corners
+- leaves its bottom edge visually open
+- interrupts the topbar separator directly underneath it
+- uses a subtle accent line across the top
+
+This makes the selected workflow tab appear physically connected to the
+content surface below.
+
+## v15.25.4 — Multi-digit numeric badges
+
+Dynamic workflow/navigation badges now carry their digit count and use
+explicit centered widths:
+
+- 1 digit: 20px
+- 2 digits: 26px
+- 3 digits: 32px
+- 4 digits: 38px
+
+The digits use a monospace/tabular numeral stack (`SFMono-Regular`, Consolas,
+Liberation Mono) with zero horizontal padding. This prevents the visible
+rightward skew that appeared with two-digit values.
+
+Library filter counts use the same numeral metrics.

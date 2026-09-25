@@ -899,6 +899,9 @@ export default function ReviewView({
                 0 && (
                 <span
                   className="workflow-action-count bulk-review-count"
+                  data-count-digits={String(
+                    unresolved.length
+                  ).length}
                   aria-label={String(
                     unresolved.length
                   )}
@@ -930,6 +933,9 @@ export default function ReviewView({
               0 && (
               <span
                 className="workflow-action-count"
+                data-count-digits={String(
+                  pendingToApply
+                ).length}
                 aria-label={String(
                   pendingToApply
                 )}

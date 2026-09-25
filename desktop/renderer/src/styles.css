@@ -4359,3 +4359,156 @@ html[data-theme="dark"]
     flex-wrap: nowrap;
   }
 }
+
+
+/* ------------------------------------------------------------------ */
+/* v15.25.4 Fused topbar tabs + multi-digit badge centering            */
+/* ------------------------------------------------------------------ */
+
+/* Turn the workflow selector from a contained pill into tall tabs. The
+   active tab reaches the lower edge of the header and uses the same
+   background as the workflow surface below it. */
+.topbar {
+  position: relative;
+}
+
+.app-navigation {
+  align-self: stretch;
+  align-items: flex-end;
+  gap: 4px;
+  margin-bottom: -10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-navigation button {
+  position: relative;
+  min-height: 52px;
+  padding: 0 16px 1px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+}
+
+.app-navigation button:hover:not(:disabled) {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--nav-border) 58%,
+      transparent
+    );
+  border-bottom-color: transparent;
+  background:
+    color-mix(
+      in srgb,
+      var(--nav-hover-bg) 66%,
+      transparent
+    );
+}
+
+.app-navigation button.active,
+.app-navigation button.active:hover:not(:disabled) {
+  z-index: 2;
+  margin-bottom: -1px;
+  color: var(--text);
+  border-color: var(--border-soft);
+  border-bottom-color: transparent;
+  background: var(--bg);
+  box-shadow:
+    inset 0 3px 0
+    var(--accent);
+}
+
+/* The active tab is deliberately open at the bottom, so the topbar's
+   separator is visually interrupted exactly under the selected workflow. */
+.app-navigation button.active::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  right: -1px;
+  bottom: -2px;
+  left: -1px;
+  height: 3px;
+  background: var(--bg);
+}
+
+/* Dynamic number pills use a real monospace digit face and explicit fixed
+   widths per digit count. This avoids the optical right-shift that can occur
+   when a two-digit value is centered using proportional glyph side-bearings. */
+.navigation-count-badge,
+.workflow-action-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0;
+  text-align: center;
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "zero" 0;
+  letter-spacing: 0;
+  line-height: 20px;
+}
+
+.navigation-count-badge[data-count-digits="2"],
+.workflow-action-count[data-count-digits="2"] {
+  width: 26px;
+  min-width: 26px;
+}
+
+.navigation-count-badge[data-count-digits="3"],
+.workflow-action-count[data-count-digits="3"] {
+  width: 32px;
+  min-width: 32px;
+}
+
+.navigation-count-badge[data-count-digits="4"],
+.workflow-action-count[data-count-digits="4"] {
+  width: 38px;
+  min-width: 38px;
+}
+
+/* Library filter counts are not filled pills, but use the same numeral
+   metrics so multi-digit values remain optically centered in their slot. */
+.segmented-count {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em !important;
+  padding: 0 !important;
+  text-align: center;
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace !important;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Preserve the single-row header behavior introduced in v15.25.3. */
+@media (max-width: 1160px) {
+  .app-navigation {
+    align-self: stretch;
+    width: auto;
+    margin-bottom: -9px;
+  }
+
+  .app-navigation button {
+    min-height: 50px;
+  }
+}
