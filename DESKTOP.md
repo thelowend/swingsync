@@ -351,3 +351,10 @@ fitted to the parent and therefore cannot contribute its track-list content to
 the parent height.
 
 At `max-width: 1000px` the queue returns to normal flow for the stacked layout.
+
+
+## v15.21.7 Track Inspector polish
+
+- Inspector Detail rows use 8px left/right padding.
+- Review callout spacing is unchanged.
+- Close button uses a 16×16 SVG X centered inside the existing 34×34 hit area.

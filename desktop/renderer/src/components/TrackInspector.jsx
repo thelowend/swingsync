@@ -70,7 +70,19 @@ export default function TrackInspector({
             "Close inspector"
           )}
         >
-          ×
+          <svg
+            className="icon-button-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
         </button>
       </div>
 

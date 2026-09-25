@@ -1,4 +1,4 @@
-# SwingSync v15.21.6 — Editor-driven Review height
+# SwingSync v15.21.7 — Track Inspector polish
 
 SwingSync v15 adds the first multilingual desktop experience.
 
@@ -1045,3 +1045,15 @@ box and queue contract again.
 
 The narrow stacked layout keeps the queue in normal document flow and retains
 its 220px maximum height.
+
+
+## v15.21.7 — Track Inspector spacing and close control
+
+Inspector `detail-row` items now have a small 8px horizontal inset so labels
+and values do not sit directly against the section edges.
+
+The Human Review callout is unchanged.
+
+The inspector close control now uses a centered SVG X instead of a text `×`
+glyph. This avoids font-baseline offsets and keeps the X optically centered in
+the existing 34×34 square button.
